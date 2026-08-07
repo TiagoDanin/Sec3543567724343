@@ -1,0 +1,11 @@
+{
+  "id": "c49a5998",
+  "operation": "discard",
+  "variantId": null,
+  "result": {
+    "handled": true,
+    "file": "index.html",
+    "carbonize": false
+  },
+  "completedAt": "2026-08-07T00:14:15.616Z"
+}

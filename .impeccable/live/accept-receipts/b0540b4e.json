@@ -1,0 +1,12 @@
+{
+  "id": "b0540b4e",
+  "operation": "accept",
+  "variantId": "3",
+  "result": {
+    "handled": true,
+    "file": "index.html",
+    "carbonize": true,
+    "todo": "REQUIRED before next poll: carbonize cleanup in index.html. See reference/live.md \"Required after accept\"."
+  },
+  "completedAt": "2026-08-06T18:44:48.970Z"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "1e0269ed",
+  "operation": "discard",
+  "variantId": null,
+  "result": {
+    "handled": true,
+    "file": "index.html",
+    "carbonize": false
+  },
+  "completedAt": "2026-08-06T20:47:46.791Z"
+}

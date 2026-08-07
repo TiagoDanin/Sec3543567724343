@@ -1,0 +1,62 @@
+{
+  "id": "4a0876fc",
+  "phase": "completed",
+  "pageUrl": "/index.html",
+  "sourceFile": "index.html",
+  "previewFile": null,
+  "previewMode": null,
+  "expectedVariants": 4,
+  "arrivedVariants": 4,
+  "visibleVariant": 2,
+  "paramValues": {
+    "vel": 1,
+    "flash": true
+  },
+  "pendingEventSeq": null,
+  "pendingEvent": null,
+  "deliveryLease": null,
+  "checkpointRevision": 7,
+  "browserCheckpointRevision": 7,
+  "publicationCheckpointRevision": 0,
+  "activeOwner": "d1c1dda9",
+  "sourceMarkers": {},
+  "fallbackMode": null,
+  "generationPhase": "generation_ready",
+  "generationCompletedAt": 1786047318821,
+  "generationTimings": {
+    "picked_up": {
+      "at": 1786046931951,
+      "durationMs": null
+    },
+    "scaffolding": {
+      "at": 1786046931974,
+      "durationMs": null
+    },
+    "source_ready": {
+      "at": 1786046932720,
+      "durationMs": 723.9674000000086
+    },
+    "generation_ready": {
+      "at": 1786046932739,
+      "durationMs": null
+    }
+  },
+  "variantPlan": null,
+  "generationCanceled": true,
+  "generationCanceledAt": 1786047318529,
+  "cancelReason": "accept",
+  "annotationArtifacts": [],
+  "mountedVariants": [],
+  "mountFailures": [],
+  "renderState": "pending",
+  "diagnostics": [
+    {
+      "error": "carbonize_cleanup_required",
+      "file": "index.html",
+      "message": "Accepted variant still has carbonize markers that must be folded into source CSS."
+    }
+  ],
+  "updatedAt": "2026-08-06T20:16:35.513Z",
+  "__journalBytes": 24455,
+  "__nextSeq": 19
+}
