@@ -1,0 +1,25 @@
+{
+  "eventStartDate": "",
+  "eventEndDate": "",
+  "eventDisplayDate": "",
+  "venueName": "",
+  "venueAddress": "",
+  "venueMapUrl": "",
+  "ticketsUrl": "",
+  "volunteersDeadline": "",
+  "cfpDeadline": "",
+  "sections": {
+    "fatos": false,
+    "sobre": false,
+    "edicoes": false,
+    "agenda": false,
+    "ctf": false,
+    "palestrantes": false,
+    "ingressos": false,
+    "participe": false,
+    "patrocinio": false,
+    "parceiros": false,
+    "local": false,
+    "faq": false
+  }
+}
