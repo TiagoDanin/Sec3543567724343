@@ -8,8 +8,11 @@ web
 
 ## Stack
 
-static HTML/CSS/JS — `index.html` + `assets/` (sem build, sem dependências, publicável em qualquer host estático).
-*Inferido do brief: o usuário recusou a rodada de perguntas e apontou apenas o processo do Impeccable. Escolha feita por não haver scaffold, package.json ou framework no projeto, e por o protótipo incumbente (`XibeSec 2026.dc.html`) não ser deployável.*
+Next.js 16 (App Router) + React 19 + TypeScript strict + Tailwind CSS 4 (CSS-first, sem `tailwind.config`), exportado como site estático (`output: "export"` → `dist/`) e publicado no GitHub Pages sob domínio próprio **xibesec.com.br**. Gerenciador: Yarn.
+
+Conteúdo fora do código, em `contents/`, gerido por **nextjs-studio** (`studio.config.ts` declara o schema; tipos gerados em `.studio/studio.d.ts`). O acesso passa por uma fachada única em `src/lib/cms.ts` — nenhum componente chama `queryCollection` direto.
+
+*Decisão de 07/08/2026, tomada a partir da análise de quatro projetos de referência do mesmo autor. Substitui o plano anterior de HTML estático sem build, que existiu enquanto não havia scaffold no repositório. O protótipo incumbente (`XibeSec 2026.dc.html`) segue não deployável e serve apenas como referência visual.*
 
 ## Users
 
@@ -96,19 +99,24 @@ Isso **não** significa virar corporativo, frio ou publicitário. A identidade a
 
 ## Evidence on Hand
 
-- `assets/logo-xibesec.png` (1600×1282, alpha) — lockup oficial.
-- `assets/mascote.png` (1400×1750, alpha) — mascote isolado. Fonte em alta: `uploads/PersonagemXIBESEC_ISOLADO.png` (6000×7500).
-- `assets/keyart.png` (819×310) — key art oficial: wordmark à esquerda, mascote à direita, faixas marajoara nas bordas verticais. É a referência de composição da marca.
-- `assets/pattern-green.png` / `assets/pattern-orange.png` — faixas de grafismo marajoara, com alpha.
-- `uploads/Marca XIBESEC_CLR.png` (9500×7500) — marca em alta.
-- `uploads/Media Kit XibéSec 2026.pdf` (16 MB) — mídia kit real de patrocínio.
-- `XibeSec 2026.dc.html` — protótipo incumbente da landing (formato de bundler, não deployável).
+Ativos de marca existentes, **ainda não levados para `public/`**:
+
+- `logo-xibesec.png` (1600×1282, alpha) — lockup oficial.
+- `mascote.png` (1400×1750, alpha) — mascote isolado; há fonte em alta (6000×7500).
+- `keyart.png` (819×310) — key art oficial: wordmark à esquerda, mascote à direita, faixas marajoara nas bordas verticais. É a referência de composição da marca.
+- `pattern-green.png` / `pattern-orange.png` — faixas de grafismo marajoara, com alpha.
+- `favicon.svg` — favicon autoral (cuia com circuitos).
+- `og-xibesec-2026.png` (1200×630) e `.webp` — imagem de compartilhamento.
+- `xibesec-2026.ics` — evento de calendário, `TZID America/Belem`.
+- `Marca XIBESEC_CLR.png` (9500×7500) — marca em alta.
+- `Media Kit XibéSec 2026.pdf` (16 MB) — mídia kit real de patrocínio.
+- Landing anterior — traz o bloco JSON-LD `schema.org/Event` já completo (local, organizador, três `Offer` do Lote 2). É a referência a portar para `src/lib/schema.tsx`, gerada a partir de `contents/`, não copiada como string.
 - Organizações parceiras listadas no Sympla (21): 0xe Hacker Conf., 3D com Tech, Alquymia, APT Zé da Manga, BSides BSB, BXSec, Chapéu de Palha, Cyber Security Girls, Garota Cibernética, Guia Anônima, Hack in Cariri, Itshow, Latam Airlines, Mente Binária, Novatec, Pirate Ship, Quantum Village BR, Raul Hacker Club, Security Is Lifestyle, SOC Brazil, VP2 Turismo. Tratar como **ecossistema de parceiros de abrangência nacional**, não como "comunidades apoiadoras". A abrangência geográfica (quantos estados) ainda não foi apurada — não afirmar um número antes de conferir.
 - Patrocinador Bronze confirmado: BugHunt.
 
 **Provas de escala — existem, valores pendentes (o cliente confirmou que tem):**
 
-- **Anos das edições anteriores: 2023, 2024, 2025 — a conferir.** É a sequência que consta do protótipo do próprio cliente (`XibeSec 2026.dc.html`, linhas 135–147) e está publicada na landing por decisão dele em 06/08/2026. Houve uma ressalva anterior na mesma conversa ("não foi em 2025") que ficou sem esclarecimento; **confirmar as três datas com a organização antes de publicar**. Se alguma estiver errada, corrigir em `index.html` na lista `.story` e nas molduras `.deck__ord`.
+- **Anos das edições anteriores: 2023, 2024, 2025 — a conferir.** É a sequência que consta do protótipo do próprio cliente e estava publicada na landing anterior por decisão dele em 06/08/2026. Houve uma ressalva anterior na mesma conversa ("não foi em 2025") que ficou sem esclarecimento; **confirmar as três datas com a organização antes de publicar**. Cada edição entra em `contents/edicoes/` com `status: "a-conferir"` até a confirmação, e o ano é o slug da rota `/edicoes/[ano]` — corrigir depois quebra URL indexada.
 - **Número de público das edições anteriores** — confirmado como existente e autorizado para publicação; os valores ainda não foram fornecidos. É a prova mais forte contra a percepção de evento pequeno. Deixar como pendência declarada, nunca estimar.
 - **Fotos reais das edições anteriores** — confirmadas como existentes; arquivos ainda não entregues ao projeto. Foto de plateia cheia é o argumento visual que derruba a leitura de "evento de comunidade" mais rápido que qualquer texto. Reservar espaço na composição; não substituir por ilustração ou stock.
 

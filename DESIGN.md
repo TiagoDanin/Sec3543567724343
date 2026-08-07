@@ -1,7 +1,7 @@
 # Design
 
 Sistema visual da landing do XibéSec 2026, registrado a partir do que foi construído
-(`index.html` + `assets/styles.css`), não do que se pretendia construir.
+na landing anterior, não do que se pretendia construir.
 
 O mundo visual é **herdado**, não inventado: vem do protótipo `XibeSec 2026.dc.html`
 e da key art oficial. Extensões novas devem se justificar dentro dele.
@@ -21,7 +21,7 @@ O único elemento com sombra é figura recortada (mascote), via `drop-shadow`, p
 
 ## Cor
 
-Tokens em `:root` (`assets/styles.css`).
+Tokens em `:root` (`src/app/globals.css`), mapeados em `@theme inline` do Tailwind 4.
 
 | Token | Valor | Papel |
 |---|---|---|
@@ -126,14 +126,11 @@ tudo, inclusive a esteira.
 
 ## Imagem
 
-`<picture>` com WebP e PNG de reserva; `picture{display:contents}` para o `<img>`
-continuar sendo o item de grade, com `picture > source{display:none}` — sem isso o
-`source` vira item de grade e desloca o irmão.
+`next/image` para figura de conteúdo — o ganho é `loading="lazy"`, `width`/`height`
+contra CLS e `placeholder`. Com `images.unoptimized: true` (exigência do export
+estático) não há geração de `srcset`: as variantes WebP entram pré-geradas.
 
-Fundo do hero em CSS usa `image-set()` com os dois formatos.
-
-Conversão para WebP feita por `tools/` com o canvas do Chrome headless (não há
-`cwebp` nem ImageMagick na máquina).
+Fundo do hero em CSS usa `image-set()` com WebP e PNG de reserva.
 
 ---
 
