@@ -1,0 +1,8 @@
+.next/
+dist/
+out/
+node_modules/
+.studio/
+yarn.lock
+.claude/
+.impeccable/
