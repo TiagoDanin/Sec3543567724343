@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "valor": "4ª",
+    "label": "edição"
+  },
+  {
+    "valor": "10h",
+    "label": "de programação"
+  },
+  {
+    "valor": "2",
+    "label": "trilhas simultâneas"
+  },
+  {
+    "valor": "1",
+    "label": "CTF presencial"
+  },
+  {
+    "valor": "21",
+    "label": "organizações parceiras"
+  }
+]

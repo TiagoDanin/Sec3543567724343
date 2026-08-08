@@ -1,1 +1,57 @@
-[]
+[
+  {
+    "titulo": "Credenciamento e abertura",
+    "slug": "",
+    "descricao": "Recepção, boas-vindas e apresentação da edição 2026.",
+    "startsAt": "2026-09-19T09:00:00-03:00",
+    "endsAt": "2026-09-19T10:00:00-03:00",
+    "trilha": "geral",
+    "tipo": "operacional",
+    "status": "confirmado",
+    "order": 1
+  },
+  {
+    "titulo": "Trilhas técnica e gerencial",
+    "slug": "",
+    "descricao": "Ofensiva, defesa, forense, nuvem e pesquisa aplicada, em paralelo à trilha de liderança, riscos e governança.",
+    "startsAt": "2026-09-19T10:00:00-03:00",
+    "endsAt": "2026-09-19T13:00:00-03:00",
+    "trilha": "geral",
+    "tipo": "palestra",
+    "status": "em-definicao",
+    "order": 2
+  },
+  {
+    "titulo": "Intervalo e networking",
+    "slug": "",
+    "descricao": "Espaço para trocar ideias, visitar a área de exposição e tirar foto com o mascote.",
+    "startsAt": "2026-09-19T13:00:00-03:00",
+    "endsAt": "2026-09-19T14:00:00-03:00",
+    "trilha": "geral",
+    "tipo": "intervalo",
+    "status": "confirmado",
+    "order": 3
+  },
+  {
+    "titulo": "Competição CTF",
+    "slug": "",
+    "descricao": "Desafios práticos para testar habilidades reais ao vivo, em equipe ou individualmente.",
+    "startsAt": "2026-09-19T14:00:00-03:00",
+    "endsAt": "2026-09-19T18:00:00-03:00",
+    "trilha": "ctf",
+    "tipo": "ctf",
+    "status": "confirmado",
+    "order": 4
+  },
+  {
+    "titulo": "Encerramento",
+    "slug": "",
+    "descricao": "Premiação do CTF, agradecimentos e o convite para a próxima edição.",
+    "startsAt": "2026-09-19T18:00:00-03:00",
+    "endsAt": "2026-09-19T19:00:00-03:00",
+    "trilha": "geral",
+    "tipo": "operacional",
+    "status": "confirmado",
+    "order": 5
+  }
+]

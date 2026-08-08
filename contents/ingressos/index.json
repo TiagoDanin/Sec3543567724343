@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "nome": "Lote 2 · Meia-entrada",
+    "slug": "meia-entrada",
+    "lote": 2,
+    "preco": 4000,
+    "parcelas": 6,
+    "descricao": "",
+    "validThrough": "2026-08-10T23:59:00-03:00",
+    "ctaUrl": "https://www.sympla.com.br/evento/xibesec-2026/3470128",
+    "featured": false,
+    "order": 1
+  },
+  {
+    "nome": "Lote 2 · Social",
+    "slug": "social",
+    "lote": 2,
+    "preco": 6000,
+    "parcelas": 12,
+    "descricao": "",
+    "validThrough": "2026-08-10T23:59:00-03:00",
+    "ctaUrl": "https://www.sympla.com.br/evento/xibesec-2026/3470128",
+    "featured": false,
+    "order": 2
+  },
+  {
+    "nome": "Lote 2 · Inteira",
+    "slug": "inteira",
+    "lote": 2,
+    "preco": 8000,
+    "parcelas": 12,
+    "descricao": "",
+    "validThrough": "2026-08-10T23:59:00-03:00",
+    "ctaUrl": "https://www.sympla.com.br/evento/xibesec-2026/3470128",
+    "featured": false,
+    "order": 3
+  }
+]

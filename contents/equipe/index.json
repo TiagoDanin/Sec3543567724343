@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "nome": "Hekate, Inc.",
+    "slug": "hekate",
+    "papel": "Realização",
+    "url": "https://www.hekateinc.com/",
+    "logo": "/images/marca/logo-hekate.png",
+    "order": 1
+  }
+]

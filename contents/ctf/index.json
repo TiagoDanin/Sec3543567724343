@@ -1,7 +1,32 @@
 {
-  "titulo": "",
-  "texto": "",
-  "formato": "",
-  "premiacao": "",
-  "linhas": []
+  "titulo": "Coloque a mão na massa.",
+  "texto": "Além das palestras, o XibéSec 2026 traz uma competição CTF para quem quer sair da teoria e testar habilidades reais de ataque e defesa. Dá para competir sozinho ou em equipe, com premiação para os melhores colocados.",
+  "formato": "individual ou em equipe",
+  "premiacao": "melhores colocados",
+  "linhas": [
+    {
+      "kind": "cmd",
+      "texto": "$ xibesec ctf --edicao 2026"
+    },
+    {
+      "kind": "ok",
+      "texto": "modalidade ....... ataque e defesa"
+    },
+    {
+      "kind": "ok",
+      "texto": "formato .......... individual ou em equipe"
+    },
+    {
+      "kind": "ok",
+      "texto": "acesso ........... incluso no ingresso"
+    },
+    {
+      "kind": "ok",
+      "texto": "premiacao ........ melhores colocados"
+    },
+    {
+      "kind": "warn",
+      "texto": "desafios ......... em preparacao"
+    }
+  ]
 }

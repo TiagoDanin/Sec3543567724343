@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "nome": "bronze",
+    "label": "Patrocinador Bronze",
+    "beneficios": [],
+    "featured": false,
+    "disponivel": false,
+    "order": 4
+  }
+]

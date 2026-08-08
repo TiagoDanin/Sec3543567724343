@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "nome": "BugHunt",
+    "slug": "bughunt",
+    "logo": "/images/patrocinadores/bughunt.png",
+    "url": "https://www.bughunt.com.br/",
+    "cota": "bronze",
+    "order": 1
+  }
+]

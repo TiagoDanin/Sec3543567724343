@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "label": "O evento",
+    "href": "#evento",
+    "grupo": "evento",
+    "noMenu": false
+  },
+  {
+    "label": "Programação",
+    "href": "#programacao",
+    "grupo": "evento",
+    "noMenu": false
+  },
+  {
+    "label": "CTF",
+    "href": "#ctf",
+    "grupo": "evento",
+    "noMenu": false
+  },
+  {
+    "label": "Palestrantes",
+    "href": "#palestrantes",
+    "grupo": "evento",
+    "noMenu": false
+  },
+  {
+    "label": "Participe",
+    "href": "#participe",
+    "grupo": "participar",
+    "noMenu": false
+  },
+  {
+    "label": "Patrocínio",
+    "href": "#patrocinio",
+    "grupo": "participar",
+    "noMenu": false
+  },
+  {
+    "label": "Local",
+    "href": "#local",
+    "grupo": "evento",
+    "noMenu": false
+  }
+]
