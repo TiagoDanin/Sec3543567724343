@@ -10,6 +10,7 @@ const config: StorybookConfig = {
   ],
   framework: "@storybook/nextjs-vite",
   staticDirs: ["../public"],
+  core: { disableTelemetry: true },
 };
 
 export default config;
