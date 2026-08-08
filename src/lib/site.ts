@@ -65,28 +65,47 @@ export function socialLinks(): string[] {
 }
 
 /**
+ * Caminho do espelho em Markdown de uma rota: `/` → `/index.md`, `/faq` →
+ * `/faq.md`. É o arquivo que assistentes e agentes leem no lugar do HTML,
+ * anunciado no `<head>` como `<link rel="alternate" type="text/markdown">`.
+ */
+export function markdownPath(path: string): string {
+  const clean = path.replace(/\/+$/, "");
+  return clean === "" ? "/index.md" : `${clean}.md`;
+}
+
+/**
  * Metadata completo de uma página interna. Toda rota nova passa por aqui — é o
- * que impede uma página sair sem canonical.
+ * que impede uma página sair sem canonical e sem o espelho em Markdown.
+ *
+ * `markdown` só precisa ser passado quando o arquivo foge da convenção; `null`
+ * desliga o alternate, para rota que não tenha espelho gerado.
  */
 export function pageMetadata({
   title,
   description,
   path,
   image,
+  markdown,
 }: {
   title: string;
   description: string;
   path: string;
   image?: string;
+  markdown?: string | null;
 }) {
   const url = absoluteUrl(path);
   const fullTitle = `${title} · ${site.siteName}`;
   const ogImage = absoluteUrl(image ?? site.ogImage);
+  const md = markdown === undefined ? markdownPath(path) : markdown;
 
   return {
     title,
     description,
-    alternates: { canonical: url },
+    alternates: {
+      canonical: url,
+      ...(md ? { types: { "text/markdown": absoluteUrl(md) } } : {}),
+    },
     openGraph: {
       title: fullTitle,
       description,

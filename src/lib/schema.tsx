@@ -1,10 +1,11 @@
 // JSON-LD (schema.org). Gerado a partir de `site.ts` + `contents/` — nunca
 // escrito como string fixa, senão volta a divergir do conteúdo publicado.
 import { site, absoluteUrl, socialLinks } from "./site";
-import type { Ingresso, Settings } from "./content-types";
+import type { AgendaItem, Ingresso, Palestrante, Patrocinador, Settings } from "./content-types";
 
 const ORG_ID = `${absoluteUrl("/")}#organization`;
 const WEBSITE_ID = `${absoluteUrl("/")}#website`;
+const EVENT_ID = `${absoluteUrl("/")}#event`;
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -13,6 +14,7 @@ export const organizationSchema = {
   name: site.organizationName,
   url: site.organizationUrl,
   email: site.contactEmail,
+  logo: absoluteUrl("/images/marca/logo-hekate.png"),
 };
 
 export const websiteSchema = {
@@ -24,6 +26,9 @@ export const websiteSchema = {
   description: site.siteDescription,
   inLanguage: site.locale,
   publisher: { "@id": ORG_ID },
+  // Amarra o site à entidade do evento: é o que faz um sistema de busca
+  // entender que a página é sobre o XibéSec, não sobre a organizadora.
+  about: { "@id": EVENT_ID },
 };
 
 /** Preço do `Offer` em unidade monetária, a partir dos centavos do conteúdo. */
@@ -32,13 +37,23 @@ const price = (cents: number) => (cents / 100).toFixed(2);
 export function eventSchema({
   settings,
   ingressos,
+  agenda = [],
+  patrocinadores = [],
+  palestrantes = [],
 }: {
   settings: Settings;
   ingressos: Ingresso[];
+  /** Só a grade confirmada vira `subEvent`: item em definição não é promessa. */
+  agenda?: AgendaItem[];
+  patrocinadores?: Patrocinador[];
+  palestrantes?: Palestrante[];
 }) {
+  const confirmados = agenda.filter((item) => item.status === "confirmado");
+
   return {
     "@context": "https://schema.org",
     "@type": "Event",
+    "@id": EVENT_ID,
     name: site.siteName,
     description: site.siteDescription,
     startDate: settings.eventStartDate,
@@ -46,11 +61,14 @@ export function eventSchema({
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     inLanguage: site.locale,
+    isAccessibleForFree: false,
+    keywords: [...site.keywords].join(", "),
     url: absoluteUrl("/"),
     image: [absoluteUrl(site.ogImage)],
     location: {
       "@type": "Place",
       name: settings.venueName,
+      ...(settings.venueMapUrl ? { hasMap: settings.venueMapUrl } : {}),
       address: {
         "@type": "PostalAddress",
         streetAddress: settings.venueAddress,
@@ -73,8 +91,44 @@ export function eventSchema({
       priceCurrency: "BRL",
       availability: "https://schema.org/InStock",
       validThrough: ticket.validThrough,
+      availabilityEnds: ticket.validThrough,
       url: ticket.ctaUrl,
     })),
+    ...(confirmados.length > 0 && {
+      subEvent: confirmados.map((item) => ({
+        "@type": "Event",
+        name: item.titulo,
+        description: item.descricao,
+        startDate: item.startsAt,
+        endDate: item.endsAt,
+        eventStatus: "https://schema.org/EventScheduled",
+        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        location: { "@type": "Place", name: settings.venueName },
+      })),
+    }),
+    ...(patrocinadores.length > 0 && {
+      sponsor: patrocinadores.map((item) => ({
+        "@type": "Organization",
+        name: item.nome,
+        ...(item.url ? { url: item.url } : {}),
+      })),
+    }),
+    ...(palestrantes.length > 0 && {
+      performer: palestrantes.map((item) => generatePersonSchema(item)),
+    }),
+  };
+}
+
+/** `Person` de palestrante. Cargo e organização só entram quando existem. */
+export function generatePersonSchema(palestrante: Palestrante) {
+  return {
+    "@type": "Person",
+    name: palestrante.nome,
+    ...(palestrante.cargo ? { jobTitle: palestrante.cargo } : {}),
+    ...(palestrante.empresa
+      ? { worksFor: { "@type": "Organization", name: palestrante.empresa } }
+      : {}),
+    ...(palestrante.foto ? { image: absoluteUrl(palestrante.foto) } : {}),
   };
 }
 

@@ -7,6 +7,7 @@ import type {
   Cota,
   Ctf,
   Destaque,
+  Duvida,
   Edicao,
   Fato,
   Hero,
@@ -380,6 +381,18 @@ export function getParceiros(): Parceiro[] {
       url: str(row, "url"),
       order: num(row, "order"),
     }))
+    .sort(byOrder);
+}
+
+/** Dúvidas frequentes. Alimenta o accordion da página e o `FAQPage` do JSON-LD. */
+export function getFaq(): Duvida[] {
+  return rows("faq")
+    .map((row) => ({
+      pergunta: str(row, "pergunta"),
+      resposta: str(row, "resposta"),
+      order: num(row, "order"),
+    }))
+    .filter((item) => item.pergunta && item.resposta)
     .sort(byOrder);
 }
 

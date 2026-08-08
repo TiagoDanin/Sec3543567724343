@@ -25,6 +25,27 @@ export interface AgendaEntry {
   order: number;
 }
 
+/** Data shape for the "beneficios" collection. */
+export interface BeneficiosEntry {
+  icone: string;
+  texto: string;
+  order: number;
+}
+
+/** Data shape for the "chamadas" collection. */
+export interface ChamadasEntry {
+  chave: string;
+  eyebrow: string;
+  eyebrowTom: string;
+  titulo: string;
+  texto: string;
+  ctaLabel: string;
+  ctaUrl: HttpUrl;
+  ctaVariante: string;
+  order: number;
+  prazoPrefixo: string;
+}
+
 /** Data shape for the "codigo-de-conduta" collection. */
 export interface CodigoDeCondutaEntry Record<string, unknown>
 
@@ -48,6 +69,16 @@ export interface CtfEntry {
     kind: string;
     texto: string;
   }>;
+  incluso: string;
+}
+
+/** Data shape for the "destaques" collection. */
+export interface DestaquesEntry {
+  chave: string;
+  flag: string;
+  eyebrow: string;
+  titulo: string;
+  texto: string;
 }
 
 /** Data shape for the "edicoes" collection. */
@@ -80,6 +111,32 @@ export interface FatosEntry {
   label: string;
 }
 
+/** Data shape for the "hero" collection. */
+export interface HeroEntry {
+  tituloLinha: string;
+  tituloDestaque: string;
+  lede: string;
+  ctaPrimario: string;
+  ctaSecundario: string;
+  horario: string;
+  lugares: Array<{
+    nome: string;
+  }>;
+}
+
+/** Data shape for the "imprensa" collection. */
+export interface ImprensaEntry {
+  veiculo: string;
+  slug: string;
+  titulo: string;
+  url: HttpUrl;
+  data: ISODate;
+  tipo: string;
+  trecho: string;
+  logo: string;
+  order: number;
+}
+
 /** Data shape for the "ingressos" collection. */
 export interface IngressosEntry {
   nome: string;
@@ -101,6 +158,7 @@ export interface LinksEntry Record<string, unknown>
 export interface NavegacaoEntry {
   label: string;
   href: string;
+  secao: string;
   grupo: string;
   noMenu: boolean;
 }
@@ -124,6 +182,19 @@ export interface PatrocinadoresEntry {
   url: HttpUrl;
   cota: string;
   order: number;
+}
+
+/** Data shape for the "secoes" collection. */
+export interface SecoesEntry {
+  chave: string;
+  eyebrow: string;
+  eyebrowTom: string;
+  titulo: string;
+  lede: string;
+  nota: string;
+  notaLinkLabel: string;
+  notaLinkUrl: string;
+  cta: string;
 }
 
 /** Data shape for the "settings" collection. */
@@ -150,6 +221,7 @@ export interface SettingsEntry {
     parceiros: boolean;
     local: boolean;
     faq: boolean;
+    imprensa: boolean;
   };
 }
 
@@ -166,19 +238,25 @@ export interface SobreEntry {
 declare module 'nextjs-studio' {
   interface CollectionTypeMap {
     "agenda": AgendaEntry;
+    "beneficios": BeneficiosEntry;
+    "chamadas": ChamadasEntry;
     "codigo-de-conduta": CodigoDeCondutaEntry;
     "cotas": CotasEntry;
     "ctf": CtfEntry;
+    "destaques": DestaquesEntry;
     "edicoes": EdicoesEntry;
     "equipe": EquipeEntry;
     "faq": FaqEntry;
     "fatos": FatosEntry;
+    "hero": HeroEntry;
+    "imprensa": ImprensaEntry;
     "ingressos": IngressosEntry;
     "links": LinksEntry;
     "navegacao": NavegacaoEntry;
     "palestrantes": PalestrantesEntry;
     "parceiros": ParceirosEntry;
     "patrocinadores": PatrocinadoresEntry;
+    "secoes": SecoesEntry;
     "settings": SettingsEntry;
     "sobre": SobreEntry;
   }
@@ -186,19 +264,25 @@ declare module 'nextjs-studio' {
 declare module 'nextjs-studio/server' {
   interface CollectionTypeMap {
     "agenda": AgendaEntry;
+    "beneficios": BeneficiosEntry;
+    "chamadas": ChamadasEntry;
     "codigo-de-conduta": CodigoDeCondutaEntry;
     "cotas": CotasEntry;
     "ctf": CtfEntry;
+    "destaques": DestaquesEntry;
     "edicoes": EdicoesEntry;
     "equipe": EquipeEntry;
     "faq": FaqEntry;
     "fatos": FatosEntry;
+    "hero": HeroEntry;
+    "imprensa": ImprensaEntry;
     "ingressos": IngressosEntry;
     "links": LinksEntry;
     "navegacao": NavegacaoEntry;
     "palestrantes": PalestrantesEntry;
     "parceiros": ParceirosEntry;
     "patrocinadores": PatrocinadoresEntry;
+    "secoes": SecoesEntry;
     "settings": SettingsEntry;
     "sobre": SobreEntry;
   }

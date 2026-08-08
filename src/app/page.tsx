@@ -24,7 +24,13 @@ import { LocalSection } from "@/components/sections/LocalSection";
 import { Fechamento } from "@/components/sections/Fechamento";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 
-import { SchemaMarkup, eventSchema, organizationWithSocial, websiteSchema } from "@/lib/schema";
+import {
+  SchemaMarkup,
+  eventSchema,
+  generateFaqSchema,
+  organizationWithSocial,
+  websiteSchema,
+} from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
 import { pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
@@ -39,6 +45,7 @@ import {
   getDestaque,
   getEdicoes,
   getEquipe,
+  getFaq,
   getFatos,
   getHero,
   getImprensa,
@@ -46,6 +53,7 @@ import {
   getNavegacao,
   getPalestrantes,
   getParceiros,
+  getPatrocinadores,
   getPatrocinadoresPorCota,
   getSecoes,
   getSettings,
@@ -94,11 +102,25 @@ export default function Page() {
   const cheapest = lowestPrice(ingressos);
   const lote = ingressos[0];
 
+  // JSON-LD: só entra no schema o que a página realmente publica — seção
+  // desligada não vira promessa para o buscador.
+  const duvidas = sections.faq ? getFaq() : [];
+  const schema = [
+    websiteSchema,
+    organizationWithSocial,
+    eventSchema({
+      settings,
+      ingressos,
+      agenda: sections.agenda ? agenda : [],
+      patrocinadores: sections.patrocinio ? getPatrocinadores() : [],
+      palestrantes: sections.palestrantes ? palestrantes : [],
+    }),
+    ...(duvidas.length > 0 ? [generateFaqSchema(duvidas)] : []),
+  ];
+
   return (
     <>
-      <SchemaMarkup
-        schema={[websiteSchema, organizationWithSocial, eventSchema({ settings, ingressos })]}
-      />
+      <SchemaMarkup schema={schema} />
 
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 

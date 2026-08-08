@@ -186,6 +186,8 @@ export type Materia = {
 
 export type Parceiro = { nome: string; slug: string; url: string; order: number };
 
+export type Duvida = { pergunta: string; resposta: string; order: number };
+
 export type Organizacao = { nome: string; papel: string; url: string; logo: string };
 
 export type Palestrante = {
