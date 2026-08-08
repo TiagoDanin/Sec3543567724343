@@ -170,7 +170,7 @@ export type Patrocinador = {
   order: number;
 };
 
-export type TipoImprensa = "materia" | "analise" | "entrevista" | "release";
+export type TipoImprensa = "materia" | "analise" | "entrevista" | "release" | "agenda";
 
 export type Materia = {
   veiculo: string;

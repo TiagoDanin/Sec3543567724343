@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/site";
 
+// Exigido pelo `output: "export"`: a rota precisa ser resolvida no build.
+export const dynamic = "force-static";
+
 /**
  * Rastreadores de assistentes de IA. Cada um lê o bloco do próprio user-agent
  * antes do bloco `*`, então a liberação precisa ser explícita: bot bloqueado

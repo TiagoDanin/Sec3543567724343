@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl } from "@/lib/site";
+import { canonicalUrl } from "@/lib/site";
+
+// Exigido pelo `output: "export"`: a rota precisa ser resolvida no build.
+export const dynamic = "force-static";
 
 /**
  * Só rota HTML entra aqui — os espelhos em Markdown são anunciados pelo

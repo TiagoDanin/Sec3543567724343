@@ -101,8 +101,13 @@ const TRILHA_LABEL: Record<string, string> = {
 
 // ── Blocos de conteúdo ───────────────────────────────────────────────────────
 
+/**
+ * Janela do dia em prosa. Vem do `horario` do hero — é a forma como o evento
+ * escreve o próprio horário ("09h às 19h"); o formato derivado das datas ISO só
+ * entra se o campo estiver vazio.
+ */
 function janelaDoEvento(settings: Settings): string {
-  return horario(settings.eventStartDate, settings.eventEndDate);
+  return getHero().horario || horario(settings.eventStartDate, settings.eventEndDate);
 }
 
 /** Frase-definição do evento. É o trecho que um assistente cita literalmente. */
@@ -115,7 +120,7 @@ function definicao(settings: Settings): string {
       `Acontece em ${settings.eventDisplayDate}${janela ? `, das ${janela}` : ""},`,
     settings.venueName && `no ${settings.venueName},`,
     "com duas trilhas simultâneas — técnica e gerencial — e competição CTF presencial.",
-    "Realização da Hekate, Inc.",
+    `Realização da ${site.organizationName}`,
   ]
     .filter(Boolean)
     .join(" ");
@@ -131,7 +136,13 @@ function blocoEvento(): string {
   const janela = janelaDoEvento(settings);
 
   const numeros = fatos.length
-    ? bloco("### Em números", tabela(["Número", "O que é"], fatos.map((f) => [f.valor, f.label])))
+    ? bloco(
+        "### Em números",
+        tabela(
+          ["Número", "O que é"],
+          fatos.map((f) => [f.valor, f.label]),
+        ),
+      )
     : "";
 
   const anteriores = edicoes.length
@@ -157,7 +168,7 @@ function blocoEvento(): string {
       ["Nome", site.siteName],
       ["Edição", "4ª"],
       ["Data", settings.eventDisplayDate],
-      ["Horário", janela ? `${janela} (America/Belem)` : ""],
+      ["Horário", janela ? `${janela}, fuso America/Belem` : ""],
       ["Início (ISO 8601)", settings.eventStartDate],
       ["Fim (ISO 8601)", settings.eventEndDate],
       ["Local", settings.venueName],
@@ -270,7 +281,8 @@ function blocoIngressos(): string {
         formatDate(t.validThrough),
       ]),
     ),
-    beneficios.length > 0 && bloco("A inscrição dá direito a:", lista(beneficios.map((b) => b.texto))),
+    beneficios.length > 0 &&
+      bloco("A inscrição dá direito a:", lista(beneficios.map((b) => b.texto))),
     bloco(
       "### Trocas e cancelamento",
       lista([
@@ -513,7 +525,7 @@ function rodape(): string {
       `Índice para assistentes de IA: ${absoluteUrl("/llms.txt")}`,
       `Atualizado em: ${ATUALIZADO_EM}`,
     ]),
-    `Conteúdo publicado por ${site.organizationName}. Uso livre para citação, com atribuição a ${site.siteName} e link para ${absoluteUrl("/")}.`,
+    `Publicação: ${site.organizationName} — uso livre para citação, com atribuição a ${site.siteName} e link para ${absoluteUrl("/")}.`,
   );
 }
 
@@ -565,9 +577,16 @@ export function renderDoc(doc: Doc & { corpoRenderizado: string }): string {
   return bloco(
     cabecalho(`${doc.titulo} — ${site.siteName}`, doc.resumo, "/"),
     doc.corpoRenderizado,
-    bloco("## Outros documentos", lista(docsAtivos()
-      .filter((outro) => outro.slug !== doc.slug)
-      .map((outro) => `${link(outro.titulo, absoluteUrl(docPath(outro.slug)))}: ${outro.resumo}`))),
+    bloco(
+      "## Outros documentos",
+      lista(
+        docsAtivos()
+          .filter((outro) => outro.slug !== doc.slug)
+          .map(
+            (outro) => `${link(outro.titulo, absoluteUrl(docPath(outro.slug)))}: ${outro.resumo}`,
+          ),
+      ),
+    ),
     rodape(),
   );
 }
@@ -590,7 +609,7 @@ function perguntasCanonicas(): Array<[string, string]> {
   const perguntas: Array<[string, string]> = [
     [
       "O que é o XibéSec?",
-      `O XibéSec é um encontro presencial de cibersegurança realizado em ${site.city} do ${site.regionName}, desde 2023. Reúne profissionais e estudantes de segurança da informação em torno de palestras técnicas e gerenciais, competição CTF e área de exposição. O nome vem do xibé, bebida tupi de farinha de mandioca e água: o evento nasceu para alimentar o conhecimento.`,
+      `O XibéSec é um encontro presencial de cibersegurança realizado em ${site.city} do ${site.regionName}, no Norte do Brasil, em sua 4ª edição. Reúne profissionais e estudantes de segurança da informação em torno de palestras técnicas e gerenciais, competição CTF e área de exposição. O nome vem do xibé, bebida tupi de farinha de mandioca e água: o evento nasceu para alimentar o conhecimento.`,
     ],
     [
       "Quando e onde acontece o XibéSec 2026?",
@@ -631,19 +650,33 @@ function perguntasCanonicas(): Array<[string, string]> {
   return perguntas;
 }
 
-const NAO_AFIRMAR = [
-  "Grade de palestras, horários finais e nomes de palestrantes de 2026.",
-  "Número de público das edições anteriores.",
-  "Número de desafios e valor da premiação do CTF.",
-  "Patrocinadores das cotas Platina, Ouro e Prata.",
-  "Local exato das edições de 2023, 2024 e 2025.",
-];
+/**
+ * O que a organização ainda não publicou. Declarar o vazio é mais útil do que
+ * omiti-lo: é assim que um assistente responde "ainda não foi anunciado" em vez
+ * de estimar um número.
+ */
+function naoAfirmar(): string[] {
+  const aConferir = getEdicoes()
+    .filter((edicao) => edicao.status !== "confirmado")
+    .map((edicao) => edicao.ano);
+
+  return [
+    "Grade de palestras, horários finais e nomes de palestrantes de 2026.",
+    "Número de público e registro fotográfico das edições anteriores.",
+    "Número de desafios e valor da premiação do CTF.",
+    "Patrocinadores das cotas Platina, Ouro e Prata.",
+    aConferir.length > 0
+      ? `Datas e locais das edições anteriores — ${aConferir.join(", ")} constam como ${A_CONFERIR}.`
+      : "",
+  ].filter(Boolean);
+}
 
 function corpoAgents(): string {
   const settings = getSettings();
   const ativos = docsAtivos();
 
   return bloco(
+    bloco(
       "## Identidade",
       fichaTecnica([
         ["Nome oficial", "XibéSec (com acento)"],
@@ -665,7 +698,7 @@ function corpoAgents(): string {
     bloco(
       "## Não afirmar sem confirmação",
       "Estes dados existem, mas ainda não foram publicados pela organização. Declarar como indefinido em vez de estimar:",
-      lista(NAO_AFIRMAR),
+      lista(naoAfirmar()),
     ),
     bloco(
       "## Arquivos legíveis por máquina",
@@ -678,7 +711,7 @@ function corpoAgents(): string {
         ),
         `${link("/sitemap.xml", absoluteUrl("/sitemap.xml"))} — mapa do site`,
       ]),
-      "Toda página HTML anuncia seu espelho em Markdown no `<head>`, como `<link rel=\"alternate\" type=\"text/markdown\">`.",
+      'Toda página HTML anuncia seu espelho em Markdown no `<head>`, como `<link rel="alternate" type="text/markdown">`.',
     ),
     bloco(
       "## Como citar",
@@ -747,10 +780,12 @@ export function renderLlmsTxt(): string {
       bloco(
         "## Optional",
         lista(
-          opcionais.map((doc) => `${link(doc.titulo, absoluteUrl(docPath(doc.slug)))}: ${doc.resumo}`),
+          opcionais.map(
+            (doc) => `${link(doc.titulo, absoluteUrl(docPath(doc.slug)))}: ${doc.resumo}`,
+          ),
         ),
       ),
-    bloco("## Em definição", lista(NAO_AFIRMAR)),
+    bloco("## Em definição", lista(naoAfirmar())),
   );
 }
 

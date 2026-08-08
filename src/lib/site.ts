@@ -55,6 +55,15 @@ export function absoluteUrl(path = "/"): string {
   return `${site.siteUrl}${basePath}${clean === "/" ? "" : clean}`;
 }
 
+/**
+ * URL canônica de uma rota HTML, com a barra final que o `trailingSlash` impõe.
+ * Sem ela o sitemap aponta para um endereço que o canonical não confirma.
+ */
+export function canonicalUrl(path = "/"): string {
+  const url = absoluteUrl(path);
+  return url.endsWith("/") ? url : `${url}/`;
+}
+
 /** Caminho de asset servido de `public/`, com `basePath` aplicado. */
 export function asset(path: string): string {
   return `${basePath}${path.startsWith("/") ? path : `/${path}`}`;

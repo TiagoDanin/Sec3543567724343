@@ -40,10 +40,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR" className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col font-sans">{children}{/* impeccable-live-start */}
-<script src="http://localhost:8400/live.js?token=3ee64934-be05-41b6-96e0-adc71ada7f2d"></script>
-{/* impeccable-live-end */}
-</body>
+      <body className="flex min-h-full flex-col font-sans">
+        {children}
+        {/* impeccable-live-start */}
+        <script src="http://localhost:8400/live.js?token=3ee64934-be05-41b6-96e0-adc71ada7f2d"></script>
+        {/* impeccable-live-end */}
+      </body>
     </html>
   );
 }

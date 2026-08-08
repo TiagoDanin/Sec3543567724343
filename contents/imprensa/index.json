@@ -1,14 +1,36 @@
 [
   {
+    "veiculo": "g1 · Bom Dia Pará",
+    "slug": "g1-bom-dia-para",
+    "titulo": "XibéSec: evento discute cibersegurança em Belém",
+    "url": "https://g1.globo.com/pa/para/videos-bom-dia-para/video/xibesec-evento-discute-ciberseguranca-em-belem-13122795.ghtml",
+    "data": "2025-03-19",
+    "tipo": "materia",
+    "trecho": "Evento discute cibersegurança em Belém.",
+    "logo": "",
+    "order": 1
+  },
+  {
+    "veiculo": "TI Pará",
+    "slug": "tipara-2026",
+    "titulo": "Belém recebe o XibéSec 2026 e reúne comunidade de Segurança da Informação da Amazônia",
+    "url": "https://tipara.com.br/belem-recebe-o-xibesec-2026-e-reune-comunidade-de-seguranca-da-informacao-da-amazonia/",
+    "data": "2026-07-20",
+    "tipo": "materia",
+    "trecho": "No dia 19 de setembro de 2026, Belém recebe o XibéSec, encontro voltado à comunidade de Segurança da Informação.",
+    "logo": "",
+    "order": 2
+  },
+  {
     "veiculo": "RedePará",
     "slug": "redepara-2024",
     "titulo": "XibéSec retorna a Belém com foco em segurança da informação e tecnologia",
     "url": "https://redepara.com.br/Noticia/243841/xibesec-retorna-a-belem-com-foco-em-seguranca-da-informacao-e-tecnologia",
     "data": "2024-11-08",
     "tipo": "materia",
-    "trecho": "Belém-PA recebe, no próximo dia 23 de novembro, a segunda edição do XibéSec, um evento dedicado à área de segurança da informação e tecnologia.",
+    "trecho": "Belém-PA recebe a segunda edição do XibéSec, um evento dedicado à área de segurança da informação e tecnologia.",
     "logo": "",
-    "order": 1
+    "order": 3
   },
   {
     "veiculo": "It Show",
@@ -19,7 +41,7 @@
     "tipo": "materia",
     "trecho": "A segunda edição do XibéSec está programada para fortalecer os esforços em cibersegurança na região Norte, apresentando um dia completo de atividades com especialistas reconhecidos globalmente.",
     "logo": "",
-    "order": 2
+    "order": 4
   },
   {
     "veiculo": "AnchisesLandia",
@@ -30,7 +52,7 @@
     "tipo": "analise",
     "trecho": "Até hoje é o único evento de segurança na região Norte!!!",
     "logo": "",
-    "order": 3
+    "order": 5
   },
   {
     "veiculo": "AnchisesLandia",
@@ -41,7 +63,7 @@
     "tipo": "analise",
     "trecho": "A consolidação do Fortalsec e do XibéSec (Belém, PA), em seu segundo ano.",
     "logo": "",
-    "order": 4
+    "order": 6
   },
   {
     "veiculo": "It Show",
@@ -52,7 +74,7 @@
     "tipo": "release",
     "trecho": "O XibéSec 2025 acaba de revelar um time diverso de palestrantes.",
     "logo": "",
-    "order": 5
+    "order": 7
   },
   {
     "veiculo": "HQPOP",
@@ -63,7 +85,7 @@
     "tipo": "release",
     "trecho": "Belém do Pará sediará a terceira edição do XibéSec, das 9h às 19h.",
     "logo": "",
-    "order": 6
+    "order": 8
   },
   {
     "veiculo": "HQPOP",
@@ -74,6 +96,17 @@
     "tipo": "release",
     "trecho": "O XibéSec surgiu em 2023 com a proposta de incentivar a área de Segurança da Informação.",
     "logo": "",
-    "order": 7
+    "order": 9
+  },
+  {
+    "veiculo": "Palco Belém",
+    "slug": "palcobelem-2024",
+    "titulo": "XibéSec 2024",
+    "url": "https://palcobelem.com.br/evento/xib%C3%A9sec-2024",
+    "data": "2024-11-23",
+    "tipo": "agenda",
+    "trecho": "",
+    "logo": "",
+    "order": 10
   }
 ]
