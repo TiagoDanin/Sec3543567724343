@@ -74,7 +74,16 @@ export function NavBar({ items, action, className }: NavBarProps) {
             "max-[1080px]:max-h-[calc(100dvh-var(--nav-h))] max-[1080px]:gap-0 max-[1080px]:overflow-y-auto",
             "max-[1080px]:border-b max-[1080px]:px-(--gutter) max-[1080px]:pt-1 max-[1080px]:pb-6 max-[1080px]:text-sm",
             "max-[1080px]:ease-brand max-[1080px]:transition-transform max-[1080px]:duration-420",
-            open ? "max-[1080px]:translate-y-0" : "max-[1080px]:-translate-y-[115%]",
+            // Fechada, a gaveta sobe a própria altura MAIS a barra que a separa
+            // do topo. Percentual sozinho não fecha a conta: a gaveta mora em
+            // `top: var(--nav-h)`, então `-115%` só a tira da tela enquanto
+            // 15% da altura passar de 66px — ou seja, com oito itens de menu.
+            // Com quatro, sobravam 30px de fundo opaco cortando a marca ao meio.
+            // Os sublinhados viram espaço: `calc` exige espaço em volta do `-`,
+            // e sem eles a declaração inteira é descartada — a gaveta não sobe.
+            open
+              ? "max-[1080px]:translate-y-0"
+              : "max-[1080px]:translate-y-[calc(-100%_-_var(--nav-h))]",
           )}
         >
           {items.map((item) => (

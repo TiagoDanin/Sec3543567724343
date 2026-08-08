@@ -71,11 +71,39 @@ contagem, rótulo e saída de terminal. Texto de leitura nunca vai para mono.
 ## Ritmo e grade
 
 - `--maxw: 1320px`, `--gutter: clamp(20px, 4vw, 32px)`.
-- `--sec-y: clamp(64px, 8vw, 96px)`; `.sec--tight` reduz para `clamp(44px, 5.5vw, 72px)`.
+- `--sec-y: clamp(48px, 8vw, 96px)`; `.sec--tight` reduz para `clamp(36px, 5.5vw, 72px)`.
 - Seções alternam `--ink` e `.sec--panel` (`--panel` + filete em cima e embaixo).
 - Cabeçalho de seção: rótulo mono, depois grade de duas colunas `1fr 1fr` com título
   à esquerda e apoio à direita. Colapsa em coluna única abaixo de 860px.
 - Grades de conteúdo usam `repeat(auto-fit, minmax(Xpx, 1fr))`, nunca contagem fixa.
+
+---
+
+## O que não desce para o celular
+
+A home tem doze blocos. Enfileirados numa coluna de 390px eles somavam doze telas
+de rolagem, e parte disso era peça que só faz sentido lado a lado — em coluna ela
+não equilibra nada, apenas repete o que o texto vizinho já disse.
+
+A régua é uma pergunta, não uma preferência: **em coluna única, esta peça ainda
+diz algo que o bloco ao lado não diz?** Quando a resposta é não, ela sai abaixo de
+900px. O desktop não muda em nenhum dos casos.
+
+| Peça                        | Por que sai                                                                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Janela de terminal do CTF   | Repete modalidade, formato, acesso e premiação, que já estão no parágrafo. Em `pre` ainda abriria rolagem horizontal em 350px. |
+| Cartas de edição anteriores | Fica só a mais recente. A linha do tempo ao lado já nomeia todas; enfileirar as molduras custa duas dobras.                    |
+| Shell interativo do rodapé  | É feito de `Tab`, `↑ ↓` e `Ctrl+L`. No toque não há nenhum dos três, e encostar nele só sobe o teclado virtual.                |
+| Mascote do fechamento       | Segunda aparição. Empurra o último botão de compra para fora da dobra.                                                         |
+| Botão da barra de contagem  | A barra fica a mais de 520px de rolagem — exatamente onde o `dock` já entrou com o mesmo destino.                              |
+| Setas do carrossel          | Arrastar é o gesto nativo do trilho, e 36px é alvo pequeno demais para o polegar.                                              |
+| Losangos da faixa de fatos  | Separador entre vizinhos na mesma linha. Em grade de duas colunas ele sobra na ponta de cada quebra.                           |
+
+**Duas maneiras de tirar, e elas não são intercambiáveis.** Custo de pintura sai
+por classe (`max-[900px]:hidden`). Custo de comportamento — estado de cliente,
+ouvinte de evento, hidratação — sai por **montagem**, com `useDesktop()` de
+`src/lib/use-media.ts`, que responde desktop no servidor e corrige no primeiro
+quadro de cliente. É por montagem que saem o shell do rodapé e as cartas extras.
 
 ---
 
