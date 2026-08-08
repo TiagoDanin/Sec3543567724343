@@ -182,6 +182,36 @@
     animation: term-rise 0.52s var(--ease-brand) both;
   }
 
+  /* Névoa de igapó. Duas camadas, porque uma só desliza como textura: em
+     velocidades e escalas diferentes elas se cruzam e o banco de névoa ganha
+     profundidade — passa entre os troncos em vez de por cima da arte.
+
+     Verde lavado, não branco: névoa branca sobre mata em contraluz lava a cor
+     da arte e denuncia a camada. Alfa baixo porque `plus-lighter` soma luz e
+     rende muito mais que o número sugere. */
+  .nevoa {
+    background-repeat: no-repeat;
+    /* `plus-lighter` soma luz de verdade. `screen` clareia pela diferença até o
+       branco, e sobre mata escura isso rende quase nada — foi o que deixou a
+       primeira versão presente no CSS e invisível na tela. */
+    mix-blend-mode: plus-lighter;
+    will-change: transform;
+  }
+  /* Os bancos moram à direita e no meio do quadro, onde o véu de leitura já
+     abriu. À esquerda ele está em .88 de opacidade e engoliria a névoa. */
+  .nevoa--perto {
+    background-image:
+      radial-gradient(52% 30% at 62% 66%, rgba(176, 214, 170, 0.16), transparent 68%),
+      radial-gradient(40% 22% at 88% 78%, rgba(196, 226, 186, 0.11), transparent 70%);
+    animation: nevoa-perto 58s ease-in-out infinite alternate;
+  }
+  .nevoa--longe {
+    background-image:
+      radial-gradient(58% 26% at 78% 44%, rgba(186, 220, 178, 0.12), transparent 72%),
+      radial-gradient(46% 20% at 52% 34%, rgba(160, 200, 156, 0.09), transparent 74%);
+    animation: nevoa-longe 86s ease-in-out infinite alternate;
+  }
+
   /* Esteira de manchetes. A trilha é duplicada, então meio ciclo fecha a volta
      sem emenda visível. Devagar de propósito: aqui corre texto para ler, não
      grafismo. */
@@ -191,6 +221,35 @@
   .ticker-host:hover .animate-ticker,
   .ticker-host:focus-within .animate-ticker {
     animation-play-state: paused;
+  }
+
+  /* Luzes do mascote. A arte é bitmap em camadas — base mais uma imagem por
+     grupo de luz —, e a animação é só `opacity` sobre elas.
+
+     A escolha é medida, não suposta: com a arte em SVG inline, rasterizar os
+     6254 paths custava 106ms, e o `floaty` obrigava a refazer isso a cada
+     quadro; com filtro por path chegava a 2641ms. Um bitmap é uma textura
+     única — o compositor a desloca e esmaece sem repintar nada.
+
+     Ritmos e fases distintos entre os grupos: em cadência única a arte lê como
+     pisca-pisca, não como equipamento ligado. */
+  .animate-peitoral {
+    animation: peitoral-respira 3.4s ease-in-out infinite;
+  }
+  /* Meio ciclo atrás do peito: a energia parece descer do reator para as pernas
+     em vez de tudo acender junto. */
+  .animate-duto {
+    animation: duto-respira 3.4s ease-in-out infinite;
+    animation-delay: -1.7s;
+  }
+  .animate-led-olho {
+    animation: led-olho 4.2s ease-in-out infinite;
+  }
+  .animate-led-grafismo {
+    animation: led-pulso 5.6s ease-in-out infinite;
+  }
+  .animate-led-cabo {
+    animation: led-corrente 2.4s ease-in-out infinite;
   }
 
   /* Hachura da moldura de foto ainda não entregue. */
@@ -213,13 +272,53 @@
     .animate-blink,
     .animate-scan,
     .animate-term-line,
-    .animate-ticker {
+    .animate-ticker,
+    .nevoa,
+    .animate-peitoral,
+    .animate-duto,
+    .animate-led-olho,
+    .animate-led-grafismo,
+    .animate-led-cabo {
       animation: none;
+    }
+    /* Parada, a névoa continua: ela é atmosfera da cena, não animação de
+       entrada. Some só o deslocamento. */
+    .nevoa {
+      transform: none;
+    }
+    /* Paradas, as luzes ficam acesas: apagadas leriam como equipamento
+       desligado. */
+    .animate-peitoral,
+    .animate-duto,
+    .animate-led-olho,
+    .animate-led-grafismo,
+    .animate-led-cabo {
+      opacity: 1;
     }
     /* Parada, a trilha vira uma faixa de rolagem manual. */
     .ticker-host {
       overflow-x: auto;
     }
+  }
+}
+
+/* Deriva com respiração: só transladar leria como slide. As duas camadas andam
+   em sentidos opostos, que é o que faz uma passar na frente da outra. */
+@keyframes nevoa-perto {
+  from {
+    transform: translate3d(-1.5%, 0.6%, 0) scale(1.05);
+  }
+  to {
+    transform: translate3d(1.5%, -0.6%, 0) scale(1.09);
+  }
+}
+
+@keyframes nevoa-longe {
+  from {
+    transform: translate3d(1.2%, -0.5%, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-1.2%, 0.8%, 0) scale(1.04);
   }
 }
 
@@ -252,6 +351,76 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* A camada de luz some no vale e aparece no pico: a base já tem o olho no
+   piso, então isto é o brilho somado por cima, não o olho inteiro. */
+@keyframes led-olho {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Teto menor que o dos olhos: os grafismos correm o braço inteiro, e a mesma
+   intensidade que num disco de 50px é luz, numa faixa longa é borrão. */
+@keyframes led-pulso {
+  0%,
+  100% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: 0.62;
+  }
+}
+
+/* Sístole curta, diástole longa: a assimetria é o que faz ler como bombeamento
+   e não como fade. A camada já traz o halo assado, então o teto some antes de
+   1: no opaco a peça vira mancha sobre a mata. */
+@keyframes peitoral-respira {
+  0%,
+  100% {
+    opacity: 0.072;
+  }
+  16% {
+    opacity: 0.675;
+  }
+  42% {
+    opacity: 0.16;
+  }
+}
+
+/* Os dutos aguentam mais que o peito: são peças finas e espalhadas, então o
+   mesmo teto que satura o peitoral neles apenas acende. */
+@keyframes duto-respira {
+  0%,
+  100% {
+    opacity: 0.096;
+  }
+  /* 0,7 × 1,5 daria 1,05: `opacity` satura em 1, então o teto é este. */
+  16% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0.24;
+  }
+}
+
+/* Mais nervoso que o resto: é dado passando no cabo, não luz de estado. */
+@keyframes led-corrente {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.45;
   }
 }
 

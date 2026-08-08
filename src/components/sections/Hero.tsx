@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/primitives/Button";
+import { Mascote } from "@/components/primitives/Mascote";
+import { Gaviao } from "@/components/primitives/Gaviao";
 import { asset, site } from "@/lib/site";
 import type { LinkAlvo } from "@/lib/links";
 import type { Hero as HeroContent, Settings } from "@/lib/cms";
@@ -28,7 +30,9 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
 
   return (
     <section id="topo" className="border-line relative overflow-hidden border-b">
-      <div aria-hidden="true" className="absolute inset-0">
+      {/* `isolate` prende o blend da névoa a esta pilha: sem contexto próprio
+          ela mistura com o fundo da página, não com a arte da mata. */}
+      <div aria-hidden="true" className="absolute inset-0 isolate">
         <div
           className="absolute inset-0 bg-cover bg-no-repeat max-[900px]:bg-[78%_center]"
           style={{
@@ -36,8 +40,20 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             backgroundPosition: "72% center",
           }}
         />
+        {/* Abaixo do véu de leitura de propósito: a névoa é cena, e passar por
+            cima do degradê reduziria o contraste da manchete. */}
+        <div className="nevoa nevoa--longe absolute inset-0" />
+        <div className="nevoa nevoa--perto absolute inset-0" />
+
         <div className="absolute inset-0 bg-[linear-gradient(100deg,#0F1A0C_4%,rgba(15,26,12,.88)_30%,rgba(15,26,12,.34)_56%,rgba(15,26,12,.18)_100%),linear-gradient(#12200D_0%,transparent_14%),linear-gradient(0deg,#152310_0%,rgba(21,35,16,.55)_12%,transparent_30%)] max-[900px]:bg-[linear-gradient(#12200D_0%,rgba(15,26,12,.9)_26%,rgba(15,26,12,.72)_62%,rgba(21,35,16,.55)_100%),linear-gradient(0deg,#152310_0%,rgba(21,35,16,.6)_10%,transparent_26%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(620px_620px_at_72%_58%,rgba(79,227,172,.13),transparent_68%)]" />
+
+        {/* Sobrevoa o dossel, atrás da névoa de perto para entrar na cena em vez
+            de pousar sobre ela. Some junto com o mascote: sem a coluna da arte,
+            o gavião cairia sobre a manchete. */}
+        <div className="animate-floaty absolute top-[7%] right-[7%] w-[clamp(120px,13vw,210px)] max-[900px]:hidden">
+          <Gaviao className="w-full opacity-90 drop-shadow-[0_18px_30px_rgba(0,0,0,.5)]" />
+        </div>
       </div>
 
       <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[900px]:min-h-0 max-[900px]:grid-cols-1 max-[900px]:items-start max-[900px]:gap-[clamp(12px,3vw,24px)] max-[900px]:pt-[clamp(24px,7vw,48px)] max-[900px]:pb-[clamp(28px,6vw,76px)]">
@@ -100,13 +116,9 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             aria-hidden="true"
             className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)]"
           />
-          <Image
-            src={asset("/images/marca/mascote.png")}
+          <Mascote
             alt={MASCOTE_ALT}
-            width={1400}
-            height={1750}
-            priority
-            className="animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)]"
+            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)]"
           />
         </div>
       </div>
