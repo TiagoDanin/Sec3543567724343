@@ -1,0 +1,264 @@
+import "server-only";
+import { queryCollection } from "nextjs-studio/server";
+import type {
+  AgendaItem,
+  Cota,
+  Ctf,
+  Edicao,
+  Fato,
+  Ingresso,
+  NavItem,
+  Organizacao,
+  Palestrante,
+  Parceiro,
+  Patrocinador,
+  SectionKey,
+  Settings,
+  Sobre,
+  TerminalKind,
+  Trilha,
+} from "./content-types";
+
+export * from "./content-types";
+
+/**
+ * Única porta de entrada do conteúdo. Nenhum componente chama `queryCollection`
+ * direto — trocar o backend de conteúdo é um refactor deste arquivo.
+ *
+ * O gerador de tipos do studio (`.studio/studio.d.ts`) não é usado: TypeScript
+ * ignora diretórios iniciados por ponto, e o arquivo gerado ainda traz uma
+ * interface com sintaxe inválida para a coleção de código de conduta. Em vez de
+ * um `as unknown as X` que anula a checagem, cada registro é lido campo a campo
+ * pelos acessores abaixo, que também dão o valor de repouso quando o campo está
+ * vazio — que é o estado normal enquanto a organização não entrega o dado.
+ */
+
+type Row = Record<string, unknown>;
+
+function rows(collection: string): Row[] {
+  return queryCollection(collection).all() as Row[];
+}
+
+function singleton(collection: string): Row {
+  return (queryCollection(collection).first() ?? {}) as Row;
+}
+
+const str = (row: Row, key: string, fallback = ""): string =>
+  typeof row[key] === "string" ? (row[key] as string) : fallback;
+
+const num = (row: Row, key: string, fallback = 0): number =>
+  typeof row[key] === "number" ? (row[key] as number) : fallback;
+
+const bool = (row: Row, key: string): boolean => row[key] === true;
+
+const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
+
+// ── Configuração ─────────────────────────────────────────────────────────────
+
+const SECTION_KEYS: SectionKey[] = [
+  "fatos",
+  "sobre",
+  "edicoes",
+  "agenda",
+  "ctf",
+  "palestrantes",
+  "ingressos",
+  "participe",
+  "patrocinio",
+  "parceiros",
+  "local",
+  "faq",
+];
+
+export function getSettings(): Settings {
+  const row = singleton("settings");
+  const raw = (row.sections ?? {}) as Record<string, unknown>;
+
+  const sections = Object.fromEntries(
+    SECTION_KEYS.map((key) => [key, raw[key] === true]),
+  ) as Record<SectionKey, boolean>;
+
+  return {
+    eventStartDate: str(row, "eventStartDate"),
+    eventEndDate: str(row, "eventEndDate"),
+    eventDisplayDate: str(row, "eventDisplayDate"),
+    venueName: str(row, "venueName"),
+    venueAddress: str(row, "venueAddress"),
+    venueMapUrl: str(row, "venueMapUrl"),
+    ticketsUrl: str(row, "ticketsUrl"),
+    volunteersDeadline: str(row, "volunteersDeadline"),
+    cfpDeadline: str(row, "cfpDeadline"),
+    sections,
+  };
+}
+
+export function getNavegacao(): NavItem[] {
+  return rows("navegacao").map((row) => ({
+    label: str(row, "label"),
+    href: str(row, "href"),
+    grupo: str(row, "grupo"),
+    noMenu: bool(row, "noMenu"),
+  }));
+}
+
+// ── Seções ───────────────────────────────────────────────────────────────────
+
+export function getSobre(): Sobre {
+  const row = singleton("sobre");
+  return {
+    titulo: str(row, "titulo"),
+    texto: str(row, "texto"),
+    origemTitulo: str(row, "origemTitulo"),
+    origemTexto: str(row, "origemTexto"),
+  };
+}
+
+export function getFatos(): Fato[] {
+  return rows("fatos").map((row) => ({
+    valor: str(row, "valor"),
+    label: str(row, "label"),
+  }));
+}
+
+export function getIngressos(): Ingresso[] {
+  return rows("ingressos")
+    .map((row) => ({
+      nome: str(row, "nome"),
+      slug: str(row, "slug"),
+      lote: num(row, "lote"),
+      preco: num(row, "preco"),
+      parcelas: num(row, "parcelas"),
+      validThrough: str(row, "validThrough"),
+      ctaUrl: str(row, "ctaUrl"),
+      featured: bool(row, "featured"),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder);
+}
+
+const TRILHAS: Trilha[] = ["tecnica", "gerencial", "geral", "ctf"];
+
+export function getAgenda(): AgendaItem[] {
+  return rows("agenda")
+    .map((row) => {
+      const trilha = str(row, "trilha") as Trilha;
+      return {
+        titulo: str(row, "titulo"),
+        slug: str(row, "slug"),
+        descricao: str(row, "descricao"),
+        startsAt: str(row, "startsAt"),
+        endsAt: str(row, "endsAt"),
+        trilha: TRILHAS.includes(trilha) ? trilha : "geral",
+        tipo: str(row, "tipo"),
+        status: str(row, "status") === "em-definicao" ? ("em-definicao" as const) : ("confirmado" as const),
+        order: num(row, "order"),
+      };
+    })
+    .sort(byOrder);
+}
+
+export function getPalestrantes(): Palestrante[] {
+  return rows("palestrantes")
+    .map((row) => ({
+      nome: str(row, "nome"),
+      slug: str(row, "slug"),
+      cargo: str(row, "cargo"),
+      empresa: str(row, "empresa"),
+      foto: str(row, "foto"),
+      resumo: str(row, "resumo"),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder);
+}
+
+export function getCtf(): Ctf {
+  const row = singleton("ctf");
+  const linhas = Array.isArray(row.linhas) ? (row.linhas as Row[]) : [];
+  const kinds: TerminalKind[] = ["cmd", "ok", "warn", "plain"];
+
+  return {
+    titulo: str(row, "titulo"),
+    texto: str(row, "texto"),
+    linhas: linhas.map((line) => {
+      const kind = str(line, "kind") as TerminalKind;
+      return {
+        kind: kinds.includes(kind) ? kind : "plain",
+        texto: str(line, "texto"),
+      };
+    }),
+  };
+}
+
+export function getEdicoes(): Edicao[] {
+  return rows("edicoes")
+    .map((row) => ({
+      ano: num(row, "ano"),
+      tema: str(row, "tema"),
+      // Número de público existe mas ainda não foi fornecido. Nulo é o estado
+      // correto — nunca estimar. Ver PRODUCT.md.
+      publico: typeof row.publico === "number" ? row.publico : null,
+      resumo: str(row, "resumo"),
+      status: str(row, "status") === "confirmado" ? ("confirmado" as const) : ("a-conferir" as const),
+    }))
+    .sort((a, b) => a.ano - b.ano);
+}
+
+export function getCotas(): Cota[] {
+  return rows("cotas")
+    .map((row) => ({
+      nome: str(row, "nome"),
+      label: str(row, "label"),
+      disponivel: bool(row, "disponivel"),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder);
+}
+
+export function getPatrocinadores(): Patrocinador[] {
+  return rows("patrocinadores")
+    .map((row) => ({
+      nome: str(row, "nome"),
+      slug: str(row, "slug"),
+      logo: str(row, "logo"),
+      url: str(row, "url"),
+      cota: str(row, "cota"),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder);
+}
+
+/** Patrocinadores confirmados, agrupados pela cota — na ordem das cotas. */
+export function getPatrocinadoresPorCota(): Array<{ cota: Cota; patrocinadores: Patrocinador[] }> {
+  const patrocinadores = getPatrocinadores();
+  return getCotas()
+    .map((cota) => ({
+      cota,
+      patrocinadores: patrocinadores.filter((item) => item.cota === cota.nome),
+    }))
+    .filter((group) => group.patrocinadores.length > 0);
+}
+
+export function getParceiros(): Parceiro[] {
+  return rows("parceiros")
+    .map((row) => ({
+      nome: str(row, "nome"),
+      slug: str(row, "slug"),
+      // Handle deduzido do nome: sem confirmação, o chip renderiza sem link.
+      url: str(row, "url"),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder);
+}
+
+export function getEquipe(): Organizacao[] {
+  return rows("equipe")
+    .map((row) => ({
+      nome: str(row, "nome"),
+      papel: str(row, "papel"),
+      url: str(row, "url"),
+      logo: str(row, "logo"),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder)
+    .map(({ nome, papel, url, logo }) => ({ nome, papel, url, logo }));
+}
