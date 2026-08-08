@@ -11,7 +11,7 @@ export type BrandProps = {
  */
 export function Brand({ href = "/", className }: BrandProps) {
   const word = (
-    <span className="font-display text-cream whitespace-nowrap text-[19px] font-bold uppercase leading-none tracking-[0.01em] max-[360px]:hidden">
+    <span className="font-display text-cream text-[19px] leading-none font-bold tracking-[0.01em] whitespace-nowrap uppercase max-[360px]:hidden">
       Xibé<em className="text-orange not-italic">Sec</em>
       <b className="text-orange ml-[3px] align-[0.55em] font-mono text-[10px] font-bold tracking-[0.06em]">
         26
@@ -20,7 +20,11 @@ export function Brand({ href = "/", className }: BrandProps) {
   );
 
   return (
-    <a href={href} aria-label="XibéSec 26, início" className={cn("flex shrink-0 items-center", className)}>
+    <a
+      href={href}
+      aria-label="XibéSec 26, início"
+      className={cn("flex shrink-0 items-center", className)}
+    >
       {word}
     </a>
   );

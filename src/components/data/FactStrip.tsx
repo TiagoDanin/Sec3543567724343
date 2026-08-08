@@ -19,7 +19,7 @@ export type FactStripProps = {
 export function FactStrip({ facts, className, ...props }: FactStripProps) {
   return (
     <div className={cn("bg-panel border-line border-y", className)} {...props}>
-      <ul className="mx-auto flex max-w-site flex-wrap items-baseline gap-y-3 gap-x-[clamp(20px,3vw,44px)] px-(--gutter) py-[18px] font-mono text-[12px] uppercase tracking-[0.14em] text-cream-3">
+      <ul className="max-w-site text-cream-3 mx-auto flex flex-wrap items-baseline gap-x-[clamp(20px,3vw,44px)] gap-y-3 px-(--gutter) py-[18px] font-mono text-[12px] tracking-[0.14em] uppercase">
         {facts.map((fact) => (
           <li
             key={`${fact.value}-${fact.label}`}
@@ -31,7 +31,7 @@ export function FactStrip({ facts, className, ...props }: FactStripProps) {
             {fact.label}
             <span
               aria-hidden="true"
-              className="ml-[clamp(8px,1.4vw,20px)] size-[5px] self-center rotate-45 bg-cream/22"
+              className="bg-cream/22 ml-[clamp(8px,1.4vw,20px)] size-[5px] rotate-45 self-center"
             />
           </li>
         ))}

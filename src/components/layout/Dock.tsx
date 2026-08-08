@@ -32,7 +32,7 @@ export function Dock({ headline, detail, action, showAfter = 520, className }: D
     <div
       className={cn(
         "fixed inset-x-0 bottom-0 z-90 hidden items-center justify-between gap-3.5 max-[860px]:flex",
-        "border-line border-t bg-ink-deep/96 px-(--gutter) py-[11px] backdrop-blur-[14px]",
+        "border-line bg-ink-deep/96 border-t px-(--gutter) py-[11px] backdrop-blur-[14px]",
         "pb-[calc(11px+env(safe-area-inset-bottom))]",
         "ease-brand transition-transform duration-400",
         on ? "translate-y-0" : "translate-y-[110%]",
@@ -42,7 +42,7 @@ export function Dock({ headline, detail, action, showAfter = 520, className }: D
       <div className="flex min-w-0 flex-col gap-px">
         <strong className="text-cream font-mono text-[12px]">{headline}</strong>
         {detail ? (
-          <span className="text-cream-3 font-mono text-[10px] uppercase tracking-[0.14em]">
+          <span className="text-cream-3 font-mono text-[10px] tracking-[0.14em] uppercase">
             {detail}
           </span>
         ) : null}

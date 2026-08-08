@@ -32,7 +32,7 @@ export function SpeakerCard({
           <Image src={photo} alt={name ?? ""} fill className="object-cover" sizes="260px" />
         </div>
       ) : (
-        <span className="text-cream/42 flex aspect-square items-center justify-center font-mono text-[13px] uppercase tracking-[0.2em]">
+        <span className="text-cream/42 flex aspect-square items-center justify-center font-mono text-[13px] tracking-[0.2em] uppercase">
           {placeholder}
         </span>
       )}
@@ -46,7 +46,7 @@ export function SpeakerCard({
         {name ?? "A confirmar"}
       </span>
 
-      <span className="text-cream-3 block px-5 pb-[18px] pt-[5px] font-mono text-[12px]">
+      <span className="text-cream-3 block px-5 pt-[5px] pb-[18px] font-mono text-[12px]">
         {topic ?? "Tema em breve"}
       </span>
     </>

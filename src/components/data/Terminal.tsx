@@ -27,10 +27,15 @@ const MARK: Record<TerminalLine["kind"], string | null> = {
  * hidden` do tamanho exato do corpo: posicionada direto no corpo, o rastro
  * passaria do fim e criaria rolagem.
  */
-export function Terminal({ name = "xibesec@2026: ~", lines, caret = true, className }: TerminalProps) {
+export function Terminal({
+  name = "xibesec@2026: ~",
+  lines,
+  caret = true,
+  className,
+}: TerminalProps) {
   return (
-    <div className={cn("bg-shell relative overflow-hidden border border-mint/34", className)}>
-      <div className="flex items-center gap-[7px] border-b border-mint/20 bg-mint/5 px-3.5 py-[11px]">
+    <div className={cn("bg-shell border-mint/34 relative overflow-hidden border", className)}>
+      <div className="border-mint/20 bg-mint/5 flex items-center gap-[7px] border-b px-3.5 py-[11px]">
         <span className="bg-orange size-2" />
         <span className="bg-mint size-2" />
         <span className="bg-cream/30 size-2" />
@@ -38,8 +43,11 @@ export function Terminal({ name = "xibesec@2026: ~", lines, caret = true, classN
       </div>
 
       <div className="text-cream-2 relative overflow-x-auto p-[clamp(18px,2.4vw,28px)] font-mono text-[clamp(12px,1.05vw,13px)] leading-[2.05] max-[430px]:px-3.5 max-[430px]:py-4 max-[430px]:text-[11.5px]">
-        <span aria-hidden="true" className="pointer-events-none absolute inset-0 z-2 overflow-hidden">
-          <span className="animate-scan absolute inset-x-0 -top-[90px] h-[90px] bg-linear-to-b from-mint/0 via-mint/7 to-mint/15 shadow-[0_1px_0_rgb(79_227_172/0.9),0_6px_22px_rgb(79_227_172/0.22)]" />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-2 overflow-hidden"
+        >
+          <span className="animate-scan from-mint/0 via-mint/7 to-mint/15 absolute inset-x-0 -top-[90px] h-[90px] bg-linear-to-b shadow-[0_1px_0_rgb(79_227_172/0.9),0_6px_22px_rgb(79_227_172/0.22)]" />
         </span>
 
         {lines.map((line, index) => (
@@ -56,7 +64,10 @@ export function Terminal({ name = "xibesec@2026: ~", lines, caret = true, classN
             {line.kind === "cmd" ? (
               <b className="text-cream font-bold">{line.text}</b>
             ) : (
-              <>{MARK[line.kind] ? " " : ""}{line.text}</>
+              <>
+                {MARK[line.kind] ? " " : ""}
+                {line.text}
+              </>
             )}
           </span>
         ))}

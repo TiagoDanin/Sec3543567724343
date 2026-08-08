@@ -79,10 +79,10 @@ export function Countdown({ target, className, label = "Contagem regressiva" }: 
           key={key}
           className="border-line bg-panel flex items-baseline gap-[0.4em] border px-[11px] py-[7px] max-[760px]:flex-1 max-[760px]:justify-center max-[760px]:px-1"
         >
-          <b className={cn("font-mono text-[19px] font-bold leading-[1.1] tabular-nums", tone)}>
+          <b className={cn("font-mono text-[19px] leading-[1.1] font-bold tabular-nums", tone)}>
             {value}
           </b>
-          <i className="text-cream-3 font-mono text-[10px] not-italic uppercase tracking-[0.16em] max-[760px]:text-[9px] max-[760px]:tracking-[0.08em]">
+          <i className="text-cream-3 font-mono text-[10px] tracking-[0.16em] uppercase not-italic max-[760px]:text-[9px] max-[760px]:tracking-[0.08em]">
             {unit}
           </i>
         </span>

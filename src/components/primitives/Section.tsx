@@ -31,7 +31,7 @@ export function Section({
       className={cn(
         tight ? "py-(--sec-y-tight)" : "py-(--sec-y)",
         variant === "panel" && "bg-panel border-line border-y",
-        variant === "light" && "on-light bg-white text-ink",
+        variant === "light" && "on-light text-ink bg-white",
         className,
       )}
       {...props}

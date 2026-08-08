@@ -44,9 +44,25 @@ export const SemDescricao: Story = { name: "Sem descrição", args: { descriptio
 export const Lista: Story = {
   render: () => (
     <nav className="grid gap-3">
-      <LinkButton label="Ingressos" description="Lote em venda" href="#" icon={TicketIcon} highlight />
-      <LinkButton label="Chamada de patrocinadores" description="Formulário de cotas" href="#" icon={MailIcon} />
-      <LinkButton label="Site oficial" description="Programação e local" href="#" external={false} />
+      <LinkButton
+        label="Ingressos"
+        description="Lote em venda"
+        href="#"
+        icon={TicketIcon}
+        highlight
+      />
+      <LinkButton
+        label="Chamada de patrocinadores"
+        description="Formulário de cotas"
+        href="#"
+        icon={MailIcon}
+      />
+      <LinkButton
+        label="Site oficial"
+        description="Programação e local"
+        href="#"
+        external={false}
+      />
     </nav>
   ),
 };

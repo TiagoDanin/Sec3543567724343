@@ -25,7 +25,10 @@ export function PendingSlot({
       role="img"
       aria-label={label}
       style={{ aspectRatio: ratio }}
-      className={cn("hatch border-line-2 flex items-center justify-center border border-dashed", className)}
+      className={cn(
+        "hatch border-line-2 flex items-center justify-center border border-dashed",
+        className,
+      )}
     >
       {mark ? (
         <span className="font-display text-cream/20 text-[clamp(1.8rem,3.4vw,2.6rem)] font-bold tracking-[0.02em] tabular-nums">

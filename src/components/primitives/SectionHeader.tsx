@@ -18,7 +18,7 @@ export function Eyebrow({ children, tone = "orange", className }: EyebrowProps) 
   return (
     <p
       className={cn(
-        "font-mono text-[11px] font-medium uppercase tracking-[0.24em]",
+        "font-mono text-[11px] font-medium tracking-[0.24em] uppercase",
         toneClass,
         className,
       )}
@@ -44,7 +44,7 @@ export function SectionTitle({
   return (
     <Tag
       className={cn(
-        "font-display font-bold leading-[1.12] tracking-[-0.02em]",
+        "font-display leading-[1.12] font-bold tracking-[-0.02em]",
         size === "lg" ? "text-[clamp(1.75rem,3.2vw,2.5rem)]" : "text-[clamp(1.6rem,2.7vw,2.25rem)]",
         className,
       )}
@@ -82,10 +82,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <header
-      className={cn(
-        slim ? "mb-[clamp(30px,3.5vw,48px)]" : "mb-[clamp(40px,5vw,64px)]",
-        className,
-      )}
+      className={cn(slim ? "mb-[clamp(30px,3.5vw,48px)]" : "mb-[clamp(40px,5vw,64px)]", className)}
     >
       {eyebrow ? (
         <Eyebrow tone={eyebrowTone} className="mb-[22px] max-[860px]:mb-4">

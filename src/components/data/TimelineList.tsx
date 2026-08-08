@@ -28,7 +28,7 @@ export function TimelineList({ entries, className }: TimelineListProps) {
           <>
             <span
               className={cn(
-                "w-[3.6em] shrink-0 font-mono text-[15px] font-medium leading-none tabular-nums",
+                "w-[3.6em] shrink-0 font-mono text-[15px] leading-none font-medium tabular-nums",
                 "ease-brand transition-colors duration-300",
                 entry.current ? "text-orange font-bold" : "text-mint group-hover:text-cream",
               )}
@@ -36,14 +36,16 @@ export function TimelineList({ entries, className }: TimelineListProps) {
               {entry.year}
             </span>
 
-            <span className={cn("text-[17px] font-medium", entry.current && "text-orange font-bold")}>
+            <span
+              className={cn("text-[17px] font-medium", entry.current && "text-orange font-bold")}
+            >
               {entry.label}
             </span>
 
             {entry.detail ? (
               <span
                 className={cn(
-                  "ml-auto font-mono text-[12px] uppercase tracking-[0.14em]",
+                  "ml-auto font-mono text-[12px] tracking-[0.14em] uppercase",
                   entry.current ? "text-orange font-bold" : "text-cream-3",
                 )}
               >
@@ -64,7 +66,10 @@ export function TimelineList({ entries, className }: TimelineListProps) {
             )}
           >
             {entry.href ? (
-              <a href={entry.href} className={cn(rowClasses, "focus-visible:outline-offset-[-4px]")}>
+              <a
+                href={entry.href}
+                className={cn(rowClasses, "focus-visible:outline-offset-[-4px]")}
+              >
                 {row}
               </a>
             ) : (

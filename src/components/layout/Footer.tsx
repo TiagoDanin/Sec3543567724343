@@ -27,7 +27,7 @@ export type FooterProps = {
 export function Footer({ brand, tagline, columns, children, className }: FooterProps) {
   return (
     <footer className={cn("bg-panel border-line border-t", className)}>
-      <Container className="grid grid-cols-[1.4fr_1fr_1fr] gap-[clamp(28px,4vw,48px)] pb-8 pt-[clamp(44px,5.5vw,64px)] max-[860px]:grid-cols-1">
+      <Container className="grid grid-cols-[1.4fr_1fr_1fr] gap-[clamp(28px,4vw,48px)] pt-[clamp(44px,5.5vw,64px)] pb-8 max-[860px]:grid-cols-1">
         <div>
           {brand ? (
             <div className="mb-5 flex items-center gap-[clamp(16px,2vw,24px)]">{brand}</div>
@@ -41,7 +41,7 @@ export function Footer({ brand, tagline, columns, children, className }: FooterP
 
         {columns.map((column) => (
           <nav key={column.title} className="flex flex-col items-start gap-2.5">
-            <h2 className="text-cream-3 mb-1.5 font-mono text-[11px] font-medium uppercase tracking-[0.2em]">
+            <h2 className="text-cream-3 mb-1.5 font-mono text-[11px] font-medium tracking-[0.2em] uppercase">
               {column.title}
             </h2>
 
@@ -52,7 +52,7 @@ export function Footer({ brand, tagline, columns, children, className }: FooterP
                 key={link.href}
                 href={link.href}
                 {...(link.external ? { target: "_blank", rel: "noopener" } : {})}
-                className="text-cream-2 ease-brand border-b border-transparent text-[15px] transition-colors duration-250 hover:text-orange hover:border-orange focus-visible:text-orange focus-visible:border-orange"
+                className="text-cream-2 ease-brand hover:text-orange hover:border-orange focus-visible:text-orange focus-visible:border-orange border-b border-transparent text-[15px] transition-colors duration-250"
               >
                 {link.label}
               </a>

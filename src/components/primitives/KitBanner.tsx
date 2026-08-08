@@ -19,7 +19,7 @@ export function KitBanner({ title, children, actions, className }: KitBannerProp
       )}
     >
       <div>
-        <h3 className="font-display mb-2 text-[clamp(1.35rem,2.1vw,1.625rem)] font-bold leading-[1.18] tracking-[-0.01em]">
+        <h3 className="font-display mb-2 text-[clamp(1.35rem,2.1vw,1.625rem)] leading-[1.18] font-bold tracking-[-0.01em]">
           {title}
         </h3>
         <p className="text-cream-3 text-[15px]">{children}</p>

@@ -32,13 +32,13 @@ export function CallCard({
     <article
       className={cn(
         "border-line bg-panel flex flex-col items-start gap-3.5 border p-[clamp(28px,3.2vw,40px)]",
-        "ease-brand transition-colors duration-300 hover:border-orange",
+        "ease-brand hover:border-orange transition-colors duration-300",
         className,
       )}
     >
       <Eyebrow tone={eyebrowTone}>{eyebrow}</Eyebrow>
 
-      <h3 className="font-display text-2xl font-bold leading-[1.18] tracking-[-0.01em]">{title}</h3>
+      <h3 className="font-display text-2xl leading-[1.18] font-bold tracking-[-0.01em]">{title}</h3>
 
       <p className="text-cream-3 text-[15px] leading-[1.65]">{children}</p>
 

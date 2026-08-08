@@ -52,9 +52,9 @@ export function EditionCard({
         )}
       </div>
 
-      <figcaption className="flex items-baseline justify-between gap-4 px-3 pb-3 pt-3.5">
+      <figcaption className="flex items-baseline justify-between gap-4 px-3 pt-3.5 pb-3">
         <b className="text-cream text-[16px] font-bold">{title}</b>
-        <span className="text-cream-3 font-mono text-[11px] uppercase tracking-[0.2em]">
+        <span className="text-cream-3 font-mono text-[11px] tracking-[0.2em] uppercase">
           {caption}
         </span>
       </figcaption>

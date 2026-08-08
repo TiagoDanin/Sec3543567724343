@@ -8,7 +8,7 @@ const meta = {
   // Vive dentro da seção clara, que inverte o tema localmente.
   decorators: [
     (Story) => (
-      <div className="on-light max-w-[520px] bg-white p-8 text-ink">
+      <div className="on-light text-ink max-w-[520px] bg-white p-8">
         <Story />
       </div>
     ),

@@ -44,7 +44,7 @@ export function NavBar({ items, action, className }: NavBarProps) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-100 border-b transition-[background-color,border-color,backdrop-filter] duration-350 ease-brand",
+        "ease-brand sticky top-0 z-100 border-b transition-[background-color,border-color,backdrop-filter] duration-350",
         stuck
           ? "border-line bg-ink-deep/66 backdrop-blur-[34px] backdrop-saturate-160"
           : "border-transparent backdrop-blur-[3px]",
@@ -56,23 +56,23 @@ export function NavBar({ items, action, className }: NavBarProps) {
       <span
         aria-hidden="true"
         className={cn(
-          "absolute inset-0 -z-10 bg-linear-to-b from-ink-deep/58 to-transparent transition-opacity duration-350 ease-brand",
+          "from-ink-deep/58 ease-brand absolute inset-0 -z-10 bg-linear-to-b to-transparent transition-opacity duration-350",
           (stuck || open) && "opacity-0",
         )}
       />
 
-      <div className="mx-auto flex h-(--nav-h) max-w-site items-center gap-[clamp(16px,3vw,32px)] px-(--gutter)">
+      <div className="max-w-site mx-auto flex h-(--nav-h) items-center gap-[clamp(16px,3vw,32px)] px-(--gutter)">
         <Brand />
 
         <nav
           id="menu"
           aria-label="Seções da página"
           className={cn(
-            "mr-auto flex items-center gap-[clamp(14px,1.9vw,26px)] font-mono text-[12px] uppercase tracking-[0.08em]",
+            "mr-auto flex items-center gap-[clamp(14px,1.9vw,26px)] font-mono text-[12px] tracking-[0.08em] uppercase",
             "max-[1080px]:fixed max-[1080px]:inset-x-0 max-[1080px]:top-(--nav-h) max-[1080px]:bottom-auto",
             "max-[1080px]:border-line max-[1080px]:bg-ink-deep max-[1080px]:flex-col max-[1080px]:items-stretch",
             "max-[1080px]:max-h-[calc(100dvh-var(--nav-h))] max-[1080px]:gap-0 max-[1080px]:overflow-y-auto",
-            "max-[1080px]:border-b max-[1080px]:px-(--gutter) max-[1080px]:pb-6 max-[1080px]:pt-1 max-[1080px]:text-sm",
+            "max-[1080px]:border-b max-[1080px]:px-(--gutter) max-[1080px]:pt-1 max-[1080px]:pb-6 max-[1080px]:text-sm",
             "max-[1080px]:ease-brand max-[1080px]:transition-transform max-[1080px]:duration-420",
             open ? "max-[1080px]:translate-y-0" : "max-[1080px]:-translate-y-[115%]",
           )}
@@ -111,7 +111,10 @@ export function NavBar({ items, action, className }: NavBarProps) {
               )}
             />
             <span
-              className={cn("bg-cream block h-[1.5px] w-[18px] transition-opacity", open && "opacity-0")}
+              className={cn(
+                "bg-cream block h-[1.5px] w-[18px] transition-opacity",
+                open && "opacity-0",
+              )}
             />
             <span
               className={cn(

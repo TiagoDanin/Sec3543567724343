@@ -32,15 +32,12 @@ export function AgendaRow({
 
   const body = (
     <>
-      <time
-        dateTime={startsAt}
-        className="text-mint font-mono text-[19px] tabular-nums"
-      >
+      <time dateTime={startsAt} className="text-mint font-mono text-[19px] tabular-nums">
         {time}
       </time>
 
       <div>
-        <h3 className="font-display mb-2 text-[20px] font-bold leading-[1.2]">{title}</h3>
+        <h3 className="font-display mb-2 text-[20px] leading-[1.2] font-bold">{title}</h3>
         {children ? <p className="text-cream-3 text-[15px] leading-[1.6]">{children}</p> : null}
       </div>
 
@@ -77,7 +74,5 @@ export type AgendaListProps = {
 
 /** Grade de 1px: o filete vem do fundo, as linhas ficam por cima. */
 export function AgendaList({ children, className }: AgendaListProps) {
-  return (
-    <ol className={cn("bg-line border-line grid gap-px border-y", className)}>{children}</ol>
-  );
+  return <ol className={cn("bg-line border-line grid gap-px border-y", className)}>{children}</ol>;
 }
