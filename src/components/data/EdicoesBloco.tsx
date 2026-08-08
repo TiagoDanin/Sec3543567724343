@@ -5,6 +5,7 @@ import { TimelineList, type TimelineEntry } from "./TimelineList";
 import { EditionCard } from "@/components/cards/EditionCard";
 import { Eyebrow } from "@/components/primitives/SectionHeader";
 import { useDesktop } from "@/lib/use-media";
+import { cn } from "@/lib/utils";
 
 export type EdicaoResumo = { ano: number; tema: string; foto?: string };
 
@@ -35,11 +36,10 @@ const NAV_FALLBACK = 66;
  *    uma linha de leitura a 45% da altura da janela — a última carta que a
  *    cruzou é a que o olho está vendo.
  *
- * Em coluna de celular o baralho não é baralho: as cartas deixam de passar uma
- * por cima da outra e viram uma fila. Fica só a mais recente — a linha do tempo
- * ao lado já nomeia todas as edições, e enfileirar molduras que repetem aquela
- * mesma lista custa duas dobras. A carta é montada, não escondida: linha da
- * lista que não tem carta para mostrar também perde o link.
+ * No celular o mesmo baralho vira carrossel horizontal, e quem manda na carta em
+ * vista deixa de ser a rolagem e passa a ser o índice. Não é preferência de
+ * composição: empilhar por rolagem precisa de uma altura que a dobra não tem, e
+ * a carta grudada no topo ignora o clique da linha do tempo.
  */
 export function EdicoesBloco({
   edicoes,
@@ -50,7 +50,14 @@ export function EdicoesBloco({
 }: EdicoesBlocoProps) {
   const desktop = useDesktop();
   const deckRef = useRef<HTMLDivElement>(null);
+  const trilhoRef = useRef<HTMLDivElement>(null);
   const [ativo, setAtivo] = useState(-1);
+  // A tira abre na edição mais recente, não na primeira.
+  const [foco, setFoco] = useState(() => Math.max(0, edicoes.length - 1));
+  // Enquanto o trilho anda por conta de um clique, o `onScroll` que a própria
+  // animação dispara não pode reescrever o foco — chegaria com a posição do meio
+  // do caminho e desfaria o clique.
+  const conduzindo = useRef(0);
 
   const alturaNav = () =>
     parseInt(getComputedStyle(document.documentElement).getPropertyValue("--nav-h"), 10) ||
@@ -61,7 +68,9 @@ export function EdicoesBloco({
     [],
   );
 
+  // Vivo no celular, este listener faria a rolagem da página roubar o foco da tira.
   useEffect(() => {
+    if (!desktop) return;
     let frame = 0;
 
     const marcar = () => {
@@ -94,7 +103,64 @@ export function EdicoesBloco({
       window.removeEventListener("resize", onScroll);
       if (frame) window.cancelAnimationFrame(frame);
     };
-  }, [cartas]);
+  }, [cartas, desktop]);
+
+  // Deslocamento na mão porque `scrollIntoView` arrastaria a página junto para
+  // alinhar o eixo vertical; aqui só o trilho se move.
+  const irParaFoco = useCallback((index: number, animar = true) => {
+    const trilho = trilhoRef.current;
+    const carta = trilho?.children[index] as HTMLElement | undefined;
+    if (!trilho || !carta) return;
+
+    const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const suave = animar && !calmo;
+
+    // A trava cai por tempo porque não existe evento de fim de `scrollTo`.
+    window.clearTimeout(conduzindo.current);
+    conduzindo.current = window.setTimeout(() => (conduzindo.current = 0), suave ? 700 : 80);
+
+    // Centraliza, para bater com o `snap-center` que o gesto obedece — mirar a
+    // borda esquerda deixaria a carta a meio encaixe e o snap a puxaria de volta.
+    const alvo = carta.offsetLeft + carta.offsetWidth / 2 - trilho.clientWidth / 2;
+    trilho.scrollTo({ left: Math.max(0, alvo), behavior: suave ? "smooth" : "auto" });
+  }, []);
+
+  const focar = useCallback(
+    (index: number) => {
+      setFoco(index);
+      irParaFoco(index);
+    },
+    [irParaFoco],
+  );
+
+  // O estado nasce na edição mais recente, mas o trilho nasce em zero: sem este
+  // alinhamento a tira abriria na primeira carta contradizendo a linha do tempo.
+  useEffect(() => {
+    if (!desktop) irParaFoco(Math.max(0, edicoes.length - 1), false);
+  }, [desktop, edicoes.length, irParaFoco]);
+
+  // O arrasto do dedo não é interceptado: lê-se onde a rolagem nativa parou, e é
+  // assim que a linha do tempo segue o gesto e não só o clique.
+  const aoRolarTrilho = () => {
+    const trilho = trilhoRef.current;
+    if (!trilho || conduzindo.current) return;
+
+    const meio = trilho.scrollLeft + trilho.clientWidth / 2;
+    const cartasTira = Array.from(trilho.children) as HTMLElement[];
+    let perto = 0;
+    let menor = Infinity;
+
+    cartasTira.forEach((carta, index) => {
+      const centro = carta.offsetLeft + carta.offsetWidth / 2;
+      const dist = Math.abs(centro - meio);
+      if (dist < menor) {
+        menor = dist;
+        perto = index;
+      }
+    });
+
+    setFoco(perto);
+  };
 
   const irParaCarta = (index: number) => {
     const deck = deckRef.current;
@@ -112,20 +178,16 @@ export function EdicoesBloco({
     window.scrollTo({ top: Math.max(0, y - parada), behavior: calmo ? "auto" : "smooth" });
   };
 
-  const cartasVisiveis = desktop ? edicoes : edicoes.slice(-1);
-  const posicao = new Map(cartasVisiveis.map((edicao, index) => [edicao.ano, index]));
+  const emVista = desktop ? ativo : foco;
 
   const entries: TimelineEntry[] = [
-    ...edicoes.map((edicao) => {
-      const index = posicao.get(edicao.ano);
-      return {
-        year: edicao.ano,
-        label: edicao.tema,
-        href: index === undefined ? undefined : `#ed-${edicao.ano}`,
-        onNavigate: index === undefined ? undefined : () => irParaCarta(index),
-        active: index !== undefined && index === ativo,
-      };
-    }),
+    ...edicoes.map((edicao, index) => ({
+      year: edicao.ano,
+      label: edicao.tema,
+      href: `#ed-${edicao.ano}`,
+      onNavigate: () => (desktop ? irParaCarta(index) : focar(index)),
+      active: index === emVista,
+    })),
     atual,
   ];
 
@@ -142,27 +204,72 @@ export function EdicoesBloco({
       </div>
 
       <div className="min-w-0">
-        <div
-          ref={deckRef}
-          className="grid gap-[clamp(20px,2.6vw,32px)] max-[900px]:gap-0 [&[data-sem-cola]_[data-carta]]:static"
-        >
-          {cartasVisiveis.map((edicao, index) => (
-            <EditionCard
-              key={edicao.ano}
-              id={`ed-${edicao.ano}`}
-              year={edicao.ano}
-              title={edicao.tema}
-              caption={registroPendente}
-              photo={edicao.foto || undefined}
-              // Fora do baralho não há pilha para inclinar: a carta única entra
-              // reta, na posição que o `EditionCard` trata como sem desvio.
-              index={desktop ? index : 1}
-              active={index === ativo}
-              data-carta=""
-              className="sticky top-[calc(var(--nav-h)+38px+var(--i)*16px)] scroll-mt-[calc(var(--nav-h)+38px)] max-[900px]:static max-[900px]:scroll-mt-[calc(var(--nav-h)+24px)]"
-            />
-          ))}
-        </div>
+        {desktop ? (
+          <div
+            ref={deckRef}
+            className="grid gap-[clamp(20px,2.6vw,32px)] [&[data-sem-cola]_[data-carta]]:static"
+          >
+            {edicoes.map((edicao, index) => (
+              <EditionCard
+                key={edicao.ano}
+                id={`ed-${edicao.ano}`}
+                year={edicao.ano}
+                title={edicao.tema}
+                caption={registroPendente}
+                photo={edicao.foto || undefined}
+                index={index}
+                active={index === ativo}
+                data-carta=""
+                className="sticky top-[calc(var(--nav-h)+38px+var(--i)*16px)] scroll-mt-[calc(var(--nav-h)+38px)]"
+              />
+            ))}
+          </div>
+        ) : (
+          <div
+            ref={trilhoRef}
+            onScroll={aoRolarTrilho}
+            // `touch-pan-x` entrega o eixo horizontal ao trilho e mantém o
+            // vertical com a página: sem isso o polegar em diagonal trava a
+            // rolagem da página em cima da tira.
+            className="-mx-4 flex touch-pan-x snap-x snap-mandatory [scrollbar-width:none] gap-3 overflow-x-auto overscroll-x-contain px-4 [&::-webkit-scrollbar]:hidden"
+          >
+            {edicoes.map((edicao, index) => {
+              const emFoco = index === foco;
+              // Carta ao lado se aproxima; a que já está no centro avança. Fazer
+              // a de fora avançar move uma terceira carta e desorienta.
+              const destino = emFoco ? (index + 1) % edicoes.length : index;
+
+              return (
+                <button
+                  key={edicao.ano}
+                  type="button"
+                  // Nomeia o destino, não o gesto: quem não vê a tira não deduz
+                  // qual é a "próxima".
+                  aria-label={`Ver ${edicoes[destino].tema}`}
+                  aria-current={emFoco ? "true" : undefined}
+                  onClick={() => focar(destino)}
+                  className={cn(
+                    "w-[84%] shrink-0 snap-center text-left",
+                    "ease-brand transition-opacity duration-300",
+                    "focus-visible:outline-mint focus-visible:outline-2 focus-visible:outline-offset-4",
+                    emFoco ? "opacity-100" : "opacity-55",
+                  )}
+                >
+                  <EditionCard
+                    id={`ed-${edicao.ano}`}
+                    year={edicao.ano}
+                    title={edicao.tema}
+                    caption={registroPendente}
+                    photo={edicao.foto || undefined}
+                    // Sem pilha não há o que inclinar, e 1 é o índice sem desvio.
+                    index={1}
+                    active={emFoco}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </>
   );
