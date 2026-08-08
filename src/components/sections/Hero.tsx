@@ -95,10 +95,12 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
           </p>
         </div>
 
-        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[900px]:translate-none max-[900px]:justify-start">
+        {/* Some no celular: em coluna única o mascote só alongava o hero e
+            empurrava os CTAs para fora da primeira dobra. */}
+        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[900px]:hidden">
           <span
             aria-hidden="true"
-            className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)] max-[900px]:-left-[6%]"
+            className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)]"
           />
           <Image
             src={asset("/images/marca/mascote.png")}
@@ -106,7 +108,7 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             width={1400}
             height={1750}
             priority
-            className="animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[900px]:max-w-[min(52vw,232px)]"
+            className="animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)]"
           />
         </div>
       </div>
