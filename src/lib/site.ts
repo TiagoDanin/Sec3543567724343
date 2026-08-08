@@ -15,7 +15,10 @@ export const site = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://xibesec.com.br",
   locale: "pt-BR",
 
-  ogImage: "/og-xibesec-2026.png",
+  // JPEG, não PNG: o WhatsApp descarta imagem de link acima de ~600 KB, e a
+  // mesma arte em PNG passa de 900 KB.
+  ogImage: "/og-xibesec-2026.jpg",
+  ogImageType: "image/jpeg",
   ogImageWidth: 1200,
   ogImageHeight: 630,
   ogImageAlt:
@@ -132,6 +135,7 @@ export function pageMetadata({
       images: [
         {
           url: ogImage,
+          type: site.ogImageType,
           width: site.ogImageWidth,
           height: site.ogImageHeight,
           alt: site.ogImageAlt,
