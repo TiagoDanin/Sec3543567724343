@@ -95,8 +95,6 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
           </p>
         </div>
 
-        {/* Some no celular: em coluna única o mascote só alongava o hero e
-            empurrava os CTAs para fora da primeira dobra. */}
         <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[900px]:hidden">
           <span
             aria-hidden="true"

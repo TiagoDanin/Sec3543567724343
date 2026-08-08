@@ -123,6 +123,10 @@ Três regras governam isso:
 
 **Papéis de cor não se trocam:** laranja é ação e hierarquia de seção; menta é dado, hora e confirmação. A leitura do preço e do horário depende disso.
 
+**Comentário é exceção, não hábito.** O código diz _o que_ faz; comentário só entra quando há um _porquê_ que o código não consegue dizer — uma armadilha do navegador, uma ordem que parece arbitrária mas não é, uma decisão contra-intuitiva que alguém desfaria por engano. Comentário que parafraseia a linha seguinte é ruído: ele envelhece, mente e some na revisão.
+
+Não comentar: o óbvio (`// estado do carrossel`), a narração do diff (`// agora com três modos`), nem cada campo de um tipo que o nome já explica. Preferir nome melhor a comentário explicativo, e uma frase seca a um parágrafo literário — o JSDoc de um componente diz para que ele serve em duas ou três linhas, não conta a história de como chegou ali. Na dúvida, apagar: o que sobrevive é o que ninguém deduziria lendo o código.
+
 ## Léxico
 
 `PRODUCT.md` → _Percepção a Corrigir_ é normativo. Resumo operacional: a palavra _comunidade_ não pode aparecer como a categoria do evento; usar "encontro de cibersegurança", "edição", "programação", "trilhas", "participantes" e "organizações parceiras". Porte se demonstra com número verificável, nunca com adjetivo.
