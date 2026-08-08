@@ -1,0 +1,82 @@
+[
+  {
+    "chave": "evento",
+    "eyebrow": "O evento",
+    "eyebrowTom": "orange"
+  },
+  {
+    "chave": "programacao",
+    "eyebrow": "Programação",
+    "eyebrowTom": "orange",
+    "titulo": "Um dia inteiro de conteúdo.",
+    "lede": "Ainda estamos fechando a grade oficial de 2026. É assim que um dia de XibéSec costuma se estruturar:",
+    "nota": "Confirmamos horários e atrações finais em breve. Acompanhe o {link}.",
+    "notaLinkLabel": "@xibesec no Instagram",
+    "notaLinkUrl": "https://www.instagram.com/xibesec/"
+  },
+  {
+    "chave": "ctf",
+    "eyebrow": "Capture the flag",
+    "eyebrowTom": "mint",
+    "cta": "Quero participar"
+  },
+  {
+    "chave": "palestrantes",
+    "eyebrow": "Palestrantes",
+    "eyebrowTom": "orange",
+    "titulo": "Grade em construção.",
+    "lede": "Divulgamos os nomes da edição 2026 em breve. Todo ano o XibéSec reúne pesquisadores e profissionais de SOC, CTI, forense e desenvolvimento de todo o Brasil.",
+    "nota": "Quer estar nessa grade? A {link} está aberta.",
+    "notaLinkLabel": "chamada para palestrantes",
+    "notaLinkUrl": "#participe"
+  },
+  {
+    "chave": "ingressos",
+    "eyebrow": "Ingressos",
+    "eyebrowTom": "orange",
+    "titulo": "Lote 2 aberto.",
+    "lede": "Vendas até 10/08/2026, com parcelamento. A inscrição dá acesso à área de exposição, ao CTF, a todas as palestras e ao certificado de participação.",
+    "cta": "Comprar no Sympla"
+  },
+  {
+    "chave": "participe",
+    "eyebrow": "Chamadas abertas",
+    "eyebrowTom": "mint",
+    "titulo": "Faça parte do XibéSec 2026.",
+    "lede": "Compartilhe conhecimento com os participantes ou entre para a equipe que torna a edição possível."
+  },
+  {
+    "chave": "patrocinio",
+    "eyebrow": "Patrocínio",
+    "eyebrowTom": "orange",
+    "titulo": "Quem fortalece o Norte da segurança.",
+    "lede": "Empresas e instituições que patrocinam o XibéSec 2026 e ajudam o ecossistema brasileiro de cibersegurança a crescer fora do eixo Rio-São Paulo."
+  },
+  {
+    "chave": "parceiros",
+    "eyebrow": "Ecossistema de parceiros",
+    "eyebrowTom": "mint",
+    "titulo": "21 organizações parceiras, de todo o Brasil.",
+    "lede": "Conferências, coletivos técnicos, editoras e empresas que integram a rede do XibéSec 2026."
+  },
+  {
+    "chave": "local",
+    "eyebrow": "Local",
+    "eyebrowTom": "orange",
+    "lede": "O evento acontece presencialmente em 19 de setembro de 2026, das 09h às 19h, no centro de eventos do hotel. Atualizações da programação saem primeiro no Instagram e na página oficial do Sympla."
+  },
+  {
+    "chave": "fechamento",
+    "eyebrow": "19.09.2026 · Belém · Pará",
+    "eyebrowTom": "mint",
+    "titulo": "Nos vemos em setembro.",
+    "lede": "Lote 2 aberto até 10 de agosto, com meia-entrada e ingresso social. Dez horas de programação, duas trilhas e o CTF inclusos no ingresso.",
+    "cta": "Comprar ingresso no Sympla"
+  },
+  {
+    "chave": "patrocinio-kit",
+    "titulo": "Associe sua marca ao XibéSec 2026.",
+    "lede": "Fale com a organização para receber as cotas disponíveis, o perfil de público e os formatos de ativação.",
+    "cta": "Falar com a organização"
+  }
+]

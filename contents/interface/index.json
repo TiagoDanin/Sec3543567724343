@@ -1,0 +1,20 @@
+{
+  "skip": "Pular para o conteúdo",
+  "navCta": "Comprar ingresso",
+  "dockCta": "Ingressos",
+  "contagemLabel": "Faltam",
+  "contagemAria": "Contagem regressiva e lote em venda",
+  "edicoesLabel": "Edições",
+  "edicaoAtual": "Quarta edição",
+  "registroPendente": "registro em curadoria",
+  "ctfIncluso": "O acesso ao CTF já está incluso em qualquer ingresso.",
+  "ctfTerminal": "xibesec@2026: ~/ctf",
+  "comoChegar": "Como chegar",
+  "mapaAlt": "Mapa do Bristol Marambaia Hotel, Belém, PA",
+  "footerTagline": "Para quem tem fome de segurança. Belém, Pará, Brasil",
+  "footerRedes": "Redes",
+  "footerRealizacao": "Realização",
+  "realizacaoAlt": "Hekate, Inc., realização do XibéSec 2026",
+  "patrocinioAssunto": "Patrocínio XibéSec 2026",
+  "palestrantesPlaceholders": 4
+}

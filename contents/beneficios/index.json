@@ -1,0 +1,22 @@
+[
+  {
+    "icone": "exposicao",
+    "texto": "Área de exposição, patrocinadores, organizações parceiras e ativações",
+    "order": 1
+  },
+  {
+    "icone": "ctf",
+    "texto": "Acesso à competição CTF",
+    "order": 2
+  },
+  {
+    "icone": "palestras",
+    "texto": "Todas as palestras",
+    "order": 3
+  },
+  {
+    "icone": "certificado",
+    "texto": "Certificado de participação enviado por e-mail em até 2 dias úteis",
+    "order": 4
+  }
+]

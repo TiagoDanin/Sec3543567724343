@@ -1,0 +1,25 @@
+[
+  {
+    "chave": "palestrantes",
+    "eyebrow": "Palestrantes",
+    "eyebrowTom": "orange",
+    "titulo": "Chamada para palestrantes",
+    "texto": "Envie sua proposta de palestra e contribua com conteúdo técnico, experiências práticas e pesquisas para a edição de 2026, na trilha técnica ou na gerencial.",
+    "ctaLabel": "Enviar proposta",
+    "ctaUrl": "https://www.instagram.com/xibesec/",
+    "ctaVariante": "primary",
+    "order": 1
+  },
+  {
+    "chave": "voluntarios",
+    "eyebrow": "Voluntários",
+    "eyebrowTom": "mint",
+    "titulo": "Chamada para voluntários",
+    "texto": "Participe da organização, apoie a experiência do público e ajude a fortalecer o ecossistema de cibersegurança da Região Norte.",
+    "prazoPrefixo": "Inscrições até",
+    "ctaLabel": "Quero ser voluntário",
+    "ctaUrl": "https://www.instagram.com/xibesec/",
+    "ctaVariante": "mint",
+    "order": 2
+  }
+]
