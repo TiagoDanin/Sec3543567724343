@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { Button } from "@/components/primitives/Button";
-import { asset } from "@/lib/site";
+import { asset, site } from "@/lib/site";
 import type { Hero as HeroContent, Settings } from "@/lib/cms";
+
+// Texto alternativo é acessibilidade da imagem, não conteúdo editável.
+const MASCOTE_ALT =
+  "Mascote do XibéSec: personagem ciber-amazônico de máscara respiratória, com braçadeiras em grafismo marajoara, segurando um dispositivo conectado por cabo.";
 
 export type HeroProps = {
   hero: HeroContent;
@@ -44,7 +48,7 @@ export function Hero({ hero, settings }: HeroProps) {
 
           <Image
             src={asset("/images/marca/logo-xibesec.png")}
-            alt={hero.logoAlt}
+            alt={site.siteName}
             width={1600}
             height={1282}
             priority
@@ -93,7 +97,7 @@ export function Hero({ hero, settings }: HeroProps) {
           />
           <Image
             src={asset("/images/marca/mascote.png")}
-            alt={hero.mascoteAlt}
+            alt={MASCOTE_ALT}
             width={1400}
             height={1750}
             priority

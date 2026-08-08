@@ -5,7 +5,13 @@ import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { TicketCard } from "@/components/cards/TicketCard";
 import { IncludedList } from "@/components/data/IncludedList";
-import { formatDate, type Beneficio, type IconeBeneficio, type Ingresso, type Secao } from "@/lib/cms";
+import {
+  formatDate,
+  type Beneficio,
+  type IconeBeneficio,
+  type Ingresso,
+  type Secao,
+} from "@/lib/cms";
 
 // O conteúdo guarda o nome do ícone; o desenho fica no código. Assim o CMS
 // controla qual ícone aparece sem que SVG vire dado.

@@ -7,22 +7,19 @@ import { SpeakerCard } from "@/components/cards/SpeakerCard";
 import { asset } from "@/lib/site";
 import type { Palestrante, Secao } from "@/lib/cms";
 
+/** Espaços reservados enquanto nenhum nome de 2026 foi anunciado. */
+const PLACEHOLDERS = 4;
+
 export type PalestrantesSectionProps = {
   palestrantes: Palestrante[];
   secao: Secao;
-  /** Quantos espaços reservados mostrar enquanto nenhum nome foi anunciado. */
-  placeholders: number;
 };
 
 /**
- * Nenhum nome de 2026 foi anunciado: sem registros, a seção mostra espaços
- * reservados e declara a pendência, em vez de inventar nome ou sumir da página.
+ * Sem registros, a seção mostra espaços reservados e declara a pendência, em vez
+ * de inventar nome ou sumir da página.
  */
-export function PalestrantesSection({
-  palestrantes,
-  secao,
-  placeholders,
-}: PalestrantesSectionProps) {
+export function PalestrantesSection({ palestrantes, secao }: PalestrantesSectionProps) {
   const vazio = palestrantes.length === 0;
 
   return (
@@ -41,7 +38,7 @@ export function PalestrantesSection({
         <Reveal>
           <ul className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
             {vazio
-              ? Array.from({ length: placeholders }, (_, index) => (
+              ? Array.from({ length: PLACEHOLDERS }, (_, index) => (
                   <li key={index}>
                     <SpeakerCard />
                   </li>

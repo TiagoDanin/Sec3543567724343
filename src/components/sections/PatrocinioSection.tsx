@@ -6,13 +6,14 @@ import { Button } from "@/components/primitives/Button";
 import { KitBanner } from "@/components/primitives/KitBanner";
 import { SponsorSlot } from "@/components/cards/SponsorSlot";
 import { asset, site } from "@/lib/site";
-import type { Cota, Interface, Patrocinador, Secao } from "@/lib/cms";
+import type { Cota, Patrocinador, Secao } from "@/lib/cms";
+
+const MAIL_SUBJECT = `Patrocínio ${site.siteName}`;
 
 export type PatrocinioSectionProps = {
   grupos: Array<{ cota: Cota; patrocinadores: Patrocinador[] }>;
   secao: Secao;
   kit: Secao;
-  ui: Interface;
 };
 
 /**
@@ -22,8 +23,8 @@ export type PatrocinioSectionProps = {
  * A seção mostra só patrocinador confirmado — não anuncia cota vaga. Ver
  * PRODUCT.md.
  */
-export function PatrocinioSection({ grupos, secao, kit, ui }: PatrocinioSectionProps) {
-  const mailto = `mailto:${site.contactEmail}?subject=${encodeURIComponent(ui.patrocinioAssunto)}`;
+export function PatrocinioSection({ grupos, secao, kit }: PatrocinioSectionProps) {
+  const mailto = `mailto:${site.contactEmail}?subject=${encodeURIComponent(MAIL_SUBJECT)}`;
 
   return (
     <Section id="patrocinio" variant="light">

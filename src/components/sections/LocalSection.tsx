@@ -3,8 +3,9 @@ import { Section } from "@/components/primitives/Section";
 import { SectionTitle, Eyebrow } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { Button } from "@/components/primitives/Button";
-import { local as copy } from "@/lib/copy";
-import type { Settings } from "@/lib/cms";
+import type { Secao, Settings } from "@/lib/cms";
+
+const COMO_CHEGAR = "Como chegar";
 
 const MapPin = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -27,15 +28,18 @@ const Uber = (
   </svg>
 );
 
+// O ícone da frente já diz que abre outro app: dispensa a seta de link externo.
 const iconClasses =
   "[&_svg]:size-[15px] [&_svg]:shrink-0 [&_svg]:fill-none [&_svg]:stroke-current [&_svg]:stroke-[1.6] [&_svg]:[stroke-linecap:round] [&_svg]:[stroke-linejoin:round] after:hidden";
 
 export type LocalSectionProps = {
   settings: Settings;
+  secao: Secao;
 };
 
-export function LocalSection({ settings }: LocalSectionProps) {
+export function LocalSection({ settings, secao }: LocalSectionProps) {
   const query = encodeURIComponent(`${settings.venueName}, ${settings.venueAddress}`);
+  const cidade = settings.venueAddress.split(",").slice(-1)[0]?.trim() ?? "";
 
   const apps = [
     { label: "Google Maps", icon: MapPin, href: settings.venueMapUrl },
@@ -51,24 +55,26 @@ export function LocalSection({ settings }: LocalSectionProps) {
     <Section id="local">
       <Container>
         <Reveal>
-          <Eyebrow className="mb-[22px]">{copy.eyebrow}</Eyebrow>
+          <Eyebrow tone={secao.eyebrowTom} className="mb-[22px]">
+            {secao.eyebrow}
+          </Eyebrow>
         </Reveal>
 
         <div className="grid grid-cols-2 items-center gap-[clamp(32px,4.5vw,56px)] max-[900px]:grid-cols-1">
           <Reveal>
             <SectionTitle size="md">
               {settings.venueName},<br />
-              {settings.venueAddress.split(",").slice(-1)[0]?.trim()}.
+              {cidade}.
             </SectionTitle>
 
-            <address className="text-mint my-[18px] mt-4 font-mono text-sm leading-[1.8] not-italic">
+            <address className="text-mint mt-4 mb-[18px] font-mono text-sm leading-[1.8] not-italic">
               {settings.venueAddress}
             </address>
 
-            <p className="text-cream-2 text-[16px] leading-[1.7]">{copy.text}</p>
+            <p className="text-cream-2 text-[16px] leading-[1.7]">{secao.lede}</p>
 
             <p className="text-cream-3 mt-7 font-mono text-[12px] tracking-[0.14em] uppercase">
-              {copy.comoChegar}
+              {COMO_CHEGAR}
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2.5">
@@ -92,7 +98,7 @@ export function LocalSection({ settings }: LocalSectionProps) {
           <Reveal>
             <div className="border-line aspect-4/3 overflow-hidden border bg-[repeating-linear-gradient(135deg,#1E3218_0_10px,#24391D_10px_20px)]">
               <iframe
-                title={copy.mapAlt}
+                title={`Mapa: ${settings.venueName}, ${cidade}`}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 src={`https://maps.google.com/maps?q=${query}&z=15&output=embed`}

@@ -94,8 +94,6 @@ const config: StudioConfig = {
             label: "Lugar (separado por ·)",
             itemFields: [{ name: "nome", type: "text", required: true, label: "Nome" }],
           },
-          { name: "logoAlt", type: "text", label: "Texto alternativo do logo" },
-          { name: "mascoteAlt", type: "long-text", rows: 3, label: "Texto alternativo do mascote" },
         ],
       },
     },
@@ -201,40 +199,6 @@ const config: StudioConfig = {
             ],
           },
           { name: "order", type: "number", format: "integer", label: "Ordem" },
-        ],
-      },
-    },
-
-    // ── Rótulos de interface (singleton) ─────────────────────────────────
-    // Texto curto de navegação e de estado que não pertence a nenhuma seção.
-    interface: {
-      schema: {
-        collection: "interface",
-        label: "Rótulos de interface",
-        fields: [
-          { name: "skip", type: "text", label: "Link de pulo" },
-          { name: "navCta", type: "text", label: "Botão da barra" },
-          { name: "dockCta", type: "text", label: "Botão da barra inferior" },
-          { name: "contagemLabel", type: "text", label: "Rótulo da contagem" },
-          { name: "contagemAria", type: "text", label: "Rótulo acessível da barra de contagem" },
-          { name: "edicoesLabel", type: "text", label: "Rótulo da lista de edições" },
-          { name: "edicaoAtual", type: "text", label: "Nome da edição atual" },
-          { name: "registroPendente", type: "text", label: "Legenda de registro pendente" },
-          { name: "ctfIncluso", type: "text", label: "Aviso de CTF incluso" },
-          { name: "ctfTerminal", type: "text", label: "Nome do terminal" },
-          { name: "comoChegar", type: "text", label: "Rótulo de como chegar" },
-          { name: "mapaAlt", type: "text", label: "Título do mapa" },
-          { name: "footerTagline", type: "text", label: "Assinatura do rodapé" },
-          { name: "footerRedes", type: "text", label: "Título da coluna de redes" },
-          { name: "footerRealizacao", type: "text", label: "Título da coluna de realização" },
-          { name: "realizacaoAlt", type: "text", label: "Texto alternativo do logo da realizadora" },
-          { name: "patrocinioAssunto", type: "text", label: "Assunto do e-mail de patrocínio" },
-          {
-            name: "palestrantesPlaceholders",
-            type: "number",
-            format: "integer",
-            label: "Espaços reservados de palestrante",
-          },
         ],
       },
     },
@@ -492,6 +456,7 @@ const config: StudioConfig = {
           { name: "texto", type: "long-text", rows: 4, label: "Texto" },
           { name: "formato", type: "text", label: "Formato" },
           { name: "premiacao", type: "text", label: "Premiação" },
+          { name: "incluso", type: "text", label: "Aviso de acesso incluso" },
           {
             name: "linhas",
             type: "array",

@@ -46,8 +46,6 @@ export type Hero = {
   ctaSecundario: string;
   horario: string;
   lugares: string[];
-  logoAlt: string;
-  mascoteAlt: string;
 };
 
 /**
@@ -90,27 +88,6 @@ export type Chamada = {
   ctaUrl: string;
   ctaVariante: "primary" | "mint";
   order: number;
-};
-
-export type Interface = {
-  skip: string;
-  navCta: string;
-  dockCta: string;
-  contagemLabel: string;
-  contagemAria: string;
-  edicoesLabel: string;
-  edicaoAtual: string;
-  registroPendente: string;
-  ctfIncluso: string;
-  ctfTerminal: string;
-  comoChegar: string;
-  mapaAlt: string;
-  footerTagline: string;
-  footerRedes: string;
-  footerRealizacao: string;
-  realizacaoAlt: string;
-  patrocinioAssunto: string;
-  palestrantesPlaceholders: number;
 };
 
 /** Seção de repouso, para o render nunca depender de um registro existir. */
@@ -170,6 +147,7 @@ export type TerminalKind = "cmd" | "ok" | "warn" | "plain";
 export type Ctf = {
   titulo: string;
   texto: string;
+  incluso: string;
   linhas: Array<{ kind: TerminalKind; texto: string }>;
 };
 

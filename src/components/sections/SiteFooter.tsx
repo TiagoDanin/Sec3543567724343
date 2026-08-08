@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
-import { chrome } from "@/lib/copy";
 import { asset, site } from "@/lib/site";
 import type { Organizacao, Settings } from "@/lib/cms";
+
+// Títulos de coluna são estrutura de navegação, não conteúdo editorial.
+const COL_REDES = "Redes";
+const COL_REALIZACAO = "Realização";
 
 export type SiteFooterProps = {
   settings: Settings;
@@ -12,10 +15,11 @@ export type SiteFooterProps = {
 /** As duas marcas convivem: o evento e quem realiza, separados por filete. */
 export function SiteFooter({ settings, equipe }: SiteFooterProps) {
   const organizacao = equipe[0];
+  const tagline = `${site.siteTagline}. ${site.city}, ${site.regionName}, Brasil`;
 
   return (
     <Footer
-      tagline={chrome.footerTagline}
+      tagline={tagline}
       brand={
         <>
           <Image
@@ -38,7 +42,7 @@ export function SiteFooter({ settings, equipe }: SiteFooterProps) {
               >
                 <Image
                   src={asset(organizacao.logo)}
-                  alt={chrome.hekateAlt}
+                  alt={`${organizacao.nome}, ${organizacao.papel.toLowerCase()} do ${site.siteName}`}
                   width={242}
                   height={209}
                   loading="lazy"
@@ -51,7 +55,7 @@ export function SiteFooter({ settings, equipe }: SiteFooterProps) {
       }
       columns={[
         {
-          title: chrome.footerRedes,
+          title: COL_REDES,
           links: [
             { label: "Instagram", href: site.social.instagram, external: true },
             { label: "LinkedIn", href: site.social.linkedin, external: true },
@@ -60,11 +64,15 @@ export function SiteFooter({ settings, equipe }: SiteFooterProps) {
           ],
         },
         {
-          title: chrome.footerRealizacao,
+          title: COL_REALIZACAO,
           lead: organizacao?.nome,
           links: [
             { label: site.contactEmail, href: `mailto:${site.contactEmail}` },
-            { label: "www.hekateinc.com", href: site.organizationUrl, external: true },
+            {
+              label: site.organizationUrl.replace(/^https?:\/\/|\/$/g, ""),
+              href: site.organizationUrl,
+              external: true,
+            },
           ],
         },
       ]}

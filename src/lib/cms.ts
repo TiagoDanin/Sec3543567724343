@@ -12,7 +12,6 @@ import type {
   Hero,
   IconeBeneficio,
   Ingresso,
-  Interface,
   NavItem,
   Organizacao,
   Palestrante,
@@ -130,8 +129,6 @@ export function getHero(): Hero {
     ctaSecundario: str(row, "ctaSecundario"),
     horario: str(row, "horario"),
     lugares: lugares.map((item) => str(item, "nome")).filter(Boolean),
-    logoAlt: str(row, "logoAlt"),
-    mascoteAlt: str(row, "mascoteAlt"),
   };
 }
 
@@ -202,30 +199,6 @@ export function getChamadas(): Chamada[] {
     .sort(byOrder);
 }
 
-export function getInterface(): Interface {
-  const row = singleton("interface");
-  return {
-    skip: str(row, "skip"),
-    navCta: str(row, "navCta"),
-    dockCta: str(row, "dockCta"),
-    contagemLabel: str(row, "contagemLabel"),
-    contagemAria: str(row, "contagemAria"),
-    edicoesLabel: str(row, "edicoesLabel"),
-    edicaoAtual: str(row, "edicaoAtual"),
-    registroPendente: str(row, "registroPendente"),
-    ctfIncluso: str(row, "ctfIncluso"),
-    ctfTerminal: str(row, "ctfTerminal"),
-    comoChegar: str(row, "comoChegar"),
-    mapaAlt: str(row, "mapaAlt"),
-    footerTagline: str(row, "footerTagline"),
-    footerRedes: str(row, "footerRedes"),
-    footerRealizacao: str(row, "footerRealizacao"),
-    realizacaoAlt: str(row, "realizacaoAlt"),
-    patrocinioAssunto: str(row, "patrocinioAssunto"),
-    palestrantesPlaceholders: num(row, "palestrantesPlaceholders", 4),
-  };
-}
-
 // ── Seções ───────────────────────────────────────────────────────────────────
 
 export function getSobre(): Sobre {
@@ -275,7 +248,10 @@ export function getAgenda(): AgendaItem[] {
         endsAt: str(row, "endsAt"),
         trilha: TRILHAS.includes(trilha) ? trilha : "geral",
         tipo: str(row, "tipo"),
-        status: str(row, "status") === "em-definicao" ? ("em-definicao" as const) : ("confirmado" as const),
+        status:
+          str(row, "status") === "em-definicao"
+            ? ("em-definicao" as const)
+            : ("confirmado" as const),
         order: num(row, "order"),
       };
     })
@@ -304,6 +280,7 @@ export function getCtf(): Ctf {
   return {
     titulo: str(row, "titulo"),
     texto: str(row, "texto"),
+    incluso: str(row, "incluso"),
     linhas: linhas.map((line) => {
       const kind = str(line, "kind") as TerminalKind;
       return {
@@ -323,7 +300,8 @@ export function getEdicoes(): Edicao[] {
       // correto — nunca estimar. Ver PRODUCT.md.
       publico: typeof row.publico === "number" ? row.publico : null,
       resumo: str(row, "resumo"),
-      status: str(row, "status") === "confirmado" ? ("confirmado" as const) : ("a-conferir" as const),
+      status:
+        str(row, "status") === "confirmado" ? ("confirmado" as const) : ("a-conferir" as const),
     }))
     .sort((a, b) => a.ano - b.ano);
 }

@@ -24,30 +24,40 @@ import { Fechamento } from "@/components/sections/Fechamento";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 
 import { SchemaMarkup, eventSchema, organizationWithSocial, websiteSchema } from "@/lib/schema";
-import { chrome, countdown, trilhaGerencial } from "@/lib/copy";
-import { pageMetadata } from "@/lib/site";
+import { pageMetadata, site } from "@/lib/site";
 import {
+  SECAO_VAZIA,
   formatDate,
   formatPrice,
   getAgenda,
+  getBeneficios,
+  getChamadas,
   getCtf,
+  getDestaque,
   getEdicoes,
   getEquipe,
   getFatos,
+  getHero,
   getIngressos,
   getNavegacao,
   getPalestrantes,
   getParceiros,
   getPatrocinadoresPorCota,
+  getSecoes,
   getSettings,
   getSobre,
   lowestPrice,
 } from "@/lib/cms";
 
+// Rótulos de navegação: interface, não conteúdo editorial.
+const SKIP = "Pular para o conteúdo";
+const NAV_CTA = "Comprar ingresso";
+const DOCK_CTA = "Ingressos";
+const FATOS_ARIA = "O XibéSec 2026 em números";
+
 export const metadata = pageMetadata({
-  title: "Para quem tem fome de segurança · 19 de setembro · Belém, PA",
-  description:
-    "O encontro de cibersegurança que leva a energia do Norte do Brasil para quem vive infosec, hacking e tecnologia. 4ª edição: 19 de setembro de 2026, 09h às 19h, Bristol Marambaia Hotel, Belém do Pará.",
+  title: `${site.siteTagline} · 19 de setembro · ${site.city}, ${site.region}`,
+  description: site.siteDescription,
   path: "/",
 });
 
@@ -55,14 +65,21 @@ export default function Page() {
   const settings = getSettings();
   const { sections } = settings;
 
+  const secoes = getSecoes();
+  const secao = (chave: string) => secoes[chave] ?? SECAO_VAZIA;
+
+  const hero = getHero();
   const navegacao = getNavegacao();
   const fatos = getFatos();
   const sobre = getSobre();
   const edicoes = getEdicoes();
+  const trilhaGerencial = getDestaque("trilha-gerencial");
   const agenda = getAgenda();
   const ctf = getCtf();
   const palestrantes = getPalestrantes();
   const ingressos = getIngressos();
+  const beneficios = getBeneficios();
+  const chamadas = getChamadas();
   const gruposPatrocinio = getPatrocinadoresPorCota();
   const parceiros = getParceiros();
   const equipe = getEquipe();
@@ -76,28 +93,26 @@ export default function Page() {
         schema={[websiteSchema, organizationWithSocial, eventSchema({ settings, ingressos })]}
       />
 
-      <SkipLink href="#conteudo">{chrome.skip}</SkipLink>
+      <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
         items={navegacao.filter((item) => !item.noMenu)}
         action={
           <Button size="sm" href="#ingressos">
-            {chrome.navCta}
+            {NAV_CTA}
           </Button>
         }
       />
 
       <main id="conteudo" className="flex-1">
-        <Hero settings={settings} />
+        <Hero hero={hero} settings={settings} />
 
-        {sections.ingressos ? (
-          <CountdownBar settings={settings} ingressos={ingressos} />
-        ) : null}
+        {sections.ingressos ? <CountdownBar settings={settings} ingressos={ingressos} /> : null}
 
         {sections.fatos ? (
           <FactStrip
             facts={fatos.map((fato) => ({ value: fato.valor, label: fato.label }))}
-            aria-label="O XibéSec 2026 em números"
+            aria-label={FATOS_ARIA}
           />
         ) : null}
 
@@ -108,56 +123,79 @@ export default function Page() {
             sobre={sobre}
             edicoes={edicoes}
             settings={settings}
+            secao={secao("evento")}
             showEdicoes={sections.edicoes}
           />
         ) : null}
 
-        <Section tight>
-          <Container>
-            <Reveal>
-              <HighlightPanel
-                flag={trilhaGerencial.flag}
-                eyebrow={trilhaGerencial.eyebrow}
-                title={trilhaGerencial.title}
-              >
-                {trilhaGerencial.text}
-              </HighlightPanel>
-            </Reveal>
-          </Container>
-        </Section>
+        {trilhaGerencial ? (
+          <Section tight>
+            <Container>
+              <Reveal>
+                <HighlightPanel
+                  flag={trilhaGerencial.flag}
+                  eyebrow={trilhaGerencial.eyebrow}
+                  title={trilhaGerencial.titulo}
+                >
+                  {trilhaGerencial.texto}
+                </HighlightPanel>
+              </Reveal>
+            </Container>
+          </Section>
+        ) : null}
 
-        {sections.agenda ? <ProgramacaoSection agenda={agenda} /> : null}
+        {sections.agenda ? (
+          <ProgramacaoSection agenda={agenda} secao={secao("programacao")} />
+        ) : null}
 
-        {sections.ctf ? <CtfSection ctf={ctf} /> : null}
+        {sections.ctf ? <CtfSection ctf={ctf} secao={secao("ctf")} /> : null}
 
-        {sections.palestrantes ? <PalestrantesSection palestrantes={palestrantes} /> : null}
+        {sections.palestrantes ? (
+          <PalestrantesSection palestrantes={palestrantes} secao={secao("palestrantes")} />
+        ) : null}
 
-        {sections.ingressos ? <IngressosSection ingressos={ingressos} /> : null}
+        {sections.ingressos ? (
+          <IngressosSection
+            ingressos={ingressos}
+            beneficios={beneficios}
+            secao={secao("ingressos")}
+          />
+        ) : null}
 
-        {sections.participe ? <ParticipeSection settings={settings} /> : null}
+        {sections.participe ? (
+          <ParticipeSection chamadas={chamadas} secao={secao("participe")} settings={settings} />
+        ) : null}
 
         <Greca tone="green" />
 
-        {sections.patrocinio ? <PatrocinioSection grupos={gruposPatrocinio} /> : null}
+        {sections.patrocinio ? (
+          <PatrocinioSection
+            grupos={gruposPatrocinio}
+            secao={secao("patrocinio")}
+            kit={secao("patrocinio-kit")}
+          />
+        ) : null}
 
         <Greca tone="green" />
 
-        {sections.parceiros ? <ParceirosSection parceiros={parceiros} /> : null}
+        {sections.parceiros ? (
+          <ParceirosSection parceiros={parceiros} secao={secao("parceiros")} />
+        ) : null}
 
-        {sections.local ? <LocalSection settings={settings} /> : null}
+        {sections.local ? <LocalSection settings={settings} secao={secao("local")} /> : null}
 
-        <Fechamento settings={settings} />
+        <Fechamento settings={settings} secao={secao("fechamento")} />
       </main>
 
       <SiteFooter settings={settings} equipe={equipe} />
 
-      {sections.ingressos && cheapest !== null ? (
+      {sections.ingressos && cheapest !== null && lote ? (
         <Dock
-          headline={`Lote ${lote?.lote} · a partir de ${formatPrice(cheapest)}`}
-          detail={lote ? `vendas até ${formatDate(lote.validThrough)}` : undefined}
+          headline={`Lote ${lote.lote} · a partir de ${formatPrice(cheapest)}`}
+          detail={`vendas até ${formatDate(lote.validThrough)}`}
           action={
             <Button size="sm" href="#ingressos">
-              {chrome.dockCta}
+              {DOCK_CTA}
             </Button>
           }
         />

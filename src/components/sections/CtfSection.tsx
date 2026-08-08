@@ -4,15 +4,17 @@ import { SectionTitle, Eyebrow } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { Button } from "@/components/primitives/Button";
 import { Terminal } from "@/components/data/Terminal";
-import type { Ctf, Interface, Secao } from "@/lib/cms";
+import type { Ctf, Secao } from "@/lib/cms";
+
+// O prompt é elemento de interface do terminal, não conteúdo do evento.
+const TERMINAL_NAME = "xibesec@2026: ~/ctf";
 
 export type CtfSectionProps = {
   ctf: Ctf;
   secao: Secao;
-  ui: Interface;
 };
 
-export function CtfSection({ ctf, secao, ui }: CtfSectionProps) {
+export function CtfSection({ ctf, secao }: CtfSectionProps) {
   return (
     <Section id="ctf" variant="panel">
       <Container className="grid grid-cols-[1.15fr_.85fr] items-center gap-[clamp(32px,4.5vw,56px)] max-[900px]:grid-cols-1">
@@ -27,8 +29,8 @@ export function CtfSection({ ctf, secao, ui }: CtfSectionProps) {
             {ctf.texto}
           </p>
 
-          {ui.ctfIncluso ? (
-            <p className="text-mint mt-[18px] font-mono text-[13px]">{ui.ctfIncluso}</p>
+          {ctf.incluso ? (
+            <p className="text-mint mt-[18px] font-mono text-[13px]">{ctf.incluso}</p>
           ) : null}
 
           {secao.cta ? (
@@ -40,7 +42,7 @@ export function CtfSection({ ctf, secao, ui }: CtfSectionProps) {
 
         <Reveal>
           <Terminal
-            name={ui.ctfTerminal}
+            name={TERMINAL_NAME}
             lines={ctf.linhas.map((line) => ({ kind: line.kind, text: line.texto }))}
           />
         </Reveal>

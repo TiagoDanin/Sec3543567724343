@@ -4,13 +4,18 @@ import { SectionHeader, SectionTitle, Eyebrow } from "@/components/primitives/Se
 import { Reveal } from "@/components/primitives/Reveal";
 import { TimelineList } from "@/components/data/TimelineList";
 import { EditionCard } from "@/components/cards/EditionCard";
-import { evento } from "@/lib/copy";
-import type { Edicao, Settings, Sobre } from "@/lib/cms";
+import type { Edicao, Secao, Settings, Sobre } from "@/lib/cms";
+
+// Rótulos de interface da seção.
+const EDICOES_LABEL = "Edições";
+const EDICAO_ATUAL = "Quarta edição";
+const REGISTRO_PENDENTE = "registro em curadoria";
 
 export type EventoSectionProps = {
   sobre: Sobre;
   edicoes: Edicao[];
   settings: Settings;
+  secao: Secao;
   showEdicoes: boolean;
 };
 
@@ -19,7 +24,13 @@ export type EventoSectionProps = {
  * baralho de registros à direita. Cada registro gruda um pouco mais abaixo que o
  * anterior: rolando, eles passam um por cima do outro sem a seção sair da tela.
  */
-export function EventoSection({ sobre, edicoes, settings, showEdicoes }: EventoSectionProps) {
+export function EventoSection({
+  sobre,
+  edicoes,
+  settings,
+  secao,
+  showEdicoes,
+}: EventoSectionProps) {
   const anoAtual = new Date(settings.eventStartDate).getFullYear();
 
   const entries = [
@@ -30,7 +41,7 @@ export function EventoSection({ sobre, edicoes, settings, showEdicoes }: EventoS
     })),
     {
       year: anoAtual,
-      label: evento.edicaoAtual,
+      label: EDICAO_ATUAL,
       detail: settings.eventDisplayDate.replace(/ de \d{4}$/, ""),
       current: true,
     },
@@ -40,7 +51,12 @@ export function EventoSection({ sobre, edicoes, settings, showEdicoes }: EventoS
     <Section id="evento" variant="panel">
       <Container>
         <Reveal>
-          <SectionHeader eyebrow={evento.eyebrow} title={sobre.titulo} lede={sobre.texto} />
+          <SectionHeader
+            eyebrow={secao.eyebrow}
+            eyebrowTone={secao.eyebrowTom}
+            title={sobre.titulo}
+            lede={sobre.texto}
+          />
         </Reveal>
       </Container>
 
@@ -55,6 +71,7 @@ export function EventoSection({ sobre, edicoes, settings, showEdicoes }: EventoS
 
           {sobre.origemTexto.split("\n\n").map((paragraph, index) => (
             <p key={index} className="text-cream-2 mt-[18px] text-[16px] leading-[1.7]">
+              {/* `**termo**` marca o destaque no conteúdo sem exigir MDX. */}
               {paragraph.split("**").map((chunk, position) =>
                 position % 2 === 1 ? (
                   <strong key={position} className="text-cream font-bold">
@@ -70,7 +87,7 @@ export function EventoSection({ sobre, edicoes, settings, showEdicoes }: EventoS
           {showEdicoes ? (
             <>
               <Eyebrow tone="dim" className="mt-[clamp(32px,3.6vw,44px)] mb-4">
-                {evento.edicoesLabel}
+                {EDICOES_LABEL}
               </Eyebrow>
               <TimelineList entries={entries} />
             </>
@@ -86,9 +103,9 @@ export function EventoSection({ sobre, edicoes, settings, showEdicoes }: EventoS
                   id={`ed-${edicao.ano}`}
                   year={edicao.ano}
                   title={edicao.tema}
-                  caption={evento.registroPendente}
+                  caption={REGISTRO_PENDENTE}
                   index={index}
-                  className="sticky top-[calc(var(--nav-h)+38px+var(--i)*16px)] scroll-mt-[calc(var(--nav-h)+38px)] rotate-[calc((var(--i)-1)*1.6deg)] max-[900px]:top-[calc(var(--nav-h)+24px+var(--i)*14px)] max-[900px]:mt-[calc(var(--i)*-8px)]"
+                  className="sticky top-[calc(var(--nav-h)+38px+var(--i)*16px)] rotate-[calc((var(--i)-1)*1.6deg)] scroll-mt-[calc(var(--nav-h)+38px)] max-[900px]:top-[calc(var(--nav-h)+24px+var(--i)*14px)] max-[900px]:mt-[calc(var(--i)*-8px)]"
                 />
               ))}
             </div>

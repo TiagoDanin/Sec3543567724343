@@ -1,32 +1,27 @@
 import { Button } from "@/components/primitives/Button";
 import { Container } from "@/components/primitives/Container";
 import { Countdown } from "@/components/data/Countdown";
-import {
-  formatDate,
-  formatPrice,
-  lowestPrice,
-  type Ingresso,
-  type Interface,
-  type Settings,
-} from "@/lib/cms";
+import { formatDate, formatPrice, lowestPrice, type Ingresso, type Settings } from "@/lib/cms";
+
+// Rótulos de interface: pertencem ao componente, não ao CMS.
+const LABEL = "Faltam";
+const ARIA = "Contagem regressiva e lote em venda";
+const CTA = "Comprar ingresso";
 
 export type CountdownBarProps = {
   settings: Settings;
   ingressos: Ingresso[];
-  ui: Interface;
 };
 
 /** Barra única: contagem, lote em venda e compra na mesma linha. */
-export function CountdownBar({ settings, ingressos, ui }: CountdownBarProps) {
+export function CountdownBar({ settings, ingressos }: CountdownBarProps) {
   const cheapest = lowestPrice(ingressos);
   const lote = ingressos[0];
 
   return (
-    <section aria-label={ui.contagemAria} className="bg-ink border-line border-b">
-      <Container className="flex flex-wrap items-center gap-y-3 gap-x-[clamp(14px,2.2vw,28px)] py-[clamp(14px,1.8vw,20px)]">
-        <p className="text-cream-3 font-mono text-[11px] tracking-[0.24em] uppercase">
-          {ui.contagemLabel}
-        </p>
+    <section aria-label={ARIA} className="bg-ink border-line border-b">
+      <Container className="flex flex-wrap items-center gap-x-[clamp(14px,2.2vw,28px)] gap-y-3 py-[clamp(14px,1.8vw,20px)]">
+        <p className="text-cream-3 font-mono text-[11px] tracking-[0.24em] uppercase">{LABEL}</p>
 
         <Countdown target={settings.eventStartDate} className="mr-auto max-[760px]:w-full" />
 
@@ -41,7 +36,7 @@ export function CountdownBar({ settings, ingressos, ui }: CountdownBarProps) {
         ) : null}
 
         <Button size="sm" href="#ingressos" className="max-[520px]:w-full">
-          {ui.navCta}
+          {CTA}
         </Button>
       </Container>
     </section>
