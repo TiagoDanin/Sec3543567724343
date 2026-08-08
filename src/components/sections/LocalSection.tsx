@@ -3,6 +3,7 @@ import { Section } from "@/components/primitives/Section";
 import { SectionTitle, Eyebrow } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { Button } from "@/components/primitives/Button";
+import { site } from "@/lib/site";
 import type { Secao, Settings } from "@/lib/cms";
 
 const COMO_CHEGAR = "Como chegar";
@@ -38,7 +39,10 @@ export type LocalSectionProps = {
 };
 
 export function LocalSection({ settings, secao }: LocalSectionProps) {
-  const query = encodeURIComponent(`${settings.venueName}, ${settings.venueAddress}`);
+  // Busca pelo nome do local + cidade, não pelo endereço completo: a pontuação
+  // do endereço editorial ("9031. Marambaia, Belém/PA") atrapalha o geocoder, e
+  // o hotel é resolvido sem ambiguidade pelo nome.
+  const query = encodeURIComponent(`${settings.venueName}, ${site.city}, ${site.region}`);
   const cidade = settings.venueAddress.split(",").slice(-1)[0]?.trim() ?? "";
 
   const apps = [
@@ -102,7 +106,7 @@ export function LocalSection({ settings, secao }: LocalSectionProps) {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 src={`https://maps.google.com/maps?q=${query}&z=15&output=embed`}
-                className="block size-full border-0 [filter:grayscale(1)_invert(.92)_sepia(.42)_hue-rotate(58deg)_saturate(1.6)_brightness(.9)_contrast(1.05)]"
+                className="block size-full border-0"
               />
             </div>
           </Reveal>
