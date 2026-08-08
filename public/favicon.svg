@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="XibéSec">
+  <rect width="64" height="64" fill="#152310"/>
+  <g fill="none" stroke="#EE7B2E" stroke-width="3.2" stroke-linecap="round">
+    <path d="M32 9v17"/>
+    <path d="M22 15v11"/>
+    <path d="M42 15v11"/>
+  </g>
+  <g fill="#EE7B2E">
+    <circle cx="32" cy="7.5" r="3.4"/>
+    <circle cx="22" cy="13.5" r="2.8"/>
+    <circle cx="42" cy="13.5" r="2.8"/>
+  </g>
+  <path d="M11 29h42a21 21 0 0 1-42 0z" fill="#F2E4C4"/>
+  <rect x="11" y="26" width="42" height="4" fill="#EE7B2E"/>
+  <path d="M20 38l4-5 4 5 4-5 4 5 4-5 4 5" fill="none" stroke="#152310" stroke-width="2.6" stroke-linejoin="round"/>
+  <rect x="8" y="55" width="48" height="3" fill="#00B368"/>
+</svg>
