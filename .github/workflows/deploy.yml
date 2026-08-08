@@ -1,0 +1,66 @@
+name: Deploy
+
+# Publica o export estático em dist/ no GitHub Pages, sob xibesec.com.br.
+# O domínio próprio vem de public/CNAME, copiado para dist/ pelo próprio build,
+# então o basePath fica vazio — nada de NEXT_PUBLIC_BASE_PATH aqui.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicação por vez. Não cancela a que está em curso: interromper um deploy
+# pela metade deixa o site no ar em estado indefinido.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Configurar Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: yarn
+
+      - name: Instalar dependências
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build
+        run: yarn build
+
+      - name: Enviar artefato
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
