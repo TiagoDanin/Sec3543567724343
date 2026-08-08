@@ -2,20 +2,28 @@ import "server-only";
 import { queryCollection } from "nextjs-studio/server";
 import type {
   AgendaItem,
+  Beneficio,
+  Chamada,
   Cota,
   Ctf,
+  Destaque,
   Edicao,
   Fato,
+  Hero,
+  IconeBeneficio,
   Ingresso,
+  Interface,
   NavItem,
   Organizacao,
   Palestrante,
   Parceiro,
   Patrocinador,
+  Secao,
   SectionKey,
   Settings,
   Sobre,
   TerminalKind,
+  Tom,
   Trilha,
 } from "./content-types";
 
@@ -99,6 +107,123 @@ export function getNavegacao(): NavItem[] {
     grupo: str(row, "grupo"),
     noMenu: bool(row, "noMenu"),
   }));
+}
+
+// ── Copy de seção ────────────────────────────────────────────────────────────
+
+const TONS: Tom[] = ["orange", "mint", "dim"];
+
+function tom(row: Row, key: string): Tom {
+  const value = str(row, key) as Tom;
+  return TONS.includes(value) ? value : "orange";
+}
+
+export function getHero(): Hero {
+  const row = singleton("hero");
+  const lugares = Array.isArray(row.lugares) ? (row.lugares as Row[]) : [];
+
+  return {
+    tituloLinha: str(row, "tituloLinha"),
+    tituloDestaque: str(row, "tituloDestaque"),
+    lede: str(row, "lede"),
+    ctaPrimario: str(row, "ctaPrimario"),
+    ctaSecundario: str(row, "ctaSecundario"),
+    horario: str(row, "horario"),
+    lugares: lugares.map((item) => str(item, "nome")).filter(Boolean),
+    logoAlt: str(row, "logoAlt"),
+    mascoteAlt: str(row, "mascoteAlt"),
+  };
+}
+
+/** Cabeçalhos indexados pela chave da seção. Chave ausente devolve o repouso. */
+export function getSecoes(): Record<string, Secao> {
+  const entries = rows("secoes").map((row): [string, Secao] => {
+    const chave = str(row, "chave");
+    return [
+      chave,
+      {
+        chave,
+        eyebrow: str(row, "eyebrow"),
+        eyebrowTom: tom(row, "eyebrowTom"),
+        titulo: str(row, "titulo"),
+        lede: str(row, "lede"),
+        nota: str(row, "nota"),
+        notaLinkLabel: str(row, "notaLinkLabel"),
+        notaLinkUrl: str(row, "notaLinkUrl"),
+        cta: str(row, "cta"),
+      },
+    ];
+  });
+
+  return Object.fromEntries(entries);
+}
+
+export function getDestaque(chave: string): Destaque | undefined {
+  return rows("destaques")
+    .map((row) => ({
+      chave: str(row, "chave"),
+      flag: str(row, "flag"),
+      eyebrow: str(row, "eyebrow"),
+      titulo: str(row, "titulo"),
+      texto: str(row, "texto"),
+    }))
+    .find((item) => item.chave === chave);
+}
+
+const ICONES: IconeBeneficio[] = ["exposicao", "ctf", "palestras", "certificado"];
+
+export function getBeneficios(): Beneficio[] {
+  return rows("beneficios")
+    .map((row) => {
+      const icone = str(row, "icone") as IconeBeneficio;
+      return {
+        icone: ICONES.includes(icone) ? icone : "exposicao",
+        texto: str(row, "texto"),
+        order: num(row, "order"),
+      };
+    })
+    .sort(byOrder);
+}
+
+export function getChamadas(): Chamada[] {
+  return rows("chamadas")
+    .map((row) => ({
+      chave: str(row, "chave"),
+      eyebrow: str(row, "eyebrow"),
+      eyebrowTom: str(row, "eyebrowTom") === "mint" ? ("mint" as const) : ("orange" as const),
+      titulo: str(row, "titulo"),
+      texto: str(row, "texto"),
+      prazoPrefixo: str(row, "prazoPrefixo"),
+      ctaLabel: str(row, "ctaLabel"),
+      ctaUrl: str(row, "ctaUrl"),
+      ctaVariante: str(row, "ctaVariante") === "mint" ? ("mint" as const) : ("primary" as const),
+      order: num(row, "order"),
+    }))
+    .sort(byOrder);
+}
+
+export function getInterface(): Interface {
+  const row = singleton("interface");
+  return {
+    skip: str(row, "skip"),
+    navCta: str(row, "navCta"),
+    dockCta: str(row, "dockCta"),
+    contagemLabel: str(row, "contagemLabel"),
+    contagemAria: str(row, "contagemAria"),
+    edicoesLabel: str(row, "edicoesLabel"),
+    edicaoAtual: str(row, "edicaoAtual"),
+    registroPendente: str(row, "registroPendente"),
+    ctfIncluso: str(row, "ctfIncluso"),
+    ctfTerminal: str(row, "ctfTerminal"),
+    comoChegar: str(row, "comoChegar"),
+    mapaAlt: str(row, "mapaAlt"),
+    footerTagline: str(row, "footerTagline"),
+    footerRedes: str(row, "footerRedes"),
+    footerRealizacao: str(row, "footerRealizacao"),
+    realizacaoAlt: str(row, "realizacaoAlt"),
+    patrocinioAssunto: str(row, "patrocinioAssunto"),
+    palestrantesPlaceholders: num(row, "palestrantesPlaceholders", 4),
+  };
 }
 
 // ── Seções ───────────────────────────────────────────────────────────────────

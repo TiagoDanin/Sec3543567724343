@@ -2,25 +2,25 @@ import { Container } from "@/components/primitives/Container";
 import { Section } from "@/components/primitives/Section";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
-import { Note } from "@/components/primitives/Note";
+import { NoteWithLink } from "@/components/primitives/Note";
 import { AgendaList, AgendaRow } from "@/components/data/AgendaRow";
-import { programacao } from "@/lib/copy";
-import { site } from "@/lib/site";
-import type { AgendaItem } from "@/lib/cms";
+import type { AgendaItem, Secao } from "@/lib/cms";
 
 export type ProgramacaoSectionProps = {
   agenda: AgendaItem[];
+  secao: Secao;
 };
 
-export function ProgramacaoSection({ agenda }: ProgramacaoSectionProps) {
+export function ProgramacaoSection({ agenda, secao }: ProgramacaoSectionProps) {
   return (
     <Section id="programacao">
       <Container>
         <Reveal>
           <SectionHeader
-            eyebrow={programacao.eyebrow}
-            title={programacao.title}
-            lede={programacao.lede}
+            eyebrow={secao.eyebrow}
+            eyebrowTone={secao.eyebrowTom}
+            title={secao.titulo}
+            lede={secao.lede}
             alignEnd
           />
         </Reveal>
@@ -43,13 +43,7 @@ export function ProgramacaoSection({ agenda }: ProgramacaoSectionProps) {
           </AgendaList>
         </Reveal>
 
-        <Note>
-          {programacao.noteLead}{" "}
-          <a href={site.social.instagram} target="_blank" rel="noopener">
-            {programacao.noteLink}
-          </a>
-          .
-        </Note>
+        <NoteWithLink text={secao.nota} label={secao.notaLinkLabel} href={secao.notaLinkUrl} />
       </Container>
     </Section>
   );

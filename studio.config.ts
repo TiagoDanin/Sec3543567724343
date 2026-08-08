@@ -71,6 +71,174 @@ const config: StudioConfig = {
       },
     },
 
+    // ── Hero (singleton) ─────────────────────────────────────────────────
+    hero: {
+      schema: {
+        collection: "hero",
+        label: "Hero",
+        fields: [
+          { name: "tituloLinha", type: "text", required: true, label: "Título — primeira linha" },
+          {
+            name: "tituloDestaque",
+            type: "text",
+            required: true,
+            label: "Título — segunda linha (laranja)",
+          },
+          { name: "lede", type: "long-text", required: true, rows: 3, label: "Texto de apoio" },
+          { name: "ctaPrimario", type: "text", required: true, label: "Botão primário" },
+          { name: "ctaSecundario", type: "text", label: "Botão secundário" },
+          { name: "horario", type: "text", label: "Horário por extenso" },
+          {
+            name: "lugares",
+            type: "array",
+            label: "Lugar (separado por ·)",
+            itemFields: [{ name: "nome", type: "text", required: true, label: "Nome" }],
+          },
+          { name: "logoAlt", type: "text", label: "Texto alternativo do logo" },
+          { name: "mascoteAlt", type: "long-text", rows: 3, label: "Texto alternativo do mascote" },
+        ],
+      },
+    },
+
+    // ── Cabeçalho das seções ─────────────────────────────────────────────
+    // Um registro por seção da home. `chave` casa com o id da âncora.
+    // O token {link} no campo `nota` é trocado pelo link no render.
+    secoes: {
+      schema: {
+        collection: "secoes",
+        label: "Cabeçalho das seções",
+        fields: [
+          { name: "chave", type: "text", required: true, label: "Chave (id da seção)" },
+          { name: "eyebrow", type: "text", label: "Rótulo" },
+          {
+            name: "eyebrowTom",
+            type: "select",
+            label: "Cor do rótulo",
+            options: [
+              { label: "Laranja", value: "orange" },
+              { label: "Menta", value: "mint" },
+              { label: "Apagado", value: "dim" },
+            ],
+          },
+          { name: "titulo", type: "text", label: "Título" },
+          { name: "lede", type: "long-text", rows: 3, label: "Texto de apoio" },
+          { name: "nota", type: "long-text", rows: 2, label: "Observação (use {link})" },
+          { name: "notaLinkLabel", type: "text", label: "Rótulo do link da observação" },
+          { name: "notaLinkUrl", type: "text", label: "Destino do link da observação" },
+          { name: "cta", type: "text", label: "Botão" },
+        ],
+      },
+    },
+
+    // ── Blocos de destaque ───────────────────────────────────────────────
+    destaques: {
+      schema: {
+        collection: "destaques",
+        label: "Blocos de destaque",
+        fields: [
+          { name: "chave", type: "text", required: true, label: "Chave" },
+          { name: "flag", type: "text", label: "Selo" },
+          { name: "eyebrow", type: "text", label: "Rótulo" },
+          { name: "titulo", type: "text", required: true, label: "Título" },
+          { name: "texto", type: "long-text", required: true, rows: 4, label: "Texto" },
+        ],
+      },
+    },
+
+    // ── O que a inscrição dá direito ─────────────────────────────────────
+    beneficios: {
+      schema: {
+        collection: "beneficios",
+        label: "Direitos da inscrição",
+        fields: [
+          { name: "texto", type: "text", required: true, label: "Texto" },
+          {
+            name: "icone",
+            type: "select",
+            required: true,
+            label: "Ícone",
+            options: [
+              { label: "Área de exposição", value: "exposicao" },
+              { label: "Bandeira (CTF)", value: "ctf" },
+              { label: "Microfone (palestras)", value: "palestras" },
+              { label: "Certificado", value: "certificado" },
+            ],
+          },
+          { name: "order", type: "number", format: "integer", label: "Ordem" },
+        ],
+      },
+    },
+
+    // ── Chamadas abertas ─────────────────────────────────────────────────
+    chamadas: {
+      schema: {
+        collection: "chamadas",
+        label: "Chamadas abertas",
+        fields: [
+          { name: "chave", type: "text", required: true, label: "Chave" },
+          { name: "eyebrow", type: "text", required: true, label: "Rótulo" },
+          {
+            name: "eyebrowTom",
+            type: "select",
+            label: "Cor do rótulo",
+            options: [
+              { label: "Laranja", value: "orange" },
+              { label: "Menta", value: "mint" },
+            ],
+          },
+          { name: "titulo", type: "text", required: true, label: "Título" },
+          { name: "texto", type: "long-text", required: true, rows: 3, label: "Texto" },
+          { name: "prazoPrefixo", type: "text", label: "Prefixo do prazo" },
+          { name: "ctaLabel", type: "text", required: true, label: "Botão" },
+          { name: "ctaUrl", type: "url", required: true, label: "Destino do botão" },
+          {
+            name: "ctaVariante",
+            type: "select",
+            label: "Variante do botão",
+            options: [
+              { label: "Primária", value: "primary" },
+              { label: "Menta", value: "mint" },
+            ],
+          },
+          { name: "order", type: "number", format: "integer", label: "Ordem" },
+        ],
+      },
+    },
+
+    // ── Rótulos de interface (singleton) ─────────────────────────────────
+    // Texto curto de navegação e de estado que não pertence a nenhuma seção.
+    interface: {
+      schema: {
+        collection: "interface",
+        label: "Rótulos de interface",
+        fields: [
+          { name: "skip", type: "text", label: "Link de pulo" },
+          { name: "navCta", type: "text", label: "Botão da barra" },
+          { name: "dockCta", type: "text", label: "Botão da barra inferior" },
+          { name: "contagemLabel", type: "text", label: "Rótulo da contagem" },
+          { name: "contagemAria", type: "text", label: "Rótulo acessível da barra de contagem" },
+          { name: "edicoesLabel", type: "text", label: "Rótulo da lista de edições" },
+          { name: "edicaoAtual", type: "text", label: "Nome da edição atual" },
+          { name: "registroPendente", type: "text", label: "Legenda de registro pendente" },
+          { name: "ctfIncluso", type: "text", label: "Aviso de CTF incluso" },
+          { name: "ctfTerminal", type: "text", label: "Nome do terminal" },
+          { name: "comoChegar", type: "text", label: "Rótulo de como chegar" },
+          { name: "mapaAlt", type: "text", label: "Título do mapa" },
+          { name: "footerTagline", type: "text", label: "Assinatura do rodapé" },
+          { name: "footerRedes", type: "text", label: "Título da coluna de redes" },
+          { name: "footerRealizacao", type: "text", label: "Título da coluna de realização" },
+          { name: "realizacaoAlt", type: "text", label: "Texto alternativo do logo da realizadora" },
+          { name: "patrocinioAssunto", type: "text", label: "Assunto do e-mail de patrocínio" },
+          {
+            name: "palestrantesPlaceholders",
+            type: "number",
+            format: "integer",
+            label: "Espaços reservados de palestrante",
+          },
+        ],
+      },
+    },
+
     // ── Sobre o evento (singleton) ───────────────────────────────────────
     sobre: {
       schema: {

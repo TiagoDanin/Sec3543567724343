@@ -36,6 +36,96 @@ export type Sobre = {
   origemTexto: string;
 };
 
+export type Tom = "orange" | "mint" | "dim";
+
+export type Hero = {
+  tituloLinha: string;
+  tituloDestaque: string;
+  lede: string;
+  ctaPrimario: string;
+  ctaSecundario: string;
+  horario: string;
+  lugares: string[];
+  logoAlt: string;
+  mascoteAlt: string;
+};
+
+/**
+ * Cabeçalho de uma seção. `nota` aceita o token `{link}`, trocado no render pelo
+ * link de `notaLinkLabel` + `notaLinkUrl` — assim a frase inteira fica editável
+ * no CMS, incluindo o que vem antes e depois do link.
+ */
+export type Secao = {
+  chave: string;
+  eyebrow: string;
+  eyebrowTom: Tom;
+  titulo: string;
+  lede: string;
+  nota: string;
+  notaLinkLabel: string;
+  notaLinkUrl: string;
+  cta: string;
+};
+
+export type Destaque = {
+  chave: string;
+  flag: string;
+  eyebrow: string;
+  titulo: string;
+  texto: string;
+};
+
+export type IconeBeneficio = "exposicao" | "ctf" | "palestras" | "certificado";
+
+export type Beneficio = { icone: IconeBeneficio; texto: string; order: number };
+
+export type Chamada = {
+  chave: string;
+  eyebrow: string;
+  eyebrowTom: "orange" | "mint";
+  titulo: string;
+  texto: string;
+  prazoPrefixo: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  ctaVariante: "primary" | "mint";
+  order: number;
+};
+
+export type Interface = {
+  skip: string;
+  navCta: string;
+  dockCta: string;
+  contagemLabel: string;
+  contagemAria: string;
+  edicoesLabel: string;
+  edicaoAtual: string;
+  registroPendente: string;
+  ctfIncluso: string;
+  ctfTerminal: string;
+  comoChegar: string;
+  mapaAlt: string;
+  footerTagline: string;
+  footerRedes: string;
+  footerRealizacao: string;
+  realizacaoAlt: string;
+  patrocinioAssunto: string;
+  palestrantesPlaceholders: number;
+};
+
+/** Seção de repouso, para o render nunca depender de um registro existir. */
+export const SECAO_VAZIA: Secao = {
+  chave: "",
+  eyebrow: "",
+  eyebrowTom: "orange",
+  titulo: "",
+  lede: "",
+  nota: "",
+  notaLinkLabel: "",
+  notaLinkUrl: "",
+  cta: "",
+};
+
 export type Fato = { valor: string; label: string };
 
 export type NavItem = { label: string; href: string; grupo: string; noMenu: boolean };

@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { Button } from "@/components/primitives/Button";
-import { hero } from "@/lib/copy";
 import { asset } from "@/lib/site";
-import type { Settings } from "@/lib/cms";
+import type { Hero as HeroContent, Settings } from "@/lib/cms";
 
 export type HeroProps = {
+  hero: HeroContent;
   settings: Settings;
 };
 
@@ -13,7 +13,10 @@ export type HeroProps = {
  * mascote flutuando sobre o brilho menta. Em tela estreita o véu vira vertical:
  * o texto atravessaria a parte clara da mata.
  */
-export function Hero({ settings }: HeroProps) {
+export function Hero({ hero, settings }: HeroProps) {
+  // "Av. Pedro Álvares Cabral, 9031. Marambaia, Belém/PA" → "Belém/PA"
+  const cidade = settings.venueAddress.split(",").slice(-1)[0]?.trim() ?? "";
+
   return (
     <section id="topo" className="border-line relative overflow-hidden border-b">
       <div aria-hidden="true" className="absolute inset-0">
@@ -31,10 +34,10 @@ export function Hero({ settings }: HeroProps) {
       <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[900px]:min-h-0 max-[900px]:grid-cols-1 max-[900px]:items-start max-[900px]:gap-[clamp(20px,5vw,32px)] max-[900px]:pt-[clamp(30px,7vw,48px)]">
         <div>
           <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase">
-            {hero.place.map((item, index) => (
-              <span key={item}>
+            {hero.lugares.map((lugar, index) => (
+              <span key={lugar}>
                 {index > 0 ? <span className="text-mint/50 mx-[0.3em]">·</span> : null}
-                {item}
+                {lugar}
               </span>
             ))}
           </p>
@@ -49,9 +52,9 @@ export function Hero({ settings }: HeroProps) {
           />
 
           <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase">
-            {hero.titleLead}
+            {hero.tituloLinha}
             <br />
-            <em className="text-orange not-italic">{hero.titleAccent}</em>
+            <em className="text-orange not-italic">{hero.tituloDestaque}</em>
           </h1>
 
           <p className="text-cream-2 mb-8 max-w-[520px] text-[17px] leading-[1.6] max-[900px]:mb-7">
@@ -60,23 +63,25 @@ export function Hero({ settings }: HeroProps) {
 
           <div className="mb-9 flex flex-wrap gap-3.5 max-[900px]:mb-7 [&>a]:max-[900px]:flex-auto">
             <Button href="#ingressos" arrow>
-              {hero.ctaPrimary}
+              {hero.ctaPrimario}
             </Button>
-            <Button href="#programacao" variant="ghost">
-              {hero.ctaSecondary}
-            </Button>
+            {hero.ctaSecundario ? (
+              <Button href="#programacao" variant="ghost">
+                {hero.ctaSecundario}
+              </Button>
+            ) : null}
           </div>
 
           <p className="text-cream-3 flex flex-wrap gap-x-7 gap-y-2.5 font-mono text-[13px]">
             <span>
-              <time dateTime={settings.eventStartDate}>{settings.eventDisplayDate}</time> · 09h às
-              19h
+              <time dateTime={settings.eventStartDate}>{settings.eventDisplayDate}</time>
+              {hero.horario ? ` · ${hero.horario}` : null}
             </span>
             <span aria-hidden="true" className="text-cream/25">
               /
             </span>
             <span>
-              {settings.venueName} · {settings.venueAddress.split(".").pop()?.trim()}
+              {settings.venueName} · {cidade}
             </span>
           </p>
         </div>
@@ -88,7 +93,7 @@ export function Hero({ settings }: HeroProps) {
           />
           <Image
             src={asset("/images/marca/mascote.png")}
-            alt={hero.mascotAlt}
+            alt={hero.mascoteAlt}
             width={1400}
             height={1750}
             priority

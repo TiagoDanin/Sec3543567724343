@@ -10,6 +10,37 @@ export type NoteProps = {
  * Observação de rodapé de seção. Fica na sans: a monoespaçada carrega só hora,
  * valor, contagem e rótulo — texto de leitura nunca vai para mono.
  */
+export type NoteWithLinkProps = {
+  /** Frase completa, com o token `{link}` na posição do link. */
+  text: string;
+  label: string;
+  href: string;
+  className?: string;
+};
+
+/**
+ * Nota cuja frase inteira vem do CMS, incluindo o que vem antes e depois do
+ * link. Sem o token `{link}` o texto é renderizado como está.
+ */
+export function NoteWithLink({ text, label, href, className }: NoteWithLinkProps) {
+  if (!text) return null;
+
+  const [before, after] = text.split("{link}");
+  const external = href.startsWith("http");
+
+  return (
+    <Note className={className}>
+      {before}
+      {after !== undefined && label ? (
+        <a href={href} {...(external ? { target: "_blank", rel: "noopener" } : {})}>
+          {label}
+        </a>
+      ) : null}
+      {after}
+    </Note>
+  );
+}
+
 export function Note({ children, className }: NoteProps) {
   return (
     <p
