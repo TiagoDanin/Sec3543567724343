@@ -1,0 +1,27 @@
+{
+  "chave": "caixa-fechada",
+  "enunciado": "Cai na sua mão um aparelho que você nunca viu, sem manual e sem senha. Qual é o primeiro movimento?",
+  "order": 1,
+  "alternativas": [
+    {
+      "chave": "abrir",
+      "texto": "Abrir a carcaça e procurar onde a placa fala com o mundo",
+      "pesos": { "desmontador": 3, "arquiteta-de-caos": 1 }
+    },
+    {
+      "chave": "escutar",
+      "texto": "Ligar na rede e observar em silêncio com quem ele conversa",
+      "pesos": { "sentinela-de-igapo": 3, "leitor-de-sinais": 1 }
+    },
+    {
+      "chave": "forcar",
+      "texto": "Testar todo caminho de entrada até algum ceder",
+      "pesos": { "arquiteta-de-caos": 3, "desmontador": 1 }
+    },
+    {
+      "chave": "procedencia",
+      "texto": "Descobrir de onde ele veio e quem o instalou antes de encostar",
+      "pesos": { "cacador-de-rastros": 2, "negociador-de-risco": 2 }
+    }
+  ]
+}

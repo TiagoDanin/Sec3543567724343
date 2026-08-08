@@ -1,0 +1,27 @@
+{
+  "chave": "o-que-cansa",
+  "enunciado": "O que mais te irrita no dia a dia da área?",
+  "order": 6,
+  "alternativas": [
+    {
+      "chave": "alerta-falso",
+      "texto": "Alerta que grita sem motivo e treina todo mundo a ignorar",
+      "pesos": { "sentinela-de-igapo": 3, "engenheira-de-confianca": 1 }
+    },
+    {
+      "chave": "sem-log",
+      "texto": "Descobrir, no meio da investigação, que o log não foi guardado",
+      "pesos": { "cacador-de-rastros": 3, "sentinela-de-igapo": 1 }
+    },
+    {
+      "chave": "remendo",
+      "texto": "Corrigir pela terceira vez a mesma falha em lugares diferentes",
+      "pesos": { "engenheira-de-confianca": 3, "desmontador": 1 }
+    },
+    {
+      "chave": "ignorado",
+      "texto": "Apresentar o risco, ser ignorado, e ver acontecer exatamente aquilo",
+      "pesos": { "negociador-de-risco": 3, "ilusionista-social": 1 }
+    }
+  ]
+}

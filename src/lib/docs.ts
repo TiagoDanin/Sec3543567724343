@@ -18,6 +18,7 @@ import {
   getPalestrantes,
   getParceiros,
   getPatrocinadores,
+  getQuiz,
   getSecoes,
   getSettings,
   getSobre,
@@ -409,6 +410,28 @@ function blocoFaq(): string {
   );
 }
 
+/**
+ * O quiz é peça de divulgação, e o que interessa a um agente é o mapa de
+ * arquétipos — não as perguntas, que só fazem sentido respondidas na página.
+ */
+function blocoQuiz(): string {
+  const { copy, perguntas, arquetipos } = getQuiz();
+  if (arquetipos.length === 0) return "";
+
+  const trilhaLabel = (trilha: string) => (trilha === "gerencial" ? "Gerencial" : "Técnica");
+
+  return bloco(
+    `## ${copy.titulo}`,
+    copy.lede,
+    `Disponível em ${link("/quiz", absoluteUrl("/quiz"))}. São ${perguntas.length} perguntas, respondidas no navegador; ao final a pessoa recebe um arquétipo e uma imagem para compartilhar. Nada é enviado ao servidor — o site é estático e não coleta resposta, nome ou foto.`,
+    "### Arquétipos",
+    tabela(
+      ["Arquétipo", "Área", "Trilha", "Resumo"],
+      arquetipos.map((item) => [item.nome, item.area, trilhaLabel(item.trilha), item.resumo]),
+    ),
+  );
+}
+
 // ── Catálogo de documentos ───────────────────────────────────────────────────
 
 export type Doc = {
@@ -419,6 +442,8 @@ export type Doc = {
   resumo: string;
   /** Seção que governa a publicação. `null` = sempre publicado. */
   secao: SectionKey | null;
+  /** Rota HTML equivalente. Ausente: o documento espelha uma seção da home. */
+  rota?: string;
   corpo: () => string;
 };
 
@@ -500,6 +525,15 @@ const DOCS: Doc[] = [
     secao: "faq",
     corpo: blocoFaq,
   },
+  {
+    slug: "quiz",
+    titulo: "Quiz: que tipo de hacker você é",
+    resumo: "Os oito arquétipos do quiz de divulgação e a trilha do evento de cada um.",
+    // Sem feature flag: a rota existe sempre, só não aparece no menu.
+    secao: null,
+    rota: "/quiz",
+    corpo: blocoQuiz,
+  },
 ];
 
 /** Documentos publicáveis: seção ligada e corpo com conteúdo. */
@@ -575,7 +609,7 @@ export function renderHome(): string {
 /** `/docs/<slug>.md`: um documento por tema. */
 export function renderDoc(doc: Doc & { corpoRenderizado: string }): string {
   return bloco(
-    cabecalho(`${doc.titulo} — ${site.siteName}`, doc.resumo, "/"),
+    cabecalho(`${doc.titulo} — ${site.siteName}`, doc.resumo, doc.rota ?? "/"),
     doc.corpoRenderizado,
     bloco(
       "## Outros documentos",

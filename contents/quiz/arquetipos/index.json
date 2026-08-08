@@ -1,0 +1,90 @@
+[
+  {
+    "slug": "arquiteta-de-caos",
+    "nome": "Arquiteta de Caos",
+    "sigla": "RED",
+    "area": "Red team e pentest",
+    "trilha": "tecnica",
+    "resumo": "Você quebra para entender. Um sistema só é conhecido depois de forçado até onde ele cede.",
+    "texto": "Onde os outros leem a documentação, você procura o que ela não previu. Não é pressa nem destruição: é a convicção de que a única prova de que algo aguenta é ter tentado derrubar. Você pensa como quem ataca porque essa é a única forma honesta de defender.",
+    "noEvento": "As sessões de exploração prática e o CTF presencial são o seu terreno.",
+    "order": 1
+  },
+  {
+    "slug": "sentinela-de-igapo",
+    "nome": "Sentinela de Igapó",
+    "sigla": "SOC",
+    "area": "Blue team e monitoramento",
+    "trilha": "tecnica",
+    "resumo": "Você vigia o que os outros acham chato. Percebe o desvio antes de o alarme tocar.",
+    "texto": "Sua habilidade é a paciência: conhecer o normal tão bem que o anormal salta aos olhos. Enquanto o ataque é um evento, a defesa é uma rotina — e é na rotina que você é imbatível. O incidente que ninguém viu acontecer costuma ser o que você interrompeu cedo.",
+    "noEvento": "Detecção, resposta a incidentes e as conversas de quem opera SOC de verdade.",
+    "order": 2
+  },
+  {
+    "slug": "cacador-de-rastros",
+    "nome": "Caçador de Rastros",
+    "sigla": "DFIR",
+    "area": "Forense e resposta a incidentes",
+    "trilha": "tecnica",
+    "resumo": "Você chega depois do estrago e reconstitui o caminho inteiro, passo por passo.",
+    "texto": "Log, carimbo de tempo, um arquivo que mudou de tamanho: você lê vestígio como quem lê frase. Não aceita a versão mais provável enquanto não bate com a evidência — e é essa teimosia metódica que transforma um incidente confuso em uma linha do tempo que se sustenta.",
+    "noEvento": "Trilha técnica: análise forense, cadeia de custódia e casos reais de investigação.",
+    "order": 3
+  },
+  {
+    "slug": "leitor-de-sinais",
+    "nome": "Leitor de Sinais",
+    "sigla": "CTI",
+    "area": "Inteligência de ameaças",
+    "trilha": "gerencial",
+    "resumo": "Você junta fonte aberta e contexto até aquilo virar aviso antecipado.",
+    "texto": "Dado solto não é informação, e informação sem contexto não é inteligência. Você trabalha na diferença entre as três. Enquanto o time apaga incêndio, você já está perguntando quem acende, por quê, e qual será o próximo alvo — que é a pergunta que muda decisão.",
+    "noEvento": "Trilha gerencial: inteligência de ameaças, cenário de risco e leitura de adversário.",
+    "order": 4
+  },
+  {
+    "slug": "engenheira-de-confianca",
+    "nome": "Engenheira de Confiança",
+    "sigla": "APP",
+    "area": "Segurança de aplicações",
+    "trilha": "tecnica",
+    "resumo": "Você resolve na origem: prefere corrigir o padrão a corrigir o caso.",
+    "texto": "Achar a falha é o começo; o que te interessa é por que ela foi possível. Você entra no ciclo de desenvolvimento cedo, troca o remendo pela biblioteca segura por padrão e faz a escolha certa virar a mais fácil. Segurança que depende de disciplina humana, para você, é dívida.",
+    "noEvento": "Desenvolvimento seguro, revisão de código e a ponte entre time de segurança e engenharia.",
+    "order": 5
+  },
+  {
+    "slug": "negociador-de-risco",
+    "nome": "Negociador de Risco",
+    "sigla": "GRC",
+    "area": "Governança, risco e conformidade",
+    "trilha": "gerencial",
+    "resumo": "Você traduz ameaça técnica em decisão de negócio — e consegue a verba que ninguém conseguia.",
+    "texto": "Sabe que o relatório mais preciso do mundo não vale nada se a diretoria não agir sobre ele. Seu trabalho é converter probabilidade em consequência, e consequência em prioridade. Não é diplomacia vazia: é entender que segurança sem orçamento aprovado é apenas uma opinião bem fundamentada.",
+    "noEvento": "A trilha gerencial de 2026 foi desenhada para você: liderança, risco e governança.",
+    "order": 6
+  },
+  {
+    "slug": "ilusionista-social",
+    "nome": "Ilusionista Social",
+    "sigla": "SE",
+    "area": "Engenharia social",
+    "trilha": "gerencial",
+    "resumo": "A camada mais frágil é gente, e você estuda gente com o mesmo rigor que os outros estudam protocolo.",
+    "texto": "Pressa, autoridade, medo de parecer difícil: você conhece as alavancas porque sabe que nenhum firewall cobre um pedido convincente. Usa isso para expor o ponto cego e treinar quem está exposto — a defesa começa quando as pessoas entendem como foram convencidas.",
+    "noEvento": "Fator humano, conscientização e o que um teste de phishing revela sobre a organização.",
+    "order": 7
+  },
+  {
+    "slug": "desmontador",
+    "nome": "Desmontador",
+    "sigla": "REV",
+    "area": "Engenharia reversa e hardware",
+    "trilha": "tecnica",
+    "resumo": "Você abre o binário e o aparelho. Só acredita no que viu por dentro.",
+    "texto": "Documentação é a versão que o fabricante quis contar; você quer a outra. Tem paciência para horas de desmontagem em troca de um único instante de entendimento, e é geralmente quem explica ao resto do time o que aquele firmware realmente faz quando ninguém está olhando.",
+    "noEvento": "Reversa, análise de malware, hardware hacking e os desafios mais difíceis do CTF.",
+    "order": 8
+  }
+]

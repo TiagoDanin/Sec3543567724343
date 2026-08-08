@@ -2,6 +2,8 @@ import "server-only";
 import { queryCollection } from "nextjs-studio/server";
 import type {
   AgendaItem,
+  Alternativa,
+  Arquetipo,
   Beneficio,
   Chamada,
   Cota,
@@ -19,6 +21,10 @@ import type {
   Palestrante,
   Parceiro,
   Patrocinador,
+  Pergunta,
+  Pesos,
+  Quiz,
+  QuizCopy,
   Secao,
   SectionKey,
   Settings,
@@ -403,6 +409,111 @@ export function getFaq(): Duvida[] {
     }))
     .filter((item) => item.pergunta && item.resposta)
     .sort(byOrder);
+}
+
+// ── Quiz ─────────────────────────────────────────────────────────────────────
+
+/**
+ * O studio varre `contents/quiz/` recursivamente e entrega tudo numa coleção
+ * só — subdiretório não vira coleção própria, e o array de `arquetipos/` é
+ * expandido em um registro por item. Sobra o `slug` para separar: pergunta
+ * mantém o prefixo do diretório, a copy da rota é `index`, arquétipo é o resto.
+ */
+const ehPergunta = (row: Row) => str(row, "slug").startsWith("perguntas/");
+const ehCopy = (row: Row) => str(row, "slug") === "index";
+
+/** Aceita só peso numérico: campo livre no CMS pode chegar como string. */
+function pesos(value: unknown): Pesos {
+  if (typeof value !== "object" || value === null) return {};
+
+  return Object.fromEntries(
+    Object.entries(value as Record<string, unknown>).filter(
+      (entry): entry is [string, number] => typeof entry[1] === "number",
+    ),
+  );
+}
+
+function getQuizCopy(): QuizCopy {
+  const row = rows("quiz").find(ehCopy) ?? {};
+  return {
+    eyebrow: str(row, "eyebrow"),
+    titulo: str(row, "titulo"),
+    lede: str(row, "lede"),
+    nomeLabel: str(row, "nomeLabel"),
+    nomePlaceholder: str(row, "nomePlaceholder"),
+    nomeAjuda: str(row, "nomeAjuda"),
+    ctaComecar: str(row, "ctaComecar"),
+    ctaVoltar: str(row, "ctaVoltar"),
+    ctaRefazer: str(row, "ctaRefazer"),
+    progressoPrefixo: str(row, "progressoPrefixo"),
+    resultadoEyebrow: str(row, "resultadoEyebrow"),
+    resultadoTrilhaLabel: str(row, "resultadoTrilhaLabel"),
+    cartaLabel: str(row, "cartaLabel"),
+    fotoTrocar: str(row, "fotoTrocar"),
+    fotoRemover: str(row, "fotoRemover"),
+    fotoAjuda: str(row, "fotoAjuda"),
+    zoomLabel: str(row, "zoomLabel"),
+    baixar: str(row, "baixar"),
+    compartilhar: str(row, "compartilhar"),
+    gerando: str(row, "gerando"),
+    erroExportar: str(row, "erroExportar"),
+    avisoSafariTitulo: str(row, "avisoSafariTitulo"),
+    avisoSafariTexto: str(row, "avisoSafariTexto"),
+    semJsTitulo: str(row, "semJsTitulo"),
+    semJsTexto: str(row, "semJsTexto"),
+    ctaEvento: str(row, "ctaEvento"),
+    fechoTitulo: str(row, "fechoTitulo"),
+    fechoTexto: str(row, "fechoTexto"),
+  };
+}
+
+function getPerguntas(): Pergunta[] {
+  return rows("quiz")
+    .filter(ehPergunta)
+    .map((row) => {
+      const lista = Array.isArray(row.alternativas) ? (row.alternativas as Row[]) : [];
+      return {
+        chave: str(row, "chave"),
+        enunciado: str(row, "enunciado"),
+        order: num(row, "order"),
+        alternativas: lista
+          .map(
+            (item): Alternativa => ({
+              chave: str(item, "chave"),
+              texto: str(item, "texto"),
+              pesos: pesos(item.pesos),
+            }),
+          )
+          .filter((item) => item.chave && item.texto),
+      };
+    })
+    .filter((item) => item.chave && item.alternativas.length > 0)
+    .sort(byOrder);
+}
+
+function getArquetipos(): Arquetipo[] {
+  return rows("quiz")
+    .filter((row) => !ehPergunta(row) && !ehCopy(row))
+    .map((row) => {
+      const trilha = str(row, "trilha") as Trilha;
+      return {
+        slug: str(row, "slug"),
+        nome: str(row, "nome"),
+        sigla: str(row, "sigla"),
+        area: str(row, "area"),
+        trilha: TRILHAS.includes(trilha) ? trilha : "geral",
+        resumo: str(row, "resumo"),
+        texto: str(row, "texto"),
+        noEvento: str(row, "noEvento"),
+        order: num(row, "order"),
+      };
+    })
+    .filter((item) => item.slug && item.nome)
+    .sort(byOrder);
+}
+
+export function getQuiz(): Quiz {
+  return { copy: getQuizCopy(), perguntas: getPerguntas(), arquetipos: getArquetipos() };
 }
 
 export function getEquipe(): Organizacao[] {

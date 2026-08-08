@@ -185,6 +185,63 @@ export interface PatrocinadoresEntry {
   order: number;
 }
 
+/** Data shape for the "quiz" collection. */
+export interface QuizEntry {
+  slug: string;
+  nome: string;
+  sigla: string;
+  area: string;
+  trilha: string;
+  resumo: string;
+  texto: string;
+  noEvento: string;
+  order: number;
+  chave: string;
+  enunciado: string;
+  alternativas: Array<{
+    chave: string;
+    texto: string;
+    pesos: {
+      desmontador: number;
+      arquiteta-de-caos: number;
+      sentinela-de-igapo: number;
+      leitor-de-sinais: number;
+      cacador-de-rastros: number;
+      negociador-de-risco: number;
+      engenheira-de-confianca: number;
+      ilusionista-social: number;
+    };
+  }>;
+  eyebrow: string;
+  titulo: string;
+  lede: string;
+  nomeLabel: string;
+  nomePlaceholder: string;
+  nomeAjuda: string;
+  ctaComecar: string;
+  ctaVoltar: string;
+  ctaRefazer: string;
+  progressoPrefixo: string;
+  resultadoEyebrow: string;
+  resultadoTrilhaLabel: string;
+  cartaLabel: string;
+  fotoTrocar: string;
+  fotoRemover: string;
+  fotoAjuda: string;
+  zoomLabel: string;
+  baixar: string;
+  compartilhar: string;
+  gerando: string;
+  erroExportar: string;
+  avisoSafariTitulo: string;
+  avisoSafariTexto: string;
+  semJsTitulo: string;
+  semJsTexto: string;
+  ctaEvento: string;
+  fechoTitulo: string;
+  fechoTexto: string;
+}
+
 /** Data shape for the "secoes" collection. */
 export interface SecoesEntry {
   chave: string;
@@ -257,6 +314,7 @@ declare module 'nextjs-studio' {
     "palestrantes": PalestrantesEntry;
     "parceiros": ParceirosEntry;
     "patrocinadores": PatrocinadoresEntry;
+    "quiz": QuizEntry;
     "secoes": SecoesEntry;
     "settings": SettingsEntry;
     "sobre": SobreEntry;
@@ -283,6 +341,7 @@ declare module 'nextjs-studio/server' {
     "palestrantes": PalestrantesEntry;
     "parceiros": ParceirosEntry;
     "patrocinadores": PatrocinadoresEntry;
+    "quiz": QuizEntry;
     "secoes": SecoesEntry;
     "settings": SettingsEntry;
     "sobre": SobreEntry;

@@ -554,6 +554,94 @@ const config: StudioConfig = {
       },
     },
 
+    // ── Quiz "Que tipo de hacker você é" ─────────────────────────────────
+    // Peça de divulgação em /quiz. A copy da rota, as perguntas e os
+    // arquétipos são conteúdo: trocar uma pergunta não é PR de código.
+    quiz: {
+      schema: {
+        collection: "quiz",
+        label: "Quiz — copy da página",
+        fields: [
+          { name: "eyebrow", type: "text", label: "Rótulo" },
+          { name: "titulo", type: "text", required: true, label: "Título" },
+          { name: "lede", type: "long-text", rows: 3, label: "Texto de apoio" },
+          { name: "nomeLabel", type: "text", label: "Rótulo do campo de nome" },
+          { name: "nomePlaceholder", type: "text", label: "Exemplo no campo de nome" },
+          { name: "nomeAjuda", type: "long-text", rows: 2, label: "Ajuda do campo de nome" },
+          { name: "ctaComecar", type: "text", label: "Botão — começar" },
+          { name: "ctaVoltar", type: "text", label: "Botão — voltar" },
+          { name: "ctaRefazer", type: "text", label: "Botão — refazer" },
+          { name: "progressoPrefixo", type: "text", label: "Prefixo do progresso" },
+          { name: "resultadoEyebrow", type: "text", label: "Rótulo do resultado" },
+          { name: "resultadoTrilhaLabel", type: "text", label: "Rótulo da trilha" },
+          { name: "cartaLabel", type: "text", label: "Rótulo impresso na carta" },
+          { name: "fotoTrocar", type: "text", label: "Botão — trocar foto" },
+          { name: "fotoRemover", type: "text", label: "Botão — voltar ao mascote" },
+          { name: "fotoAjuda", type: "long-text", rows: 2, label: "Ajuda do enquadramento" },
+          { name: "zoomLabel", type: "text", label: "Rótulo do zoom" },
+          { name: "baixar", type: "text", label: "Botão — baixar" },
+          { name: "compartilhar", type: "text", label: "Botão — compartilhar" },
+          { name: "gerando", type: "text", label: "Estado — gerando imagem" },
+          { name: "erroExportar", type: "text", label: "Erro ao gerar imagem" },
+          { name: "avisoSafariTitulo", type: "text", label: "Aviso do Safari — título" },
+          { name: "avisoSafariTexto", type: "long-text", rows: 2, label: "Aviso do Safari — texto" },
+          { name: "semJsTitulo", type: "text", label: "Sem JavaScript — título" },
+          { name: "semJsTexto", type: "long-text", rows: 2, label: "Sem JavaScript — texto" },
+          { name: "ctaEvento", type: "text", label: "Botão — ingresso" },
+          { name: "fechoTitulo", type: "text", label: "Fecho — título" },
+          { name: "fechoTexto", type: "long-text", rows: 3, label: "Fecho — texto" },
+        ],
+      },
+    },
+
+    // O studio varre `contents/quiz/` inteiro como uma coleção só: subdiretório
+    // não vira coleção própria. Os schemas abaixo existem para rotular os campos
+    // no CMS; a separação entre copy, pergunta e arquétipo é feita em `cms.ts`,
+    // pelo slug de cada registro.
+    "quiz-perguntas": {
+      schema: {
+        collection: "quiz-perguntas",
+        label: "Quiz — perguntas",
+        fields: [
+          { name: "chave", type: "text", required: true, label: "Chave" },
+          { name: "enunciado", type: "long-text", rows: 2, required: true, label: "Pergunta" },
+          { name: "order", type: "number", format: "integer", label: "Ordem" },
+          {
+            name: "alternativas",
+            type: "array",
+            label: "Alternativas",
+            itemFields: [
+              { name: "chave", type: "text", required: true, label: "Chave" },
+              { name: "texto", type: "long-text", rows: 2, required: true, label: "Texto" },
+              // Mapa slug do arquétipo → peso. Uma alternativa pontua para dois
+              // arquétipos: sem isso o resultado fica óbvio na terceira tela.
+              { name: "pesos", type: "object", label: "Pesos por arquétipo", fields: [] },
+            ],
+          },
+        ],
+      },
+    },
+
+    "quiz-arquetipos": {
+      schema: {
+        collection: "quiz-arquetipos",
+        label: "Quiz — arquétipos",
+        fields: [
+          { name: "slug", type: "text", required: true, label: "Slug" },
+          { name: "nome", type: "text", required: true, label: "Nome" },
+          { name: "sigla", type: "text", label: "Sigla (3 letras, na carta)" },
+          { name: "area", type: "text", label: "Área de atuação" },
+          { name: "trilha", type: "select", label: "Trilha", options: trilhas },
+          { name: "resumo", type: "long-text", rows: 2, label: "Resumo (uma frase)" },
+          { name: "texto", type: "long-text", rows: 4, label: "Descrição" },
+          { name: "noEvento", type: "long-text", rows: 2, label: "O que ver no evento" },
+          // Desempate: menor ordem vence. Sem isso, respostas iguais poderiam
+          // devolver arquétipos diferentes.
+          { name: "order", type: "number", format: "integer", label: "Ordem (desempate)" },
+        ],
+      },
+    },
+
     // ── Link-in-bio ──────────────────────────────────────────────────────
     // Página de QR code do evento: muda de destino sem redeploy de código.
     links: {

@@ -1,0 +1,27 @@
+{
+  "chave": "madrugada",
+  "enunciado": "Três da manhã, o alerta dispara. O que te faz levantar da cama de verdade?",
+  "order": 2,
+  "alternativas": [
+    {
+      "chave": "entender",
+      "texto": "A chance de ver um ataque acontecendo ao vivo",
+      "pesos": { "sentinela-de-igapo": 3, "cacador-de-rastros": 1 }
+    },
+    {
+      "chave": "reconstruir",
+      "texto": "Saber que amanhã alguém vai perguntar exatamente o que aconteceu",
+      "pesos": { "cacador-de-rastros": 3, "sentinela-de-igapo": 1 }
+    },
+    {
+      "chave": "consertar",
+      "texto": "A brecha continua aberta enquanto eu durmo",
+      "pesos": { "engenheira-de-confianca": 3, "arquiteta-de-caos": 1 }
+    },
+    {
+      "chave": "avisar",
+      "texto": "Alguém precisa decidir agora, e essa pessoa vai me ligar",
+      "pesos": { "negociador-de-risco": 3, "leitor-de-sinais": 1 }
+    }
+  ]
+}

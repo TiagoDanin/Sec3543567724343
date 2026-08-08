@@ -204,6 +204,105 @@ export type Palestrante = {
   order: number;
 };
 
+// ── Quiz ─────────────────────────────────────────────────────────────────────
+
+export type QuizCopy = {
+  eyebrow: string;
+  titulo: string;
+  lede: string;
+  nomeLabel: string;
+  nomePlaceholder: string;
+  nomeAjuda: string;
+  ctaComecar: string;
+  ctaVoltar: string;
+  ctaRefazer: string;
+  progressoPrefixo: string;
+  resultadoEyebrow: string;
+  resultadoTrilhaLabel: string;
+  cartaLabel: string;
+  fotoTrocar: string;
+  fotoRemover: string;
+  fotoAjuda: string;
+  zoomLabel: string;
+  baixar: string;
+  compartilhar: string;
+  gerando: string;
+  erroExportar: string;
+  avisoSafariTitulo: string;
+  avisoSafariTexto: string;
+  semJsTitulo: string;
+  semJsTexto: string;
+  ctaEvento: string;
+  fechoTitulo: string;
+  fechoTexto: string;
+};
+
+/** Mapa slug do arquétipo → peso. Uma alternativa pontua para mais de um. */
+export type Pesos = Record<string, number>;
+
+export type Alternativa = { chave: string; texto: string; pesos: Pesos };
+
+export type Pergunta = {
+  chave: string;
+  enunciado: string;
+  alternativas: Alternativa[];
+  order: number;
+};
+
+export type Arquetipo = {
+  slug: string;
+  nome: string;
+  sigla: string;
+  area: string;
+  trilha: Trilha;
+  resumo: string;
+  texto: string;
+  noEvento: string;
+  order: number;
+};
+
+export type Quiz = {
+  copy: QuizCopy;
+  perguntas: Pergunta[];
+  arquetipos: Arquetipo[];
+};
+
+/**
+ * Soma os pesos das respostas e devolve o arquétipo vencedor.
+ *
+ * Determinístico de propósito: empate resolve pela `order` declarada no
+ * conteúdo, nunca por sorteio. As mesmas respostas precisam devolver sempre a
+ * mesma carta — a pessoa pode refazer o quiz e comparar com quem estava do lado.
+ *
+ * `respostas` é indexado por `pergunta.chave` e guarda a `alternativa.chave`.
+ */
+export function apurar(
+  respostas: Record<string, string>,
+  perguntas: Pergunta[],
+  arquetipos: Arquetipo[],
+): Arquetipo | null {
+  if (arquetipos.length === 0) return null;
+
+  const total = new Map<string, number>();
+
+  for (const pergunta of perguntas) {
+    const escolha = respostas[pergunta.chave];
+    const alternativa = pergunta.alternativas.find((item) => item.chave === escolha);
+    if (!alternativa) continue;
+
+    for (const [slug, peso] of Object.entries(alternativa.pesos)) {
+      total.set(slug, (total.get(slug) ?? 0) + peso);
+    }
+  }
+
+  const ordenado = [...arquetipos].sort((a, b) => {
+    const diff = (total.get(b.slug) ?? 0) - (total.get(a.slug) ?? 0);
+    return diff !== 0 ? diff : a.order - b.order;
+  });
+
+  return ordenado[0] ?? null;
+}
+
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 /** Preço em centavos → texto. Formatar é do render, o dado continua número. */

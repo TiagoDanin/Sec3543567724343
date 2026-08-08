@@ -47,5 +47,12 @@
     "secao": "local",
     "grupo": "evento",
     "noMenu": false
+  },
+  {
+    "label": "Quiz",
+    "href": "/quiz",
+    "secao": "",
+    "grupo": "participar",
+    "noMenu": true
   }
 ]
