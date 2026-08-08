@@ -99,7 +99,7 @@ export function EventoSection({
       >
         {showEdicoes ? (
           <EdicoesBloco
-            edicoes={edicoes.map(({ ano, tema }) => ({ ano, tema }))}
+            edicoes={edicoes.map(({ ano, tema, foto }) => ({ ano, tema, foto }))}
             atual={atual}
             edicoesLabel={EDICOES_LABEL}
             registroPendente={REGISTRO_PENDENTE}

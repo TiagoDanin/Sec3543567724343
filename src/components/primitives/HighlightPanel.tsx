@@ -15,9 +15,9 @@ export function HighlightPanel({ flag, eyebrow, title, children, className }: Hi
   return (
     <div
       className={cn(
-        "border-orange grid grid-cols-[1fr_1.2fr] items-center gap-[clamp(24px,3.6vw,48px)] border p-[clamp(28px,3.6vw,48px)]",
+        "border-orange grid grid-cols-[1fr_1.2fr] items-center gap-[clamp(24px,3.6vw,48px)] border p-[clamp(22px,3.6vw,48px)]",
         "from-orange/12 bg-linear-120 to-transparent to-60%",
-        "max-[860px]:grid-cols-1",
+        "max-[860px]:grid-cols-1 max-[860px]:gap-4",
         className,
       )}
     >

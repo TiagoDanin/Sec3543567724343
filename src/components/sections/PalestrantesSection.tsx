@@ -45,11 +45,13 @@ export function PalestrantesSection({ palestrantes, secao }: PalestrantesSection
                 ))
               : palestrantes.map((speaker) => (
                   <li key={speaker.slug}>
+                    {/* O card não linka: a rota de detalhe `/palestrantes/<slug>`
+                        ainda não existe em `app/`, e âncora para 404 é pior que
+                        card sem link. */}
                     <SpeakerCard
                       name={speaker.nome}
                       topic={speaker.resumo}
                       photo={speaker.foto ? asset(speaker.foto) : undefined}
-                      href={`/palestrantes/${speaker.slug}`}
                     />
                   </li>
                 ))}

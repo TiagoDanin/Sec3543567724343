@@ -32,6 +32,7 @@ import {
   websiteSchema,
 } from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
+import { alvoCompra, ancoraViva, externo } from "@/lib/links";
 import { pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
 import {
@@ -63,6 +64,8 @@ import {
 
 // Rótulos de navegação: interface, não conteúdo editorial.
 const SKIP = "Pular para o conteúdo";
+// O rótulo promete o checkout: o botão da barra fixa vai ao Sympla. O do dock
+// diz "Ingressos" e é navegação — leva à tabela de preços.
 const NAV_CTA = "Comprar ingresso";
 const DOCK_CTA = "Ingressos";
 const FATOS_ARIA = "O XibéSec 2026 em números";
@@ -78,7 +81,19 @@ export default function Page() {
   const { sections } = settings;
 
   const secoes = getSecoes();
-  const secao = (chave: string) => secoes[chave] ?? SECAO_VAZIA;
+  // A nota de uma seção pode apontar para a âncora de outra. O conteúdo em
+  // `contents/` não sabe o que foi ao ar, então a poda acontece aqui: seção
+  // desligada perde o link e a frase segue inteira, sem o destino.
+  const secao = (chave: string) => {
+    const registro = secoes[chave] ?? SECAO_VAZIA;
+    if (!registro.notaLinkUrl || ancoraViva(registro.notaLinkUrl, sections)) return registro;
+    return { ...registro, notaLinkUrl: "" };
+  };
+
+  // Destino de compra. O rótulo é que decide: quem promete checkout vai ao
+  // Sympla, quem convida a participar rola até a tabela de preços.
+  const checkout = externo(settings.ticketsUrl);
+  const compra = alvoCompra(settings);
 
   const hero = getHero();
   const navegacao = getNavegacao();
@@ -131,7 +146,7 @@ export default function Page() {
           (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
         )}
         action={
-          <Button size="sm" href="#ingressos">
+          <Button size="sm" {...checkout}>
             {NAV_CTA}
           </Button>
         }
@@ -141,6 +156,7 @@ export default function Page() {
         <Hero
           hero={hero}
           settings={settings}
+          ctaPrimario={compra}
           ctaSecundarioHref={sections.agenda ? "#programacao" : undefined}
         />
 
@@ -185,7 +201,7 @@ export default function Page() {
           <ProgramacaoSection agenda={agenda} secao={secao("programacao")} />
         ) : null}
 
-        {sections.ctf ? <CtfSection ctf={ctf} secao={secao("ctf")} /> : null}
+        {sections.ctf ? <CtfSection ctf={ctf} secao={secao("ctf")} cta={compra} /> : null}
 
         {sections.palestrantes ? (
           <PalestrantesSection palestrantes={palestrantes} secao={secao("palestrantes")} />

@@ -51,9 +51,13 @@ export function TimelineList({ entries, className }: TimelineListProps) {
             </span>
 
             {entry.detail ? (
+              // Numa coluna estreita o dado desce para a própria linha, alinhado
+              // com o rótulo: disputado no mesmo eixo, ele quebra o ano e a
+              // etiqueta em duas linhas cada e a régua da lista se perde.
               <span
                 className={cn(
                   "ml-auto font-mono text-[12px] tracking-[0.14em] uppercase",
+                  "max-[900px]:order-last max-[900px]:ml-[calc(3.6em+1rem)] max-[900px]:w-full",
                   entry.current ? "text-orange font-bold" : "text-cream-3",
                 )}
               >
@@ -66,6 +70,7 @@ export function TimelineList({ entries, className }: TimelineListProps) {
         // A seta aparece no hover, no foco e na linha do registro em vista.
         const rowClasses = cn(
           "flex items-baseline gap-[22px] px-[26px] py-[22px]",
+          "max-[900px]:flex-wrap max-[900px]:gap-x-4 max-[900px]:gap-y-1 max-[900px]:px-4 max-[900px]:py-[15px]",
           "after:ease-brand after:ml-auto after:size-[0.85em] after:shrink-0 after:bg-current",
           "after:opacity-0 after:-translate-x-2 after:transition after:duration-300",
           "after:[content:''] after:[mask:var(--ico-arw)_center/contain_no-repeat]",
@@ -102,7 +107,9 @@ export function TimelineList({ entries, className }: TimelineListProps) {
                 {row}
               </a>
             ) : (
-              <span className="flex items-baseline gap-[22px] px-[26px] py-[22px]">{row}</span>
+              <span className="flex items-baseline gap-[22px] px-[26px] py-[22px] max-[900px]:flex-wrap max-[900px]:gap-x-4 max-[900px]:gap-y-1 max-[900px]:px-4 max-[900px]:py-[15px]">
+                {row}
+              </span>
             )}
           </li>
         );

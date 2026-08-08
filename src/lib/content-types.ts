@@ -147,6 +147,8 @@ export type Edicao = {
   tema: string;
   publico: number | null;
   resumo: string;
+  /** Registro da edição. Vazio enquanto a organização não entrega. */
+  foto: string;
   status: "confirmado" | "a-conferir";
 };
 

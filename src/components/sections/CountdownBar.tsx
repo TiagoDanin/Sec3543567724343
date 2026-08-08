@@ -1,11 +1,14 @@
 import { Button } from "@/components/primitives/Button";
 import { Container } from "@/components/primitives/Container";
 import { Countdown } from "@/components/data/Countdown";
+import { externo } from "@/lib/links";
 import { formatDate, formatPrice, lowestPrice, type Ingresso, type Settings } from "@/lib/cms";
 
 // Rótulos de interface: pertencem ao componente, não ao CMS.
 const LABEL = "Faltam";
 const ARIA = "Contagem regressiva e lote em venda";
+// O rótulo promete o checkout, então o botão vai ao Sympla — e não à tabela de
+// preços logo abaixo, que o leitor alcança rolando.
 const CTA = "Comprar ingresso";
 
 export type CountdownBarProps = {
@@ -13,7 +16,14 @@ export type CountdownBarProps = {
   ingressos: Ingresso[];
 };
 
-/** Barra única: contagem, lote em venda e compra na mesma linha. */
+/**
+ * Barra única: contagem, lote em venda e compra na mesma linha.
+ *
+ * O botão sai abaixo de 520px. A barra fica logo depois do hero, ou seja a mais
+ * de 520px de rolagem — que é exatamente quando o `Dock` já entrou levando à
+ * mesma compra. Empilhar um botão de largura cheia por cima de outro fixo não
+ * põe a compra mais perto: gasta meia dobra repetindo o que já está na tela.
+ */
 export function CountdownBar({ settings, ingressos }: CountdownBarProps) {
   const cheapest = lowestPrice(ingressos);
   const lote = ingressos[0];
@@ -35,7 +45,7 @@ export function CountdownBar({ settings, ingressos }: CountdownBarProps) {
           </p>
         ) : null}
 
-        <Button size="sm" href="#ingressos" className="max-[520px]:w-full">
+        <Button size="sm" {...externo(settings.ticketsUrl)} className="max-[520px]:hidden">
           {CTA}
         </Button>
       </Container>

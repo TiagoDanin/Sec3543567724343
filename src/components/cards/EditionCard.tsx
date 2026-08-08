@@ -66,8 +66,15 @@ export function EditionCard({
 
       <figcaption className="flex items-baseline justify-between gap-4 px-3 pt-3.5 pb-3">
         <b className="text-cream text-[16px] font-bold">{title}</b>
-        <span className="text-cream-3 font-mono text-[11px] tracking-[0.2em] uppercase">
-          {caption}
+        {/* Com a foto no lugar, a legenda de pendência não tem mais o que
+            declarar: sobra o ano, que é dado, e vai em menta. */}
+        <span
+          className={cn(
+            "font-mono text-[11px] tracking-[0.2em] uppercase",
+            photo ? "text-mint tabular-nums" : "text-cream-3",
+          )}
+        >
+          {photo ? year : caption}
         </span>
       </figcaption>
     </figure>

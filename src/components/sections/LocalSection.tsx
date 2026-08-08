@@ -81,7 +81,9 @@ export function LocalSection({ settings, secao }: LocalSectionProps) {
               {COMO_CHEGAR}
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-2.5">
+            {/* No celular os três esticam para fechar a linha: alvo maior para
+                o polegar e borda alinhada em vez de degrau. */}
+            <div className="mt-3 flex flex-wrap gap-2.5 [&>a]:max-[900px]:flex-auto">
               {apps.map((app) => (
                 <Button
                   key={app.label}
@@ -100,7 +102,10 @@ export function LocalSection({ settings, secao }: LocalSectionProps) {
           </Reveal>
 
           <Reveal>
-            <div className="border-line aspect-4/3 overflow-hidden border bg-[repeating-linear-gradient(135deg,#1E3218_0_10px,#24391D_10px_20px)]">
+            {/* 4:3 é a proporção de quem vê o mapa ao lado do texto. Empilhado
+                numa coluna estreita, o mesmo recorte vira uma janela alta que
+                não mostra mais rua nenhuma — 16:10 devolve a altura. */}
+            <div className="border-line aspect-4/3 overflow-hidden border bg-[repeating-linear-gradient(135deg,#1E3218_0_10px,#24391D_10px_20px)] max-[900px]:aspect-16/10">
               <iframe
                 title={`Mapa: ${settings.venueName}, ${cidade}`}
                 loading="lazy"

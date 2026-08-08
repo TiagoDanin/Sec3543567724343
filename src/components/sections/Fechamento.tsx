@@ -39,7 +39,9 @@ export function Fechamento({ settings, secao }: FechamentoProps) {
           width={1400}
           height={1750}
           loading="lazy"
-          className="w-[min(100%,320px)] self-end justify-self-center drop-shadow-[0_20px_40px_rgba(0,0,0,.55)] max-[860px]:order-first max-[860px]:w-[min(56vw,220px)] max-[860px]:justify-self-start"
+          // Some no celular: o mascote já abre a página no hero, e aqui só
+          // empurra o último botão de compra para fora da dobra.
+          className="w-[min(100%,320px)] self-end justify-self-center drop-shadow-[0_20px_40px_rgba(0,0,0,.55)] max-[860px]:hidden"
         />
       </Container>
     </section>

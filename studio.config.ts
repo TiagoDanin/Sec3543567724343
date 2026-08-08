@@ -477,6 +477,7 @@ const config: StudioConfig = {
           { name: "local", type: "text", label: "Local" },
           { name: "publico", type: "number", format: "integer", label: "Público (não estimar)" },
           { name: "resumo", type: "long-text", rows: 2, label: "Resumo" },
+          { name: "foto", type: "media", accept: ["image/*"], label: "Foto da edição" },
           { name: "albumUrl", type: "url", label: "Álbum de fotos" },
           {
             name: "status",

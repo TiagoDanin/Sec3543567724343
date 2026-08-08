@@ -4,6 +4,7 @@ import { SectionTitle, Eyebrow } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { Button } from "@/components/primitives/Button";
 import { Terminal } from "@/components/data/Terminal";
+import type { LinkAlvo } from "@/lib/links";
 import type { Ctf, Secao } from "@/lib/cms";
 
 // O prompt é elemento de interface do terminal, não conteúdo do evento.
@@ -12,9 +13,11 @@ const TERMINAL_NAME = "xibesec@2026: ~/ctf";
 export type CtfSectionProps = {
   ctf: Ctf;
   secao: Secao;
+  /** Destino do CTA. Ausente, o botão não é renderizado. */
+  cta?: LinkAlvo;
 };
 
-export function CtfSection({ ctf, secao }: CtfSectionProps) {
+export function CtfSection({ ctf, secao, cta }: CtfSectionProps) {
   return (
     <Section id="ctf" variant="panel">
       <Container className="grid grid-cols-[1.15fr_.85fr] items-center gap-[clamp(32px,4.5vw,56px)] max-[900px]:grid-cols-1">
@@ -33,14 +36,19 @@ export function CtfSection({ ctf, secao }: CtfSectionProps) {
             <p className="text-mint mt-[18px] font-mono text-[13px]">{ctf.incluso}</p>
           ) : null}
 
-          {secao.cta ? (
-            <Button variant="mint" href="#ingressos" className="mt-8">
+          {secao.cta && cta ? (
+            <Button variant="mint" {...cta} className="mt-8">
               {secao.cta}
             </Button>
           ) : null}
         </Reveal>
 
-        <Reveal>
+        {/* A janela é a contraparte gráfica da coluna de texto, e só existe
+            enquanto houver duas colunas. Em coluna única ela deixa de equilibrar
+            e passa a repetir: modalidade, formato, acesso e premiação já estão
+            no parágrafo acima — e a saída em `pre` ainda abriria rolagem
+            horizontal dentro de 350px. */}
+        <Reveal className="max-[900px]:hidden">
           <Terminal
             name={TERMINAL_NAME}
             lines={ctf.linhas.map((line) => ({ kind: line.kind, text: line.texto }))}

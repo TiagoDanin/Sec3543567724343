@@ -4,8 +4,9 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { TimelineList, type TimelineEntry } from "./TimelineList";
 import { EditionCard } from "@/components/cards/EditionCard";
 import { Eyebrow } from "@/components/primitives/SectionHeader";
+import { useDesktop } from "@/lib/use-media";
 
-export type EdicaoResumo = { ano: number; tema: string };
+export type EdicaoResumo = { ano: number; tema: string; foto?: string };
 
 export type EdicoesBlocoProps = {
   edicoes: EdicaoResumo[];
@@ -33,6 +34,12 @@ const NAV_FALLBACK = 66;
  *    cima, a anterior continua grudada e ainda passaria no teste. O critério é
  *    uma linha de leitura a 45% da altura da janela — a última carta que a
  *    cruzou é a que o olho está vendo.
+ *
+ * Em coluna de celular o baralho não é baralho: as cartas deixam de passar uma
+ * por cima da outra e viram uma fila. Fica só a mais recente — a linha do tempo
+ * ao lado já nomeia todas as edições, e enfileirar molduras que repetem aquela
+ * mesma lista custa duas dobras. A carta é montada, não escondida: linha da
+ * lista que não tem carta para mostrar também perde o link.
  */
 export function EdicoesBloco({
   edicoes,
@@ -41,6 +48,7 @@ export function EdicoesBloco({
   registroPendente,
   children,
 }: EdicoesBlocoProps) {
+  const desktop = useDesktop();
   const deckRef = useRef<HTMLDivElement>(null);
   const [ativo, setAtivo] = useState(-1);
 
@@ -104,14 +112,20 @@ export function EdicoesBloco({
     window.scrollTo({ top: Math.max(0, y - parada), behavior: calmo ? "auto" : "smooth" });
   };
 
+  const cartasVisiveis = desktop ? edicoes : edicoes.slice(-1);
+  const posicao = new Map(cartasVisiveis.map((edicao, index) => [edicao.ano, index]));
+
   const entries: TimelineEntry[] = [
-    ...edicoes.map((edicao, index) => ({
-      year: edicao.ano,
-      label: edicao.tema,
-      href: `#ed-${edicao.ano}`,
-      onNavigate: () => irParaCarta(index),
-      active: index === ativo,
-    })),
+    ...edicoes.map((edicao) => {
+      const index = posicao.get(edicao.ano);
+      return {
+        year: edicao.ano,
+        label: edicao.tema,
+        href: index === undefined ? undefined : `#ed-${edicao.ano}`,
+        onNavigate: index === undefined ? undefined : () => irParaCarta(index),
+        active: index !== undefined && index === ativo,
+      };
+    }),
     atual,
   ];
 
@@ -120,7 +134,7 @@ export function EdicoesBloco({
       <div className="sticky top-[calc(var(--nav-h)+30px)] max-[900px]:static">
         {children}
 
-        <Eyebrow tone="dim" className="mt-[clamp(32px,3.6vw,44px)] mb-4">
+        <Eyebrow tone="dim" className="mt-[clamp(24px,3.6vw,44px)] mb-4">
           {edicoesLabel}
         </Eyebrow>
 
@@ -130,19 +144,22 @@ export function EdicoesBloco({
       <div className="min-w-0">
         <div
           ref={deckRef}
-          className="grid gap-[clamp(20px,2.6vw,32px)] max-[900px]:gap-0 max-[900px]:pb-[clamp(40px,12vw,90px)] [&[data-sem-cola]_[data-carta]]:static"
+          className="grid gap-[clamp(20px,2.6vw,32px)] max-[900px]:gap-0 [&[data-sem-cola]_[data-carta]]:static"
         >
-          {edicoes.map((edicao, index) => (
+          {cartasVisiveis.map((edicao, index) => (
             <EditionCard
               key={edicao.ano}
               id={`ed-${edicao.ano}`}
               year={edicao.ano}
               title={edicao.tema}
               caption={registroPendente}
-              index={index}
+              photo={edicao.foto || undefined}
+              // Fora do baralho não há pilha para inclinar: a carta única entra
+              // reta, na posição que o `EditionCard` trata como sem desvio.
+              index={desktop ? index : 1}
               active={index === ativo}
               data-carta=""
-              className="sticky top-[calc(var(--nav-h)+38px+var(--i)*16px)] scroll-mt-[calc(var(--nav-h)+38px)] max-[900px]:top-[calc(var(--nav-h)+24px+var(--i)*14px)] max-[900px]:mt-[calc(var(--i)*-8px)]"
+              className="sticky top-[calc(var(--nav-h)+38px+var(--i)*16px)] scroll-mt-[calc(var(--nav-h)+38px)] max-[900px]:static max-[900px]:scroll-mt-[calc(var(--nav-h)+24px)]"
             />
           ))}
         </div>

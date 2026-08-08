@@ -30,12 +30,13 @@ export function ProgramacaoSection({ agenda, secao }: ProgramacaoSectionProps) {
         <Reveal>
           <AgendaList>
             {agenda.map((item) => (
+              // A linha não linka: a rota de detalhe `/programacao/<slug>` ainda
+              // não existe em `app/`, e âncora para 404 é pior que texto.
               <AgendaRow
                 key={item.titulo}
                 startsAt={item.startsAt}
                 title={item.titulo}
                 status={item.status}
-                href={item.slug ? `/programacao/${item.slug}` : undefined}
               >
                 {item.descricao}
               </AgendaRow>

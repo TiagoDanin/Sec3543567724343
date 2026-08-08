@@ -305,6 +305,7 @@ export function getEdicoes(): Edicao[] {
       // correto — nunca estimar. Ver PRODUCT.md.
       publico: typeof row.publico === "number" ? row.publico : null,
       resumo: str(row, "resumo"),
+      foto: str(row, "foto"),
       status:
         str(row, "status") === "confirmado" ? ("confirmado" as const) : ("a-conferir" as const),
     }))

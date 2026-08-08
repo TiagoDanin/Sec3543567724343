@@ -26,8 +26,11 @@
   --green: #00b368;
 
   --gutter: clamp(20px, 4vw, 32px);
-  --sec-y: clamp(64px, 8vw, 96px);
-  --sec-y-tight: clamp(44px, 5.5vw, 72px);
+  /* O piso do ritmo é de celular: 64px por lado, doze vezes na página, custa
+     uma tela e meia de rolagem que não carrega informação nenhuma. O topo do
+     clamp continua o do DESIGN.md — o desktop não muda. */
+  --sec-y: clamp(48px, 8vw, 96px);
+  --sec-y-tight: clamp(36px, 5.5vw, 72px);
   --nav-h: 66px;
 
   --ico-out: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M9 7h8v8'/%3E%3C/svg%3E");

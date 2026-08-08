@@ -82,7 +82,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <header
-      className={cn(slim ? "mb-[clamp(30px,3.5vw,48px)]" : "mb-[clamp(40px,5vw,64px)]", className)}
+      className={cn(slim ? "mb-[clamp(24px,3.5vw,48px)]" : "mb-[clamp(30px,5vw,64px)]", className)}
     >
       {eyebrow ? (
         <Eyebrow tone={eyebrowTone} className="mb-[22px] max-[860px]:mb-4">

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/primitives/Button";
 import { asset, site } from "@/lib/site";
+import type { LinkAlvo } from "@/lib/links";
 import type { Hero as HeroContent, Settings } from "@/lib/cms";
 
 // Texto alternativo é acessibilidade da imagem, não conteúdo editável.
@@ -10,6 +11,8 @@ const MASCOTE_ALT =
 export type HeroProps = {
   hero: HeroContent;
   settings: Settings;
+  /** Destino do botão primário: a tabela de preços ou, sem ela, o checkout. */
+  ctaPrimario: LinkAlvo;
   /** Destino do botão secundário. Ausente, o botão não é renderizado. */
   ctaSecundarioHref?: string;
 };
@@ -19,7 +22,7 @@ export type HeroProps = {
  * mascote flutuando sobre o brilho menta. Em tela estreita o véu vira vertical:
  * o texto atravessaria a parte clara da mata.
  */
-export function Hero({ hero, settings, ctaSecundarioHref }: HeroProps) {
+export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroProps) {
   // "Av. Pedro Álvares Cabral, 9031. Marambaia, Belém/PA" → "Belém/PA"
   const cidade = settings.venueAddress.split(",").slice(-1)[0]?.trim() ?? "";
 
@@ -37,9 +40,9 @@ export function Hero({ hero, settings, ctaSecundarioHref }: HeroProps) {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(620px_620px_at_72%_58%,rgba(79,227,172,.13),transparent_68%)]" />
       </div>
 
-      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[900px]:min-h-0 max-[900px]:grid-cols-1 max-[900px]:items-start max-[900px]:gap-[clamp(20px,5vw,32px)] max-[900px]:pt-[clamp(30px,7vw,48px)]">
+      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[900px]:min-h-0 max-[900px]:grid-cols-1 max-[900px]:items-start max-[900px]:gap-[clamp(12px,3vw,24px)] max-[900px]:pt-[clamp(24px,7vw,48px)] max-[900px]:pb-[clamp(28px,6vw,76px)]">
         <div>
-          <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase">
+          <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase max-[900px]:mb-4">
             {hero.lugares.map((lugar, index) => (
               <span key={lugar}>
                 {index > 0 ? <span className="text-mint/50 mx-[0.3em]">·</span> : null}
@@ -54,7 +57,7 @@ export function Hero({ hero, settings, ctaSecundarioHref }: HeroProps) {
             width={1600}
             height={1282}
             priority
-            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(82%,300px)]"
+            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:mb-5 max-[900px]:w-[min(74%,264px)]"
           />
 
           <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase">
@@ -68,7 +71,7 @@ export function Hero({ hero, settings, ctaSecundarioHref }: HeroProps) {
           </p>
 
           <div className="mb-9 flex flex-wrap gap-3.5 max-[900px]:mb-7 [&>a]:max-[900px]:flex-auto">
-            <Button href="#ingressos" arrow>
+            <Button {...ctaPrimario} arrow>
               {hero.ctaPrimario}
             </Button>
             {hero.ctaSecundario && ctaSecundarioHref ? (
@@ -103,7 +106,7 @@ export function Hero({ hero, settings, ctaSecundarioHref }: HeroProps) {
             width={1400}
             height={1750}
             priority
-            className="animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[900px]:max-w-[min(66vw,300px)]"
+            className="animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[900px]:max-w-[min(52vw,232px)]"
           />
         </div>
       </div>

@@ -33,7 +33,7 @@ export function TicketCard({
   return (
     <article
       className={cn(
-        "border-line-2 bg-ink flex flex-col gap-2 border p-[clamp(24px,2.6vw,32px)]",
+        "border-line-2 bg-ink flex flex-col gap-2 border p-[clamp(20px,2.6vw,32px)]",
         "ease-brand transition-colors duration-280",
         "hover:border-orange hover:bg-orange/6 focus-within:border-orange focus-within:bg-orange/6",
         "[&:hover_.tier-name]:text-orange [&:focus-within_.tier-name]:text-orange",
@@ -50,9 +50,9 @@ export function TicketCard({
       </p>
 
       {terms ? (
-        <p className="text-cream-3 mb-[22px] font-mono text-[12px]">{terms}</p>
+        <p className="text-cream-3 mb-[clamp(14px,2vw,22px)] font-mono text-[12px]">{terms}</p>
       ) : (
-        <div className="mb-[22px]" />
+        <div className="mb-[clamp(14px,2vw,22px)]" />
       )}
 
       <Button

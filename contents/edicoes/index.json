@@ -6,7 +6,8 @@
     "publico": null,
     "resumo": "",
     "albumUrl": "",
-    "status": "a-conferir"
+    "status": "a-conferir",
+    "foto": "/images/edicoes/2023.jpeg"
   },
   {
     "ano": 2024,
@@ -15,7 +16,8 @@
     "publico": null,
     "resumo": "",
     "albumUrl": "",
-    "status": "a-conferir"
+    "status": "a-conferir",
+    "foto": "/images/edicoes/2024.jpeg"
   },
   {
     "ano": 2025,
@@ -24,6 +26,7 @@
     "publico": null,
     "resumo": "",
     "albumUrl": "",
-    "status": "a-conferir"
+    "status": "a-conferir",
+    "foto": "/images/edicoes/2025.jpg"
   }
 ]

@@ -90,6 +90,7 @@ export interface EdicoesEntry {
   resumo: string;
   albumUrl: string;
   status: string;
+  foto: string;
 }
 
 /** Data shape for the "equipe" collection. */

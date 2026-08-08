@@ -14,7 +14,8 @@ export type NoteWithLinkProps = {
   /** Frase completa, com o token `{link}` na posição do link. */
   text: string;
   label: string;
-  href: string;
+  /** Sem destino, o rótulo continua na frase — como texto, sem virar link. */
+  href?: string;
   className?: string;
 };
 
@@ -26,16 +27,19 @@ export function NoteWithLink({ text, label, href, className }: NoteWithLinkProps
   if (!text) return null;
 
   const [before, after] = text.split("{link}");
-  const external = href.startsWith("http");
+  const external = href?.startsWith("http") ?? false;
+  const rotulo = after !== undefined && label ? label : null;
 
   return (
     <Note className={className}>
       {before}
-      {after !== undefined && label ? (
+      {rotulo && href ? (
         <a href={href} {...(external ? { target: "_blank", rel: "noopener" } : {})}>
-          {label}
+          {rotulo}
         </a>
-      ) : null}
+      ) : (
+        rotulo
+      )}
       {after}
     </Note>
   );

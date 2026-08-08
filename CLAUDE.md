@@ -71,6 +71,8 @@ Formato por natureza do dado:
 
 `src/lib/site.ts` concentra nome, tagline, descrição, `siteUrl`, locale, redes e contatos, mais `absoluteUrl(path)` e `pageMetadata({ title, description, path, image })`. Toda página interna monta seu `Metadata` por essa função — é o que impede uma rota nova sair sem canonical. **Nunca** repetir a URL do site em outro arquivo.
 
+`src/lib/links.ts` resolve a pergunta seguinte: **para onde o botão aponta quando a seção que ele buscava não está publicada**. `externo(href)` monta o par `target="_blank"` + `rel="noopener"` — o `Button` lê o `target` e acrescenta sozinho a seta de "sai do site". `alvoCompra(settings)` devolve a âncora `#ingressos` enquanto a seção estiver ligada e cai no `ticketsUrl` quando não estiver. `ancoraViva(href, sections)` diz se uma âncora existe na página: o conteúdo em `contents/` não sabe o que foi ao ar, e é assim que a nota de uma seção deixa de linkar para outra que não foi publicada. Duas regras: **o rótulo manda no destino** — botão que diz "comprar" vai ao Sympla, botão que convida a participar rola até a tabela de preços; e **nenhuma âncora literal `#secao` fora desse arquivo** em CTA que uma feature flag possa desligar.
+
 `src/lib/schema.tsx` fabrica o JSON-LD: `<SchemaMarkup>` mais `eventSchema`, `organizationSchema`, `websiteSchema`, `generateFaqSchema`, `generateBreadcrumbs`, `generatePersonSchema`. Tudo alimentado por `site.ts` + `contents/`, com `@id` estáveis (`#organization`, `#website`) referenciados pelos schemas de página.
 
 `app/sitemap.ts` e `app/robots.ts` usam as convenções nativas do App Router — compatíveis com `output: "export"`, sem `next-sitemap`, e ambos precisam de `export const dynamic = "force-static"` (sem isso o build do export falha). Só emitir URL de rota que `generateStaticParams` realmente gera. O sitemap usa `canonicalUrl()`, que aplica a barra final imposta pelo `trailingSlash` — sem ela o sitemap aponta para um endereço que o canonical não confirma.
@@ -159,6 +161,7 @@ A home está composta e o build publica; ainda **não existem**:
 - `error.tsx`, `loading.tsx` e `not-found.tsx` seguem como placeholders vazios do scaffold — o `not-found` não tem nem navegação nem link de volta;
 - script `predev` gerando `.studio/studio.d.ts` (o `prebuild` já existe);
 - `scripts/validate-content.ts` com Zod;
+- `app/palestrantes/[slug]` e `app/programacao/[slug]` — as páginas de detalhe. Enquanto não existirem, `SpeakerCard` e `AgendaRow` são renderizados **sem `href`** na home: card que leva a 404 é pior que card sem link. `BioHeader` já está pronto na bancada esperando a rota. Criando as páginas, devolver o `href` nas duas seções e conferir sitemap e espelho em Markdown;
 - fotos das edições anteriores, logos das organizações parceiras e da imprensa: os diretórios em `public/images/` existem vazios, e por isso `EditionCard` e `PartnerChip` caem no estado de pendência.
 
 As coleções em `contents/` existem com o schema declarado e **conteúdo vazio, de propósito**. Não preencher sem pedido explícito.
