@@ -18,6 +18,12 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+export const ComLogo: Story = {
+  name: "Com logo",
+  args: { name: "BugHunt", logo: "/images/patrocinadores/bughunt.png" },
+};
+
+/** Sem arquivo de logo o cartão cai no nome em texto. */
 export const SemLogo: Story = { name: "Sem logo em arquivo" };
 
 export const SemLink: Story = { args: { href: undefined } };
