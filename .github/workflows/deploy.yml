@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Configurar Node
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: yarn
@@ -43,15 +43,18 @@ jobs:
         run: yarn typecheck
 
       - name: Configurar Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Build
         run: yarn build
 
+      # include-hidden-files: sem isso o .nojekyll não entra no artefato e o
+      # Pages passa a esconder /_next/, quebrando todo o CSS e JS do site.
       - name: Enviar artefato
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
+          include-hidden-files: true
 
   deploy:
     name: Deploy
@@ -63,4 +66,4 @@ jobs:
     steps:
       - name: Publicar no Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
