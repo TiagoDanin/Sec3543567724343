@@ -1,25 +1,237 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════════════
+   XibéSec 2026 — tokens
+   Chão de igapó, grafismo marajoara como régua estrutural, mono para tudo
+   que é dado. Escuro por intenção de marca: sem toggle, sem prefers-color.
+   Ver DESIGN.md.
+   ═══════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #152310;
+  --ink-deep: #0f1a0c;
+  --panel: #1e3218;
+  --panel-2: #24391d;
+  --shell: #0b140a;
+
+  --cream: #f2e4c4;
+  --cream-2: rgba(242, 228, 196, 0.76);
+  --cream-3: rgba(242, 228, 196, 0.63);
+  --line: rgba(242, 228, 196, 0.14);
+  --line-2: rgba(242, 228, 196, 0.28);
+
+  --orange: #ee7b2e;
+  --orange-2: #fa8f45;
+  --mint: #4fe3ac;
+  --green: #00b368;
+
+  --gutter: clamp(20px, 4vw, 32px);
+  --sec-y: clamp(64px, 8vw, 96px);
+  --sec-y-tight: clamp(44px, 5.5vw, 72px);
+  --nav-h: 66px;
+
+  --ico-out: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 17 17 7M9 7h8v8'/%3E%3C/svg%3E");
+  --ico-arw: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h15M13 6l6 6-6 6'/%3E%3C/svg%3E");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Inversão local de tema. Existe para receber logo de patrocinador em arquivo
+   com fundo branco chapado, que não pode ser recortado. Laranja e menta da
+   marca não sustentam texto sobre branco: versões escurecidas, mesma família. */
+.on-light {
+  --cream: #152310;
+  --cream-2: rgba(21, 35, 16, 0.78);
+  --cream-3: rgba(21, 35, 16, 0.62);
+  --line: rgba(21, 35, 16, 0.16);
+  --line-2: rgba(21, 35, 16, 0.3);
+  --panel: #f5f2ea;
+  --mint: #0b7f55;
+  --orange: #a9500d;
+  --orange-2: #a9500d;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink: var(--ink);
+  --color-ink-deep: var(--ink-deep);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-shell: var(--shell);
+
+  --color-cream: var(--cream);
+  --color-cream-2: var(--cream-2);
+  --color-cream-3: var(--cream-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+
+  --color-orange: var(--orange);
+  --color-orange-2: var(--orange-2);
+  --color-mint: var(--mint);
+  --color-green: var(--green);
+
+  --font-sans: var(--font-archivo), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-archivo-black), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --container-site: 1320px;
+  --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius-none: 0;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--nav-h) + 12px);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--ink);
+    color: var(--cream);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--orange);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--mint);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer utilities {
+  /* Ícone do botão desenhado por máscara, para herdar currentColor. */
+  .btn-ico::after {
+    content: "";
+    width: 0.78em;
+    height: 0.78em;
+    flex: none;
+    background: currentColor;
+    mask: var(--ico) center / contain no-repeat;
+    -webkit-mask: var(--ico) center / contain no-repeat;
+    transition: transform 0.28s var(--ease-brand);
+  }
+  .btn-ico-arrow {
+    --ico: var(--ico-arw);
+  }
+  .btn-ico-arrow:hover::after {
+    transform: translateX(3px);
+  }
+  .btn-ico-out {
+    --ico: var(--ico-out);
+  }
+  .btn-ico-out:hover::after {
+    transform: translate(2px, -2px);
+  }
+
+  /* Um gesto autoral, repetido: subida com desfoque. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+    transition:
+      opacity 0.8s var(--ease-brand),
+      transform 0.8s var(--ease-brand),
+      filter 0.8s var(--ease-brand);
+  }
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .animate-floaty {
+    animation: floaty 7s ease-in-out infinite;
+  }
+  .animate-blink {
+    animation: blink 1.05s steps(2, jump-none) infinite;
+  }
+  .animate-scan {
+    animation: scan 6s linear infinite;
+  }
+  .animate-term-line {
+    animation: term-rise 0.52s var(--ease-brand) both;
+  }
+
+  /* Hachura da moldura de foto ainda não entregue. */
+  .hatch {
+    background: repeating-linear-gradient(
+      135deg,
+      rgba(242, 228, 196, 0.035) 0 9px,
+      transparent 9px 20px
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+    .animate-floaty,
+    .animate-blink,
+    .animate-scan,
+    .animate-term-line {
+      animation: none;
+    }
+  }
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes scan {
+  from {
+    top: -90px;
+  }
+  to {
+    top: 100%;
+  }
+}
+
+@keyframes term-rise {
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
