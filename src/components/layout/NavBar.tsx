@@ -2,7 +2,11 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { Brand } from "./Brand";
+import { useMediaQuery } from "@/lib/use-media";
 import { cn } from "@/lib/utils";
+
+/** Abaixo daqui o menu deixa de ser linha e vira gaveta. */
+const GAVETA = "(max-width: 1080px)";
 
 export type NavItem = {
   label: string;
@@ -24,6 +28,11 @@ export type NavBarProps = {
 export function NavBar({ items, action, className }: NavBarProps) {
   const [stuck, setStuck] = useState(false);
   const [open, setOpen] = useState(false);
+  // Gaveta fechada sai de tela por `transform`, e transform não tira nada do
+  // tab order: sem isto, quem navega por teclado tabula da marca direto para
+  // quatro links invisíveis. O servidor responde `false` — o HTML estático
+  // nasce na composição larga, onde o menu é linha e tem de ser navegável.
+  const naGaveta = useMediaQuery(GAVETA, false);
 
   useEffect(() => {
     const onScroll = () => setStuck(window.scrollY > 56);
@@ -67,6 +76,7 @@ export function NavBar({ items, action, className }: NavBarProps) {
         <nav
           id="menu"
           aria-label="Seções da página"
+          inert={naGaveta && !open}
           className={cn(
             "mr-auto flex items-center gap-[clamp(14px,1.9vw,26px)] font-mono text-[12px] tracking-[0.08em] uppercase",
             "max-[1080px]:fixed max-[1080px]:inset-x-0 max-[1080px]:top-(--nav-h) max-[1080px]:bottom-auto",
