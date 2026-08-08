@@ -12,12 +12,12 @@ Next.js 16 (App Router) + React 19 + TypeScript strict + Tailwind CSS 4 (CSS-fir
 
 Conteúdo fora do código, em `contents/`, gerido por **nextjs-studio** (`studio.config.ts` declara o schema; tipos gerados em `.studio/studio.d.ts`). O acesso passa por uma fachada única em `src/lib/cms.ts` — nenhum componente chama `queryCollection` direto.
 
-*Decisão de 07/08/2026, tomada a partir da análise de quatro projetos de referência do mesmo autor. Substitui o plano anterior de HTML estático sem build, que existiu enquanto não havia scaffold no repositório. O protótipo incumbente (`XibeSec 2026.dc.html`) segue não deployável e serve apenas como referência visual.*
+_Decisão de 07/08/2026, tomada a partir da análise de quatro projetos de referência do mesmo autor. Substitui o plano anterior de HTML estático sem build, que existiu enquanto não havia scaffold no repositório. O protótipo incumbente (`XibeSec 2026.dc.html`) segue não deployável e serve apenas como referência visual._
 
 ## Users
 
 - **Primário:** profissional e estudante de segurança da informação da Região Norte (Belém e entorno) — SOC, CTI, forense, pentest, desenvolvimento — que quer conteúdo técnico de peso sem precisar viajar ao eixo Rio–São Paulo. Decide comprar o ingresso pelo celular, a partir de um link vindo do Instagram.
-- **Secundário (decisor de patrocínio):** marketing, RH tech e liderança de segurança de empresas avaliando onde investir verba de marca e de recrutamento. Chega pela landing antes de abrir o mídia kit e decide em segundos se aquilo é um evento com audiência qualificada ou um encontro informal. **É a audiência cuja percepção precisa mudar** — ver *Percepção a Corrigir*.
+- **Secundário (decisor de patrocínio):** marketing, RH tech e liderança de segurança de empresas avaliando onde investir verba de marca e de recrutamento. Chega pela landing antes de abrir o mídia kit e decide em segundos se aquilo é um evento com audiência qualificada ou um encontro informal. **É a audiência cuja percepção precisa mudar** — ver _Percepção a Corrigir_.
 - **Terciário:** público gerencial (líderes, gestores de risco e governança), atendido pela trilha gerencial nova em 2026; palestrantes e voluntários avaliando as chamadas abertas; organizações parceiras avaliando associação de marca.
 
 ## Product Purpose
@@ -41,7 +41,7 @@ O nome vem do **Xibé** (ou Jacuba), bebida tradicional da culinária tupi feita
 
 **Problema real de negócio:** parte do mercado lê o XibéSec como "evento de comunidade" — voluntário, informal, de alcance pequeno — e por isso descarta o patrocínio antes de abrir o mídia kit. O evento tem raiz comunitária e isso é verdade, mas **não é a mensagem que a landing deve carregar**. A página precisa comunicar porte, continuidade e audiência qualificada.
 
-Isso **não** significa virar corporativo, frio ou publicitário. A identidade amazônica, o tom técnico e a ausência de discurso de venda continuam intactos. O que muda é o enquadramento: de *"a comunidade do Norte se reúne"* para *"o encontro de cibersegurança do Norte do Brasil"*.
+Isso **não** significa virar corporativo, frio ou publicitário. A identidade amazônica, o tom técnico e a ausência de discurso de venda continuam intactos. O que muda é o enquadramento: de _"a comunidade do Norte se reúne"_ para _"o encontro de cibersegurança do Norte do Brasil"_.
 
 **Léxico — evitar:**
 
@@ -56,7 +56,7 @@ Isso **não** significa virar corporativo, frio ou publicitário. A identidade a
 - "organizações parceiras" e "ecossistema de parceiros" no lugar de "comunidades apoiadoras"
 - números e fatos verificáveis no lugar de adjetivos de tamanho ("4ª edição", "10 horas", "21 organizações") — o porte se demonstra, não se declara
 
-**Regra de aplicação:** a palavra *comunidade* não é proibida, mas não pode aparecer como a categoria do evento. Ela descreve o público que o evento serve, nunca o que o evento é.
+**Regra de aplicação:** a palavra _comunidade_ não é proibida, mas não pode aparecer como a categoria do evento. Ela descreve o público que o evento serve, nunca o que o evento é.
 
 ## Operating Context
 
@@ -95,7 +95,7 @@ Isso **não** significa virar corporativo, frio ou publicitário. A identidade a
 - Paleta incumbente: igapó `#152310`, painel `#1E3218`, creme `#F2E4C4`, laranja `#EE7B2E`, menta `#4FE3AC`, verde vivo da marca `≈#00B368`.
 - Tipografia incumbente: Archivo Black (display), Archivo (texto), JetBrains Mono (dados, rótulos, tempo).
 - Elementos gráficos obrigatórios: logo (cuia de xibé com circuitos brotando + arco em grafismo marajoara), mascote (personagem ciber-amazônico) e as faixas de grafismo marajoara.
-- Voz: técnica, direta e regional, sem discurso comercial e sem informalidade de meetup. Português brasileiro. Ver *Percepção a Corrigir* para o léxico.
+- Voz: técnica, direta e regional, sem discurso comercial e sem informalidade de meetup. Português brasileiro. Ver _Percepção a Corrigir_ para o léxico.
 
 ## Evidence on Hand
 

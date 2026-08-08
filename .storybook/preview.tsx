@@ -5,7 +5,7 @@ import "../src/app/globals.css";
 // O escuro é intenção de marca, não preferência de sistema: toda story renderiza
 // sobre o chão de igapó, com as três famílias já aplicadas.
 const withBrand: Decorator = (Story) => (
-  <div className={`${fontVariables} bg-ink text-cream font-sans min-h-svh p-8`}>
+  <div className={`${fontVariables} bg-ink text-cream min-h-svh p-8 font-sans`}>
     <Story />
   </div>
 );

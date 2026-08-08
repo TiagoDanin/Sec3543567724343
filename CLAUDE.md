@@ -7,14 +7,20 @@ Idioma do projeto: **português do Brasil**, com acentuação correta. Vale para
 ## Comandos
 
 ```bash
-yarn dev        # desenvolvimento em http://localhost:3000
-yarn build      # build de produção → dist/
-yarn lint       # ESLint 9 (flat config)
-yarn lint:fix   # ESLint com correção automática
-yarn typecheck  # tsc --noEmit
+yarn dev              # desenvolvimento em http://localhost:3000
+yarn build            # build de produção → dist/
+yarn storybook        # Storybook em http://localhost:6006
+yarn build-storybook  # Storybook estático → storybook-static/
+yarn lint             # ESLint 9 (flat config)
+yarn lint:fix         # ESLint com correção automática
+yarn typecheck        # tsc --noEmit
+yarn format           # Prettier
+yarn format:check     # Prettier em modo verificação
 ```
 
-Não há suíte de testes e não se pretende adicionar uma: o site é 100% estático. O par que substitui é `yarn typecheck` + `yarn build`, e um validador de conteúdo com Zod (ainda não escrito, ver *Pendências*).
+Não há suíte de testes e não se pretende adicionar uma: o site é 100% estático. O par que substitui é `yarn typecheck` + `yarn build`, e um validador de conteúdo com Zod (ainda não escrito, ver _Pendências_).
+
+O runner de teste que vem no scaffold do Storybook (`@storybook/addon-vitest`, `vitest`, `playwright`) foi removido de propósito — o Storybook aqui é bancada de desenvolvimento visual, não harness de teste.
 
 **Nunca** ligar `typescript.ignoreBuildErrors` ou `eslint.ignoreDuringBuilds` no `next.config.ts`. Os quatro projetos de referência ligam, e o resultado é build verde sobre código quebrado.
 
@@ -25,7 +31,7 @@ Site de evento, **estático puro**: Next.js 16 App Router com `output: "export"`
 Três documentos governam o projeto e devem ser tratados como código, não como anotação:
 
 - `PRODUCT.md` — o que o evento é, quem decide o quê, léxico obrigatório e a lista do que é **explicitamente indefinido**.
-- `DESIGN.md` — tokens, tipografia, componentes e a lista *O que não fazer*.
+- `DESIGN.md` — tokens, tipografia, componentes e a lista _O que não fazer_.
 - este arquivo — como o código se organiza.
 
 Mudou a estrutura? Atualize o documento correspondente no mesmo commit.
@@ -42,11 +48,11 @@ Todo o conteúdo mora em `contents/`, fora de `src/`, para que alguém da organi
 
 Formato por natureza do dado:
 
-| Natureza | Formato |
-|---|---|
-| Singleton (`settings`, `sobre`, `ctf`) | `index.json` com objeto |
-| Lista (`agenda`, `ingressos`, `parceiros`, …) | `index.json` com array, ou `NN-slug.json` por registro quando a ordem importar |
-| Texto longo (`palestrantes`, `codigo-de-conduta`) | `.mdx` com frontmatter |
+| Natureza                                          | Formato                                                                        |
+| ------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Singleton (`settings`, `sobre`, `ctf`)            | `index.json` com objeto                                                        |
+| Lista (`agenda`, `ingressos`, `parceiros`, …)     | `index.json` com array, ou `NN-slug.json` por registro quando a ordem importar |
+| Texto longo (`palestrantes`, `codigo-de-conduta`) | `.mdx` com frontmatter                                                         |
 
 ### Feature flags de seção
 
@@ -64,9 +70,9 @@ Formato por natureza do dado:
 
 **Nenhuma copy dentro de `.tsx`.** Texto visível vem de `contents/`. Corrigir uma frase não pode exigir PR de código. Valor calculado no build entra como token `{placeholder}` no JSON e é interpolado no render.
 
-**Indefinido é indefinido.** Campo ausente é `optional`/`nullable` no schema — nunca a string `"A definir"` gravada no dado, que vira copy real por acidente. O componente decide: `<PendingSlot>` para foto que não chegou, `<StatusTag>Em definição</StatusTag>` para grade e palestrante. Isso vale integralmente para número de público das edições anteriores, nomes de palestrantes e detalhes do CTF — ver `PRODUCT.md` → *Explicitamente indefinido*.
+**Indefinido é indefinido.** Campo ausente é `optional`/`nullable` no schema — nunca a string `"A definir"` gravada no dado, que vira copy real por acidente. O componente decide: `<PendingSlot>` para foto que não chegou, `<StatusTag>Em definição</StatusTag>` para grade e palestrante. Isso vale integralmente para número de público das edições anteriores, nomes de palestrantes e detalhes do CTF — ver `PRODUCT.md` → _Explicitamente indefinido_.
 
-**Tailwind 4 CSS-first, sem `tailwind.config`.** Os tokens do `DESIGN.md` vivem em `:root` no `globals.css` e são mapeados em `@theme inline`. O scanner é estático: `` className={`bg-${cor}`} `` não é detectado e a classe some do CSS. Sempre `Record<string, string>` com as classes escritas por extenso.
+**Tailwind 4 CSS-first, sem `tailwind.config`.** Os tokens do `DESIGN.md` vivem em `:root` no `globals.css` e são mapeados em `@theme inline`. O scanner é estático: ``className={`bg-${cor}`}`` não é detectado e a classe some do CSS. Sempre `Record<string, string>` com as classes escritas por extenso.
 
 **Nada de aleatoriedade no render.** `Math.random()` em componente causa mismatch de hidratação. Cor de trilha vem de mapa; destaque vem de `featured: true` no conteúdo.
 
@@ -86,18 +92,42 @@ Formato por natureza do dado:
 
 ## Léxico
 
-`PRODUCT.md` → *Percepção a Corrigir* é normativo. Resumo operacional: a palavra *comunidade* não pode aparecer como a categoria do evento; usar "encontro de cibersegurança", "edição", "programação", "trilhas", "participantes" e "organizações parceiras". Porte se demonstra com número verificável, nunca com adjetivo.
+`PRODUCT.md` → _Percepção a Corrigir_ é normativo. Resumo operacional: a palavra _comunidade_ não pode aparecer como a categoria do evento; usar "encontro de cibersegurança", "edição", "programação", "trilhas", "participantes" e "organizações parceiras". Porte se demonstra com número verificável, nunca com adjetivo.
+
+## Biblioteca de componentes
+
+O Storybook é a bancada: componente novo nasce lá, com story, antes de entrar em qualquer rota. `.storybook/preview.tsx` já aplica as três famílias e o chão de igapó, então a story mostra o componente no ambiente real.
+
+```
+src/components/
+├── primitives/   Button, Container, Section, SectionHeader (+ Eyebrow, SectionTitle),
+│                 Tag, Note, Greca, Reveal, SkipLink, PendingSlot, HighlightPanel, KitBanner
+├── cards/        TicketCard, SpeakerCard, CallCard, EditionCard, SponsorSlot,
+│                 PartnerChip, LinkButton
+├── data/         Countdown, FactStrip, AgendaRow (+ AgendaList), TimelineList,
+│                 Terminal, IncludedList
+└── layout/       NavBar, Brand, Footer, Dock, BioHeader (+ SocialRow)
+```
+
+Regras que valem para todos:
+
+- **Sem copy embutida.** Todo texto visível entra por prop. Os valores nas stories são exemplos de bancada, não conteúdo do site.
+- **Estado de pendência é parte do componente**, não um caso à parte: `SpeakerCard` sem `name` declara "A confirmar"; `EditionCard` sem `photo` cai no `PendingSlot`; `PartnerChip` sem `href` renderiza sem link.
+- Componente com estado de navegador (`NavBar`, `Dock`, `Countdown`, `Greca`, `Reveal`) leva `"use client"`; o resto é server component.
+- `Countdown` usa `useSyncExternalStore` com relógio compartilhado, não `setState` dentro de efeito — a regra `react-hooks/set-state-in-effect` do ESLint 9 barra o segundo, e o snapshot precisa ser estável entre ticks para não re-renderizar em laço.
+- `Reveal` escreve a classe direto no nó via ref. Sem JavaScript o conteúdo aparece inteiro, como manda o `DESIGN.md`.
+
+O addon MCP do Storybook está ligado e declarado em `.mcp.json` — o servidor responde em `http://localhost:6006/mcp` **enquanto `yarn storybook` estiver rodando**.
 
 ## Pendências
 
 O repositório está em fase de estrutura. Ainda **não existem**:
 
-- `src/lib/` — `site.ts`, `cms.ts`, `content-types.ts`, `schema.tsx`, `event.ts`, `utils.ts` (a pasta só tem `.gitkeep`);
+- `src/lib/` — falta `site.ts`, `cms.ts`, `content-types.ts`, `schema.tsx`, `event.ts` (já há `fonts.ts` e `utils.ts`);
 - scripts `predev`/`prebuild` gerando `.studio/studio.d.ts`, e o script `studio` para abrir o editor;
-- as rotas além de `/` — `layout.tsx`, `page.tsx`, `error.tsx`, `loading.tsx` e `not-found.tsx` são os placeholders do scaffold, e `globals.css` ainda tem o tema branco do `create-next-app`;
-- fontes do `DESIGN.md` (Archivo, Archivo Black, JetBrains Mono) — o layout ainda carrega Geist;
+- as rotas — `page.tsx`, `error.tsx`, `loading.tsx` e `not-found.tsx` seguem como placeholders vazios do scaffold, e nenhuma seção da home foi composta;
 - `.github/workflows/` — `deploy.yml` (GitHub Pages) e `ci.yml` (lint + typecheck + build);
 - `scripts/validate-content.ts` com Zod;
-- os ativos de marca em `public/` — favicon, OG image e logos ainda não foram levados para lá.
+- os ativos de marca em `public/` — favicon, OG image, logos, mascote e os padrões marajoara. Sem eles, `Greca`, `BioHeader` e `SponsorSlot` renderizam sem imagem.
 
 As coleções em `contents/` existem com o schema declarado e **conteúdo vazio, de propósito**. Não preencher sem pedido explícito.
