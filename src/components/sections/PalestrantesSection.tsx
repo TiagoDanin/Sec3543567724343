@@ -17,7 +17,7 @@ export type PalestrantesSectionProps = {
  * reservados e declara a pendência, em vez de inventar nome ou sumir da página.
  */
 export function PalestrantesSection({ palestrantes }: PalestrantesSectionProps) {
-  const slots = palestrantes.length > 0 ? palestrantes : Array.from({ length: copy.placeholders });
+  const vazio = palestrantes.length === 0;
 
   return (
     <Section id="palestrantes">
@@ -33,20 +33,22 @@ export function PalestrantesSection({ palestrantes }: PalestrantesSectionProps) 
 
         <Reveal>
           <ul className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
-            {slots.map((speaker, index) => (
-              <li key={speaker && "slug" in speaker ? speaker.slug : index}>
-                {speaker && "slug" in speaker ? (
-                  <SpeakerCard
-                    name={speaker.nome}
-                    topic={speaker.resumo}
-                    photo={speaker.foto ? asset(speaker.foto) : undefined}
-                    href={`/palestrantes/${speaker.slug}`}
-                  />
-                ) : (
-                  <SpeakerCard />
-                )}
-              </li>
-            ))}
+            {vazio
+              ? Array.from({ length: copy.placeholders }, (_, index) => (
+                  <li key={index}>
+                    <SpeakerCard />
+                  </li>
+                ))
+              : palestrantes.map((speaker) => (
+                  <li key={speaker.slug}>
+                    <SpeakerCard
+                      name={speaker.nome}
+                      topic={speaker.resumo}
+                      photo={speaker.foto ? asset(speaker.foto) : undefined}
+                      href={`/palestrantes/${speaker.slug}`}
+                    />
+                  </li>
+                ))}
           </ul>
         </Reveal>
 
