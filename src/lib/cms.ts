@@ -285,6 +285,7 @@ export function getCtf(): Ctf {
   return {
     titulo: str(row, "titulo"),
     texto: str(row, "texto"),
+    formato: str(row, "formato"),
     incluso: str(row, "incluso"),
     linhas: linhas.map((line) => {
       const kind = str(line, "kind") as TerminalKind;

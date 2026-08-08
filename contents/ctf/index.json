@@ -1,7 +1,7 @@
 {
   "titulo": "Coloque a mão na massa.",
-  "texto": "Além das palestras, o XibéSec 2026 traz uma competição CTF para quem quer sair da teoria e testar habilidades reais de ataque e defesa. Dá para competir sozinho ou em equipe, com premiação para os melhores colocados.",
-  "formato": "individual ou em equipe",
+  "texto": "Além das palestras, o XibéSec 2026 traz uma competição CTF para quem quer sair da teoria e testar habilidades reais de ataque e defesa. A disputa é individual, com premiação para os melhores colocados.",
+  "formato": "individual",
   "premiacao": "melhores colocados",
   "linhas": [
     {
@@ -14,7 +14,7 @@
     },
     {
       "kind": "ok",
-      "texto": "formato .......... individual ou em equipe"
+      "texto": "formato .......... individual"
     },
     {
       "kind": "ok",

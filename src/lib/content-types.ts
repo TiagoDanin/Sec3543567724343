@@ -157,6 +157,7 @@ export type TerminalKind = "cmd" | "ok" | "warn" | "plain";
 export type Ctf = {
   titulo: string;
   texto: string;
+  formato: string;
   incluso: string;
   linhas: Array<{ kind: TerminalKind; texto: string }>;
 };

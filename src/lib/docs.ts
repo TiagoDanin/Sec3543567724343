@@ -247,7 +247,7 @@ function blocoCtf(): string {
     ctf.texto,
     fichaTecnica([
       ["Modalidade", "ataque e defesa"],
-      ["Formato", "individual ou em equipe"],
+      ["Formato", ctf.formato],
       ["Acesso", "incluso em qualquer ingresso"],
       ["Premiação", "para os melhores colocados"],
       ["Desafios", EM_DEFINICAO],
@@ -631,7 +631,7 @@ function perguntasCanonicas(): Array<[string, string]> {
     ],
     [
       "O XibéSec tem CTF?",
-      `Sim. A edição 2026 traz uma competição CTF presencial de ataque e defesa, disputada individualmente ou em equipe, com premiação para os melhores colocados. O acesso está incluso em qualquer ingresso. O número de desafios e o valor da premiação ainda estão ${EM_DEFINICAO}.`,
+      `Sim. A edição 2026 traz uma competição CTF presencial de ataque e defesa, disputada individualmente, com premiação para os melhores colocados. O acesso está incluso em qualquer ingresso. O número de desafios e o valor da premiação ainda estão ${EM_DEFINICAO}.`,
     ],
     [
       "Quem organiza o XibéSec?",
