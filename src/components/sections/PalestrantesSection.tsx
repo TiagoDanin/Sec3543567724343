@@ -2,21 +2,27 @@ import { Container } from "@/components/primitives/Container";
 import { Section } from "@/components/primitives/Section";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
-import { Note } from "@/components/primitives/Note";
+import { NoteWithLink } from "@/components/primitives/Note";
 import { SpeakerCard } from "@/components/cards/SpeakerCard";
-import { palestrantes as copy } from "@/lib/copy";
 import { asset } from "@/lib/site";
-import type { Palestrante } from "@/lib/cms";
+import type { Palestrante, Secao } from "@/lib/cms";
 
 export type PalestrantesSectionProps = {
   palestrantes: Palestrante[];
+  secao: Secao;
+  /** Quantos espaços reservados mostrar enquanto nenhum nome foi anunciado. */
+  placeholders: number;
 };
 
 /**
  * Nenhum nome de 2026 foi anunciado: sem registros, a seção mostra espaços
  * reservados e declara a pendência, em vez de inventar nome ou sumir da página.
  */
-export function PalestrantesSection({ palestrantes }: PalestrantesSectionProps) {
+export function PalestrantesSection({
+  palestrantes,
+  secao,
+  placeholders,
+}: PalestrantesSectionProps) {
   const vazio = palestrantes.length === 0;
 
   return (
@@ -24,9 +30,10 @@ export function PalestrantesSection({ palestrantes }: PalestrantesSectionProps) 
       <Container>
         <Reveal>
           <SectionHeader
-            eyebrow={copy.eyebrow}
-            title={copy.title}
-            lede={copy.lede}
+            eyebrow={secao.eyebrow}
+            eyebrowTone={secao.eyebrowTom}
+            title={secao.titulo}
+            lede={secao.lede}
             alignEnd
           />
         </Reveal>
@@ -34,7 +41,7 @@ export function PalestrantesSection({ palestrantes }: PalestrantesSectionProps) 
         <Reveal>
           <ul className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
             {vazio
-              ? Array.from({ length: copy.placeholders }, (_, index) => (
+              ? Array.from({ length: placeholders }, (_, index) => (
                   <li key={index}>
                     <SpeakerCard />
                   </li>
@@ -52,9 +59,7 @@ export function PalestrantesSection({ palestrantes }: PalestrantesSectionProps) 
           </ul>
         </Reveal>
 
-        <Note>
-          {copy.noteLead} <a href="#participe">{copy.noteLink}</a> {copy.noteTail}
-        </Note>
+        <NoteWithLink text={secao.nota} label={secao.notaLinkLabel} href={secao.notaLinkUrl} />
       </Container>
     </Section>
   );

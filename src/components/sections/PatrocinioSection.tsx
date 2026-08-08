@@ -5,12 +5,14 @@ import { Reveal } from "@/components/primitives/Reveal";
 import { Button } from "@/components/primitives/Button";
 import { KitBanner } from "@/components/primitives/KitBanner";
 import { SponsorSlot } from "@/components/cards/SponsorSlot";
-import { patrocinio as copy } from "@/lib/copy";
 import { asset, site } from "@/lib/site";
-import type { Cota, Patrocinador } from "@/lib/cms";
+import type { Cota, Interface, Patrocinador, Secao } from "@/lib/cms";
 
 export type PatrocinioSectionProps = {
   grupos: Array<{ cota: Cota; patrocinadores: Patrocinador[] }>;
+  secao: Secao;
+  kit: Secao;
+  ui: Interface;
 };
 
 /**
@@ -20,23 +22,27 @@ export type PatrocinioSectionProps = {
  * A seção mostra só patrocinador confirmado — não anuncia cota vaga. Ver
  * PRODUCT.md.
  */
-export function PatrocinioSection({ grupos }: PatrocinioSectionProps) {
-  const mailto = `mailto:${site.contactEmail}?subject=${encodeURIComponent(copy.mailSubject)}`;
+export function PatrocinioSection({ grupos, secao, kit, ui }: PatrocinioSectionProps) {
+  const mailto = `mailto:${site.contactEmail}?subject=${encodeURIComponent(ui.patrocinioAssunto)}`;
 
   return (
     <Section id="patrocinio" variant="light">
       <Container>
         <Reveal>
-          <SectionHeader eyebrow={copy.eyebrow} title={copy.title} lede={copy.lede} alignEnd />
+          <SectionHeader
+            eyebrow={secao.eyebrow}
+            eyebrowTone={secao.eyebrowTom}
+            title={secao.titulo}
+            lede={secao.lede}
+            alignEnd
+          />
         </Reveal>
 
         {grupos.map((grupo) => (
           <Reveal key={grupo.cota.nome} className="mb-10">
-            <div className="mb-3.5 flex items-baseline justify-between gap-4">
-              <p className="text-cream font-mono text-[12px] tracking-[0.16em] uppercase">
-                {grupo.cota.label}
-              </p>
-            </div>
+            <p className="text-cream mb-3.5 font-mono text-[12px] tracking-[0.16em] uppercase">
+              {grupo.cota.label}
+            </p>
 
             <div className="grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-5">
               {grupo.patrocinadores.map((patrocinador) => (
@@ -53,11 +59,8 @@ export function PatrocinioSection({ grupos }: PatrocinioSectionProps) {
         ))}
 
         <Reveal>
-          <KitBanner
-            title={copy.kitTitle}
-            actions={<Button href={mailto}>{copy.kitCta}</Button>}
-          >
-            {copy.kitText}
+          <KitBanner title={kit.titulo} actions={<Button href={mailto}>{kit.cta}</Button>}>
+            {kit.lede}
           </KitBanner>
         </Reveal>
       </Container>

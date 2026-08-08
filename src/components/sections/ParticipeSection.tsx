@@ -3,15 +3,16 @@ import { Section } from "@/components/primitives/Section";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { CallCard } from "@/components/cards/CallCard";
-import { participe as copy } from "@/lib/copy";
-import { site } from "@/lib/site";
-import { formatDate, type Settings } from "@/lib/cms";
+import { formatDate, type Chamada, type Secao, type Settings } from "@/lib/cms";
 
 export type ParticipeSectionProps = {
+  chamadas: Chamada[];
+  secao: Secao;
   settings: Settings;
 };
 
-export function ParticipeSection({ settings }: ParticipeSectionProps) {
+export function ParticipeSection({ chamadas, secao, settings }: ParticipeSectionProps) {
+  // O prazo de voluntários é a única data que a chamada mostra hoje.
   const prazo = settings.volunteersDeadline ? formatDate(settings.volunteersDeadline) : "";
 
   return (
@@ -19,41 +20,33 @@ export function ParticipeSection({ settings }: ParticipeSectionProps) {
       <Container>
         <Reveal>
           <SectionHeader
-            eyebrow={copy.eyebrow}
-            eyebrowTone="mint"
-            title={copy.title}
-            lede={copy.lede}
+            eyebrow={secao.eyebrow}
+            eyebrowTone={secao.eyebrowTom}
+            title={secao.titulo}
+            lede={secao.lede}
             slim
           />
         </Reveal>
 
         <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6">
-          <Reveal>
-            <CallCard
-              eyebrow={copy.palestrantes.eyebrow}
-              title={copy.palestrantes.title}
-              ctaLabel={copy.palestrantes.cta}
-              ctaHref={site.social.instagram}
-              className="h-full"
-            >
-              {copy.palestrantes.text}
-            </CallCard>
-          </Reveal>
-
-          <Reveal step={1}>
-            <CallCard
-              eyebrow={copy.voluntarios.eyebrow}
-              eyebrowTone="mint"
-              title={copy.voluntarios.title}
-              deadline={prazo ? `${copy.voluntarios.deadlinePrefix} ${prazo}` : undefined}
-              ctaLabel={copy.voluntarios.cta}
-              ctaHref={site.social.instagram}
-              ctaVariant="mint"
-              className="h-full"
-            >
-              {copy.voluntarios.text}
-            </CallCard>
-          </Reveal>
+          {chamadas.map((chamada, index) => (
+            <Reveal key={chamada.chave} step={(index % 3) as 0 | 1 | 2}>
+              <CallCard
+                eyebrow={chamada.eyebrow}
+                eyebrowTone={chamada.eyebrowTom}
+                title={chamada.titulo}
+                deadline={
+                  chamada.prazoPrefixo && prazo ? `${chamada.prazoPrefixo} ${prazo}` : undefined
+                }
+                ctaLabel={chamada.ctaLabel}
+                ctaHref={chamada.ctaUrl}
+                ctaVariant={chamada.ctaVariante}
+                className="h-full"
+              >
+                {chamada.texto}
+              </CallCard>
+            </Reveal>
+          ))}
         </div>
       </Container>
     </Section>
