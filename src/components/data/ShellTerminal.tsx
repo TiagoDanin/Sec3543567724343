@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Container } from "@/components/primitives/Container";
-import { useDesktop } from "@/lib/use-media";
 import { cn } from "@/lib/utils";
 
 export type ShellNode = string[] | { [name: string]: ShellNode };
@@ -147,10 +146,8 @@ const TOM_CLASS: Record<string, string> = {
  * O bloco sangra a largura toda e a cor é a do rodapé: não é um painel à parte,
  * e qualquer fundo próprio aqui desenha uma caixa com beirada visível.
  *
- * Só existe no desktop, e por montagem, não por classe: o shell é feito de
- * teclado — `Tab` completa, `↑ ↓` repetem, `Ctrl+L` limpa — e nada disso existe
- * no toque, onde encostar nele só sobe o teclado virtual por cima da página.
- * Escondê-lo por CSS ainda hidrataria o componente inteiro no celular.
+ * No toque os atalhos de teclado — `Tab` completa, `↑ ↓` repetem, `Ctrl+L` limpa
+ * — não existem, e os comandos precisam ser digitados por extenso.
  */
 export function ShellTerminal({
   fs,
@@ -158,7 +155,6 @@ export function ShellTerminal({
   usuario = "xibesec@2026",
   className,
 }: ShellTerminalProps) {
-  const desktop = useDesktop();
   const [linhas, setLinhas] = useState<Linha[]>([]);
   const [valor, setValor] = useState("");
   const [cwd, setCwd] = useState<string[]>([]);
@@ -553,10 +549,6 @@ export function ShellTerminal({
   };
 
   const eco = senhaPendente ? "*".repeat(valor.length) : valor;
-
-  // Depois de todos os hooks: a ordem precisa ser a mesma nos dois lados do
-  // ponto de corte.
-  if (!desktop) return null;
 
   return (
     <div

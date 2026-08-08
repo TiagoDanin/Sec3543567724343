@@ -33,3 +33,19 @@ type Story = StoryObj<typeof meta>;
 
 /** Só aparece abaixo de 860px — redimensione a janela do canvas para ver. */
 export const Padrao: Story = { name: "Padrão" };
+
+export const RecolheNoRodape: Story = {
+  name: "Recolhe no rodapé",
+  decorators: [
+    (Story) => (
+      <div className="-m-8">
+        <div className="h-[140vh]" />
+        <Story />
+        <footer className="bg-panel border-line text-cream-2 border-t p-8 font-mono text-[12px]">
+          Rodapé de bancada — role até aqui para ver a barra sair.
+          <div className="h-[60vh]" />
+        </footer>
+      </div>
+    ),
+  ],
+};

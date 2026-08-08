@@ -11,31 +11,57 @@ export type DockProps = {
   action: ReactNode;
   /** Rolagem, em px, a partir da qual a barra entra. */
   showAfter?: number;
+  /** Seletor do bloco que, ao aparecer, faz a barra sair. */
+  hideNear?: string;
   className?: string;
 };
 
 /**
  * Barra fixa de compra, só abaixo de 860px. Entra depois do hero para não cobrir
- * a primeira dobra.
+ * a primeira dobra e sai no rodapé, que disputa o mesmo canto da tela.
  */
-export function Dock({ headline, detail, action, showAfter = 520, className }: DockProps) {
-  const [on, setOn] = useState(false);
+export function Dock({
+  headline,
+  detail,
+  action,
+  showAfter = 520,
+  hideNear = "footer",
+  className,
+}: DockProps) {
+  const [rolou, setRolou] = useState(false);
+  const [noFim, setNoFim] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setOn(window.scrollY > showAfter);
+    const onScroll = () => setRolou(window.scrollY > showAfter);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [showAfter]);
 
+  useEffect(() => {
+    const alvo = document.querySelector(hideNear);
+    if (!alvo) return;
+
+    const observer = new IntersectionObserver((entries) => setNoFim(entries[0].isIntersecting), {
+      // Recolhe quando o rodapé cruza a base da tela, não no primeiro pixel dele.
+      rootMargin: "0px 0px -25% 0px",
+    });
+    observer.observe(alvo);
+    return () => observer.disconnect();
+  }, [hideNear]);
+
+  const visivel = rolou && !noFim;
+
   return (
     <div
+      inert={!visivel || undefined}
+      aria-hidden={!visivel || undefined}
       className={cn(
         "fixed inset-x-0 bottom-0 z-90 hidden items-center justify-between gap-3.5 max-[860px]:flex",
         "border-line bg-ink-deep/96 border-t px-(--gutter) py-[11px] backdrop-blur-[14px]",
         "pb-[calc(11px+env(safe-area-inset-bottom))]",
         "ease-brand transition-transform duration-400",
-        on ? "translate-y-0" : "translate-y-[110%]",
+        visivel ? "translate-y-0" : "translate-y-[110%]",
         className,
       )}
     >
