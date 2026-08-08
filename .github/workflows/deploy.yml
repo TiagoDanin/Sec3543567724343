@@ -48,8 +48,9 @@ jobs:
       - name: Build
         run: yarn build
 
-      # include-hidden-files: sem isso o .nojekyll não entra no artefato e o
-      # Pages passa a esconder /_next/, quebrando todo o CSS e JS do site.
+      # include-hidden-files: no padrão, a action monta o tar com
+      # --exclude=.[^/]* e descarta todo dotfile da raiz — inclusive o
+      # .nojekyll que o build copia de public/.
       - name: Enviar artefato
         uses: actions/upload-pages-artifact@v5
         with:

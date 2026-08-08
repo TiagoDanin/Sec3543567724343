@@ -36,6 +36,15 @@ Três documentos governam o projeto e devem ser tratados como código, não como
 
 Mudou a estrutura? Atualize o documento correspondente no mesmo commit.
 
+### Publicação
+
+O repositório é `xibesec/xibesec.github.io` e o Pages é alimentado por GitHub Actions, não por branch:
+
+- `.github/workflows/deploy.yml` — push na `main` roda lint, typecheck e build, e publica `dist/`. Em Settings → Pages, **Source** precisa estar em _GitHub Actions_.
+- `.github/workflows/ci.yml` — as mesmas verificações em pull request, mais `format:check`.
+
+O `basePath` fica **vazio**: o repo é o site raiz da organização e o domínio próprio vem de `public/CNAME`, copiado para `dist/` pelo próprio build. `NEXT_PUBLIC_BASE_PATH` existe só para preview sob subcaminho e não é usado no deploy. O `.nojekyll` também sai de `public/`, e é por isso que o upload do artefato roda com `include-hidden-files: true` — no padrão, a action descarta todo dotfile da raiz.
+
 ### Conteúdo fora do código
 
 Todo o conteúdo mora em `contents/`, fora de `src/`, para que alguém da organização edite um arquivo sem entrar no código. O content layer é **nextjs-studio**:
@@ -126,7 +135,6 @@ O repositório está em fase de estrutura. Ainda **não existem**:
 - `src/lib/` — falta `site.ts`, `cms.ts`, `content-types.ts`, `schema.tsx`, `event.ts` (já há `fonts.ts` e `utils.ts`);
 - scripts `predev`/`prebuild` gerando `.studio/studio.d.ts`, e o script `studio` para abrir o editor;
 - as rotas — `page.tsx`, `error.tsx`, `loading.tsx` e `not-found.tsx` seguem como placeholders vazios do scaffold, e nenhuma seção da home foi composta;
-- `.github/workflows/` — `deploy.yml` (GitHub Pages) e `ci.yml` (lint + typecheck + build);
 - `scripts/validate-content.ts` com Zod;
 - os ativos de marca em `public/` — favicon, OG image, logos, mascote e os padrões marajoara. Sem eles, `Greca`, `BioHeader` e `SponsorSlot` renderizam sem imagem.
 

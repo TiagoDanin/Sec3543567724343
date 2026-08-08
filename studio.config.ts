@@ -411,6 +411,40 @@ const config: StudioConfig = {
       },
     },
 
+    // ── Na imprensa ──────────────────────────────────────────────────────
+    // Clipping. Só entra registro com URL que abre: prova social é a última
+    // coisa que pode ser afirmada sem fonte.
+    imprensa: {
+      mediaDir: "public/images/imprensa",
+      schema: {
+        collection: "imprensa",
+        label: "Na imprensa",
+        fields: [
+          { name: "veiculo", type: "text", required: true, label: "Veículo" },
+          { name: "slug", type: "slug", from: "veiculo", required: true },
+          { name: "titulo", type: "text", required: true, label: "Título da matéria" },
+          { name: "url", type: "url", required: true, label: "Link da matéria" },
+          { name: "data", type: "date", label: "Publicada em" },
+          {
+            name: "tipo",
+            type: "select",
+            required: true,
+            label: "Natureza",
+            description: "Matéria jornalística pesa diferente de agenda ou release. Seja honesto.",
+            options: [
+              opt("materia", "Matéria jornalística"),
+              opt("analise", "Análise de especialista"),
+              opt("entrevista", "Entrevista"),
+              opt("release", "Release republicado"),
+            ],
+          },
+          { name: "trecho", type: "long-text", rows: 2, label: "Trecho citado" },
+          { name: "logo", type: "media", accept: ["image/*"], label: "Logo do veículo" },
+          { name: "order", type: "number", format: "integer", label: "Ordem" },
+        ],
+      },
+    },
+
     // ── Organizações parceiras ───────────────────────────────────────────
     // `url` e `logo` opcionais de propósito: handles ainda não confirmados.
     parceiros: {

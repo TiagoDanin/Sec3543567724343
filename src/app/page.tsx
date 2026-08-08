@@ -18,6 +18,7 @@ import { PalestrantesSection } from "@/components/sections/PalestrantesSection";
 import { IngressosSection } from "@/components/sections/IngressosSection";
 import { ParticipeSection } from "@/components/sections/ParticipeSection";
 import { PatrocinioSection } from "@/components/sections/PatrocinioSection";
+import { ImprensaSection } from "@/components/sections/ImprensaSection";
 import { ParceirosSection } from "@/components/sections/ParceirosSection";
 import { LocalSection } from "@/components/sections/LocalSection";
 import { Fechamento } from "@/components/sections/Fechamento";
@@ -40,6 +41,7 @@ import {
   getEquipe,
   getFatos,
   getHero,
+  getImprensa,
   getIngressos,
   getNavegacao,
   getPalestrantes,
@@ -82,6 +84,9 @@ export default function Page() {
   const ingressos = getIngressos();
   const beneficios = getBeneficios();
   const chamadas = getChamadas();
+  const imprensa = getImprensa();
+  // A citação que abre a seção: a análise de especialista pesa mais que release.
+  const destaqueImprensa = imprensa.find((m) => m.tipo === "analise" && m.trecho) ?? imprensa[0];
   const gruposPatrocinio = getPatrocinadoresPorCota();
   const parceiros = getParceiros();
   const equipe = getEquipe();
@@ -177,6 +182,16 @@ export default function Page() {
         ) : null}
 
         <Greca tone="green" />
+
+        {/* Antes do patrocínio de propósito: quem decide verba lê a prova de
+            terceiro na porta da seção que pede o investimento. */}
+        {sections.imprensa ? (
+          <ImprensaSection
+            materias={imprensa}
+            destaque={destaqueImprensa}
+            secao={secao("imprensa")}
+          />
+        ) : null}
 
         {sections.patrocinio ? (
           <PatrocinioSection

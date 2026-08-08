@@ -179,6 +179,17 @@
     animation: term-rise 0.52s var(--ease-brand) both;
   }
 
+  /* Esteira de manchetes. A trilha é duplicada, então meio ciclo fecha a volta
+     sem emenda visível. Devagar de propósito: aqui corre texto para ler, não
+     grafismo. */
+  .animate-ticker {
+    animation: ticker 64s linear infinite;
+  }
+  .ticker-host:hover .animate-ticker,
+  .ticker-host:focus-within .animate-ticker {
+    animation-play-state: paused;
+  }
+
   /* Hachura da moldura de foto ainda não entregue. */
   .hatch {
     background: repeating-linear-gradient(
@@ -198,8 +209,13 @@
     .animate-floaty,
     .animate-blink,
     .animate-scan,
-    .animate-term-line {
+    .animate-term-line,
+    .animate-ticker {
       animation: none;
+    }
+    /* Parada, a trilha vira uma faixa de rolagem manual. */
+    .ticker-host {
+      overflow-x: auto;
     }
   }
 }
@@ -233,5 +249,14 @@
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@keyframes ticker {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }

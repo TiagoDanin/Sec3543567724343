@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "studio": "nextjs-studio",
+    "studio:types": "nextjs-studio --generate-types",
+    "prebuild": "yarn studio:types",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",

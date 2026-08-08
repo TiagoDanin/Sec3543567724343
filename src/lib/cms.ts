@@ -12,6 +12,7 @@ import type {
   Hero,
   IconeBeneficio,
   Ingresso,
+  Materia,
   NavItem,
   Organizacao,
   Palestrante,
@@ -22,6 +23,7 @@ import type {
   Settings,
   Sobre,
   TerminalKind,
+  TipoImprensa,
   Tom,
   Trilha,
 } from "./content-types";
@@ -74,6 +76,7 @@ const SECTION_KEYS: SectionKey[] = [
   "patrocinio",
   "parceiros",
   "local",
+  "imprensa",
   "faq",
 ];
 
@@ -340,6 +343,32 @@ export function getPatrocinadoresPorCota(): Array<{ cota: Cota; patrocinadores: 
       patrocinadores: patrocinadores.filter((item) => item.cota === cota.nome),
     }))
     .filter((group) => group.patrocinadores.length > 0);
+}
+
+const TIPOS_IMPRENSA: TipoImprensa[] = ["materia", "analise", "entrevista", "release"];
+
+/**
+ * Clipping. Registro sem `url` é descartado aqui mesmo: a seção existe para
+ * apontar a fonte, e uma linha sem link é uma afirmação sem prova.
+ */
+export function getImprensa(): Materia[] {
+  return rows("imprensa")
+    .map((row) => {
+      const tipo = str(row, "tipo") as TipoImprensa;
+      return {
+        veiculo: str(row, "veiculo"),
+        slug: str(row, "slug"),
+        titulo: str(row, "titulo"),
+        url: str(row, "url"),
+        data: str(row, "data"),
+        tipo: TIPOS_IMPRENSA.includes(tipo) ? tipo : "materia",
+        trecho: str(row, "trecho"),
+        logo: str(row, "logo"),
+        order: num(row, "order"),
+      };
+    })
+    .filter((materia) => materia.url && materia.veiculo)
+    .sort(byOrder);
 }
 
 export function getParceiros(): Parceiro[] {

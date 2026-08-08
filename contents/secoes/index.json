@@ -46,6 +46,13 @@
     "lede": "Compartilhe conhecimento com os participantes ou entre para a equipe que torna a edição possível."
   },
   {
+    "chave": "imprensa",
+    "eyebrow": "Na imprensa",
+    "eyebrowTom": "mint",
+    "titulo": "O que publicaram sobre o XibéSec.",
+    "lede": "Cobertura de veículos de imprensa e de referências do setor de segurança, desde a primeira edição."
+  },
+  {
     "chave": "patrocinio",
     "eyebrow": "Patrocínio",
     "eyebrowTom": "orange",

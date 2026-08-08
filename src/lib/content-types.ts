@@ -27,6 +27,7 @@ export type SectionKey =
   | "patrocinio"
   | "parceiros"
   | "local"
+  | "imprensa"
   | "faq";
 
 export type Sobre = {
@@ -166,6 +167,20 @@ export type Patrocinador = {
   logo: string;
   url: string;
   cota: string;
+  order: number;
+};
+
+export type TipoImprensa = "materia" | "analise" | "entrevista" | "release";
+
+export type Materia = {
+  veiculo: string;
+  slug: string;
+  titulo: string;
+  url: string;
+  data: string;
+  tipo: TipoImprensa;
+  trecho: string;
+  logo: string;
   order: number;
 };
 

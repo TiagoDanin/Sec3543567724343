@@ -1,0 +1,79 @@
+[
+  {
+    "veiculo": "RedePará",
+    "slug": "redepara-2024",
+    "titulo": "XibéSec retorna a Belém com foco em segurança da informação e tecnologia",
+    "url": "https://redepara.com.br/Noticia/243841/xibesec-retorna-a-belem-com-foco-em-seguranca-da-informacao-e-tecnologia",
+    "data": "2024-11-08",
+    "tipo": "materia",
+    "trecho": "Belém-PA recebe, no próximo dia 23 de novembro, a segunda edição do XibéSec, um evento dedicado à área de segurança da informação e tecnologia.",
+    "logo": "",
+    "order": 1
+  },
+  {
+    "veiculo": "It Show",
+    "slug": "itshow-2024",
+    "titulo": "XibéSec 2024: Belém sediará evento transformador em segurança da informação",
+    "url": "https://itshow.com.br/xibesec-2024-inovacao-em-ciberseguranca-em-belem/",
+    "data": "2024-11-22",
+    "tipo": "materia",
+    "trecho": "A segunda edição do XibéSec está programada para fortalecer os esforços em cibersegurança na região Norte, apresentando um dia completo de atividades com especialistas reconhecidos globalmente.",
+    "logo": "",
+    "order": 2
+  },
+  {
+    "veiculo": "AnchisesLandia",
+    "slug": "anchiseslandia-2025",
+    "titulo": "Eventos de segurança no segundo semestre de 2025",
+    "url": "https://anchisesbr.blogspot.com/2025/09/seguranca-eventos-de-seguranca-no.html",
+    "data": "2025-09-05",
+    "tipo": "analise",
+    "trecho": "Até hoje é o único evento de segurança na região Norte!!!",
+    "logo": "",
+    "order": 3
+  },
+  {
+    "veiculo": "AnchisesLandia",
+    "slug": "anchiseslandia-2024",
+    "titulo": "Como foram os eventos de segurança em 2024",
+    "url": "https://anchisesbr.blogspot.com/2025/01/seguranca-como-foram-os-eventos-de.html",
+    "data": "2025-01-30",
+    "tipo": "analise",
+    "trecho": "A consolidação do Fortalsec e do XibéSec (Belém, PA), em seu segundo ano.",
+    "logo": "",
+    "order": 4
+  },
+  {
+    "veiculo": "It Show",
+    "slug": "itshow-2025",
+    "titulo": "XibéSec 2025 anuncia programação com nomes de peso e diversidade temática em Belém",
+    "url": "https://itshow.com.br/xibesec-2025-ciberseguranca-em-belem-pa/",
+    "data": "2025-09-08",
+    "tipo": "release",
+    "trecho": "O XibéSec 2025 acaba de revelar um time diverso de palestrantes.",
+    "logo": "",
+    "order": 5
+  },
+  {
+    "veiculo": "HQPOP",
+    "slug": "hqpop-2025",
+    "titulo": "XibéSec 2025 leva cibersegurança para a Amazônia",
+    "url": "https://hqpop.com.br/xibesec-2025-o-encontro-da-inovacao-em-ciberseguranca-na-amazonia/",
+    "data": "2025-09-11",
+    "tipo": "release",
+    "trecho": "Belém do Pará sediará a terceira edição do XibéSec, das 9h às 19h.",
+    "logo": "",
+    "order": 6
+  },
+  {
+    "veiculo": "HQPOP",
+    "slug": "hqpop-2024",
+    "titulo": "XibéSec 2024: nova edição em Belém, fortalecendo a cibersegurança no Norte",
+    "url": "https://hqpop.com.br/xibesec-2024-nova-edicao-em-belem-fortalecendo-a-ciberseguranca-no-norte/",
+    "data": "2024-11-05",
+    "tipo": "release",
+    "trecho": "O XibéSec surgiu em 2023 com a proposta de incentivar a área de Segurança da Informação.",
+    "logo": "",
+    "order": 7
+  }
+]
