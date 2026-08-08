@@ -437,6 +437,7 @@ const config: StudioConfig = {
               opt("entrevista", "Entrevista"),
               opt("release", "Release republicado"),
               opt("agenda", "Agenda de eventos"),
+              opt("institucional", "Nota institucional"),
             ],
           },
           { name: "trecho", type: "long-text", rows: 2, label: "Trecho citado" },

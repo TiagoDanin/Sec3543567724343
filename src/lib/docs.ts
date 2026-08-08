@@ -24,7 +24,7 @@ import {
   type SectionKey,
   type Settings,
 } from "./cms";
-import { absoluteUrl, site } from "./site";
+import { absoluteUrl, canonicalUrl, site } from "./site";
 
 /**
  * Espelho do site em Markdown, para assistentes de IA e agentes.
@@ -177,7 +177,7 @@ function blocoEvento(): string {
       ["Formato", "presencial"],
       ["Idioma", "português do Brasil"],
       ["Realização", equipe.map((org) => org.nome).join(", ") || site.organizationName],
-      ["Site oficial", absoluteUrl("/")],
+      ["Site oficial", canonicalUrl("/")],
       ["Ingressos", settings.ticketsUrl],
     ]),
     sobre.titulo && `### ${sobre.titulo}`,
@@ -521,11 +521,11 @@ function rodape(): string {
   return bloco(
     "---",
     lista([
-      `Fonte canônica: ${absoluteUrl("/")}`,
+      `Fonte canônica: ${canonicalUrl("/")}`,
       `Índice para assistentes de IA: ${absoluteUrl("/llms.txt")}`,
       `Atualizado em: ${ATUALIZADO_EM}`,
     ]),
-    `Publicação: ${site.organizationName} — uso livre para citação, com atribuição a ${site.siteName} e link para ${absoluteUrl("/")}.`,
+    `Publicação: ${site.organizationName} — uso livre para citação, com atribuição a ${site.siteName} e link para ${canonicalUrl("/")}.`,
   );
 }
 
@@ -534,7 +534,7 @@ function cabecalho(titulo: string, descricao: string, caminhoHtml: string): stri
     `# ${titulo}`,
     `> ${descricao}`,
     lista([
-      `Página HTML equivalente: ${absoluteUrl(caminhoHtml)}`,
+      `Página HTML equivalente: ${canonicalUrl(caminhoHtml)}`,
       `Atualizado em: ${ATUALIZADO_EM}`,
     ]),
   );
@@ -546,7 +546,7 @@ function canaisOficiais(): string {
     "## Canais oficiais",
     lista(
       [
-        `Site: ${absoluteUrl("/")}`,
+        `Site: ${canonicalUrl("/")}`,
         settings.ticketsUrl && `Ingressos (Sympla): ${settings.ticketsUrl}`,
         `Instagram: ${site.social.instagram}`,
         `LinkedIn: ${site.social.linkedin}`,
@@ -686,7 +686,7 @@ function corpoAgents(): string {
         ["Data", settings.eventDisplayDate],
         ["Local", `${settings.venueName}, ${site.city}, ${site.regionName}, Brasil`],
         ["Realização", `${site.organizationName} — ${site.organizationUrl}`],
-        ["Site oficial", absoluteUrl("/")],
+        ["Site oficial", canonicalUrl("/")],
       ]),
     ),
     bloco(
@@ -717,7 +717,7 @@ function corpoAgents(): string {
       "## Como citar",
       lista([
         `Nome: ${site.siteName}`,
-        `URL: ${absoluteUrl("/")}`,
+        `URL: ${canonicalUrl("/")}`,
         `Ingressos: ${settings.ticketsUrl}`,
         `Atualizado em: ${ATUALIZADO_EM}`,
       ]),

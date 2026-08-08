@@ -6,8 +6,12 @@ export const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const site = {
   siteName: "XibéSec 2026",
   siteTagline: "Para quem tem fome de segurança",
+  /** Categoria do evento, no léxico do `PRODUCT.md`. Entra no `<title>`. */
+  siteCategory: "Encontro de cibersegurança",
+  // Cabe inteira no resultado de busca: acima de ~160 caracteres o Google corta
+  // a frase no meio e a data, que é o que faz clicar, some.
   siteDescription:
-    "O encontro de cibersegurança que leva a energia do Norte do Brasil para quem vive infosec, hacking e tecnologia. 4ª edição: 19 de setembro de 2026, 09h às 19h, Bristol Marambaia Hotel, Belém do Pará.",
+    "O encontro de cibersegurança do Norte do Brasil. 4ª edição: 19 de setembro de 2026, das 09h às 19h, no Bristol Marambaia Hotel, em Belém do Pará.",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "https://xibesec.com.br",
   locale: "pt-BR",
 
@@ -104,12 +108,15 @@ export function pageMetadata({
   markdown?: string | null;
 }) {
   const url = absoluteUrl(path);
-  const fullTitle = `${title} · ${site.siteName}`;
+  // A marca entra sempre e sem repetir: "XibéSec" é a palavra que se busca, e
+  // um título que não a contém não ganha a própria consulta. `absolute` desliga
+  // o template do layout, que duplicaria o nome quando o título já o traz.
+  const fullTitle = title.includes(site.siteName) ? title : `${title} · ${site.siteName}`;
   const ogImage = absoluteUrl(image ?? site.ogImage);
   const md = markdown === undefined ? markdownPath(path) : markdown;
 
   return {
-    title,
+    title: { absolute: fullTitle },
     description,
     alternates: {
       canonical: url,

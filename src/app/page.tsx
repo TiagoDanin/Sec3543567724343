@@ -68,7 +68,7 @@ const DOCK_CTA = "Ingressos";
 const FATOS_ARIA = "O XibéSec 2026 em números";
 
 export const metadata = pageMetadata({
-  title: `${site.siteTagline} · 19 de setembro · ${site.city}, ${site.region}`,
+  title: `${site.siteName} · ${site.siteCategory} em ${site.city}, ${site.region}`,
   description: site.siteDescription,
   path: "/",
 });

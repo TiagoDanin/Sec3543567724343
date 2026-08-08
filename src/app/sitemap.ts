@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: absoluteUrl("/"),
+      url: canonicalUrl("/"),
       lastModified: agora,
       changeFrequency: "weekly",
       priority: 1,

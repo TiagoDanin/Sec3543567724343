@@ -346,7 +346,14 @@ export function getPatrocinadoresPorCota(): Array<{ cota: Cota; patrocinadores: 
     .filter((group) => group.patrocinadores.length > 0);
 }
 
-const TIPOS_IMPRENSA: TipoImprensa[] = ["materia", "analise", "entrevista", "release", "agenda"];
+const TIPOS_IMPRENSA: TipoImprensa[] = [
+  "materia",
+  "analise",
+  "entrevista",
+  "release",
+  "agenda",
+  "institucional",
+];
 
 /**
  * Clipping. Registro sem `url` é descartado aqui mesmo: a seção existe para

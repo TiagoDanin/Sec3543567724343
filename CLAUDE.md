@@ -65,7 +65,7 @@ Formato por natureza do dado:
 
 ### Feature flags de seção
 
-`contents/settings/index.json` tem um bloco `sections` com um booleano por seção. A home faz `{settings.sections.palestrantes && <SecaoPalestrantes />}`. É o que permite publicar a landing com o que já está pronto e ir ligando o resto conforme a organização entrega, **sem tocar em código**. Hoje todas estão `false`.
+`contents/settings/index.json` tem um bloco `sections` com um booleano por seção. A home faz `{settings.sections.palestrantes && <SecaoPalestrantes />}`. É o que permite publicar a landing com o que já está pronto e ir ligando o resto conforme a organização entrega, **sem tocar em código**. A mesma chave governa o JSON-LD e o espelho em Markdown: seção desligada não vira `subEvent` no schema nem arquivo em `/docs/`.
 
 ### Fonte única de URL e SEO
 
@@ -73,7 +73,29 @@ Formato por natureza do dado:
 
 `src/lib/schema.tsx` fabrica o JSON-LD: `<SchemaMarkup>` mais `eventSchema`, `organizationSchema`, `websiteSchema`, `generateFaqSchema`, `generateBreadcrumbs`, `generatePersonSchema`. Tudo alimentado por `site.ts` + `contents/`, com `@id` estáveis (`#organization`, `#website`) referenciados pelos schemas de página.
 
-`app/sitemap.ts`, `app/robots.ts` e `app/manifest.ts` usam as convenções nativas do App Router — compatíveis com `output: "export"`, sem `next-sitemap`. Só emitir URL de rota que `generateStaticParams` realmente gera.
+`app/sitemap.ts` e `app/robots.ts` usam as convenções nativas do App Router — compatíveis com `output: "export"`, sem `next-sitemap`, e ambos precisam de `export const dynamic = "force-static"` (sem isso o build do export falha). Só emitir URL de rota que `generateStaticParams` realmente gera. O sitemap usa `canonicalUrl()`, que aplica a barra final imposta pelo `trailingSlash` — sem ela o sitemap aponta para um endereço que o canonical não confirma.
+
+`robots.ts` libera nominalmente os rastreadores de assistentes de IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended e afins). Não é decoração: esses bots leem o bloco do próprio user-agent antes do `*`, e bot bloqueado não cita o evento.
+
+### Espelho em Markdown e `llms.txt`
+
+O HTML é para gente; `src/lib/docs.ts` gera a **mesma informação em Markdown**, para assistentes de IA e agentes. Route Handlers com `export const dynamic = "force-static"` escrevem os arquivos no build — `app/llms.txt/route.ts` vira `dist/llms.txt`, `app/docs/[doc]/route.ts` vira `dist/docs/<slug>.md`. O `trailingSlash` não interfere no nome.
+
+| Arquivo            | O que é                                              |
+| ------------------ | ---------------------------------------------------- |
+| `/llms.txt`        | Índice curto no formato de llmstxt.org               |
+| `/llms-full.txt`   | Todo o conteúdo publicado em um arquivo              |
+| `/index.md`        | Espelho da home                                      |
+| `/docs/agents.md`  | Respostas canônicas e a lista do que **não** afirmar |
+| `/docs/<seção>.md` | Um documento por seção publicada                     |
+
+Três regras governam isso:
+
+1. **Não é conteúdo paralelo.** Tudo sai de `contents/` pela fachada de `cms.ts`. Escrever texto novo direto no `docs.ts` recria o problema que `contents/` existe para evitar.
+2. **Documento só existe enquanto a seção estiver ligada** em `settings.sections`. Publicar em Markdown o que a página não mostra cria uma segunda verdade — e `llms.txt` lê a mesma lista, então nunca aponta para arquivo que o build não gerou.
+3. **O indefinido é declarado**, não omitido: `/docs/agents.md` traz a lista do que a organização ainda não publicou. É o que faz um assistente responder "ainda não foi anunciado" em vez de estimar.
+
+`pageMetadata()` deriva o alternate sozinho — `/` → `/index.md` — e emite `<link rel="alternate" type="text/markdown">`. Rota nova nasce com espelho anunciado; passar `markdown: null` desliga quando a rota não tiver um.
 
 ## Regras de escrita de código
 
@@ -130,13 +152,14 @@ O addon MCP do Storybook está ligado e declarado em `.mcp.json` — o servidor 
 
 ## Pendências
 
-O repositório está em fase de estrutura. Ainda **não existem**:
+A home está composta e o build publica; ainda **não existem**:
 
-- `src/lib/` — falta `site.ts`, `cms.ts`, `content-types.ts`, `schema.tsx`, `event.ts` (já há `fonts.ts` e `utils.ts`);
-- scripts `predev`/`prebuild` gerando `.studio/studio.d.ts`, e o script `studio` para abrir o editor;
-- as rotas — `page.tsx`, `error.tsx`, `loading.tsx` e `not-found.tsx` seguem como placeholders vazios do scaffold, e nenhuma seção da home foi composta;
+- `src/lib/event.ts` — geração do `.ics` a partir de `contents/settings`;
+- `app/manifest.ts`;
+- `error.tsx`, `loading.tsx` e `not-found.tsx` seguem como placeholders vazios do scaffold — o `not-found` não tem nem navegação nem link de volta;
+- script `predev` gerando `.studio/studio.d.ts` (o `prebuild` já existe);
 - `scripts/validate-content.ts` com Zod;
-- os ativos de marca em `public/` — favicon, OG image, logos, mascote e os padrões marajoara. Sem eles, `Greca`, `BioHeader` e `SponsorSlot` renderizam sem imagem.
+- fotos das edições anteriores, logos das organizações parceiras e da imprensa: os diretórios em `public/images/` existem vazios, e por isso `EditionCard` e `PartnerChip` caem no estado de pendência.
 
 As coleções em `contents/` existem com o schema declarado e **conteúdo vazio, de propósito**. Não preencher sem pedido explícito.
 

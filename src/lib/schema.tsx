@@ -1,11 +1,24 @@
 // JSON-LD (schema.org). Gerado a partir de `site.ts` + `contents/` — nunca
 // escrito como string fixa, senão volta a divergir do conteúdo publicado.
-import { site, absoluteUrl, socialLinks } from "./site";
+import { site, absoluteUrl, canonicalUrl, socialLinks } from "./site";
 import type { AgendaItem, Ingresso, Palestrante, Patrocinador, Settings } from "./content-types";
 
-const ORG_ID = `${absoluteUrl("/")}#organization`;
-const WEBSITE_ID = `${absoluteUrl("/")}#website`;
-const EVENT_ID = `${absoluteUrl("/")}#event`;
+/** A home com a barra final, como o canonical a publica. Base dos `@id`. */
+const HOME = canonicalUrl("/");
+
+const ORG_ID = `${HOME}#organization`;
+const WEBSITE_ID = `${HOME}#website`;
+const EVENT_ID = `${HOME}#event`;
+
+/**
+ * `streetAddress` sem repetir cidade e UF — elas já vão em `addressLocality` e
+ * `addressRegion`, e o endereço do CMS é uma linha só, do jeito que se escreve
+ * num convite.
+ */
+function streetAddress(venueAddress: string): string {
+  const cauda = new RegExp(`[,.]?\\s*${site.city}\\s*[/-]\\s*${site.region}\\.?\\s*$`, "i");
+  return venueAddress.replace(cauda, "").trim();
+}
 
 export const organizationSchema = {
   "@context": "https://schema.org",
@@ -21,7 +34,7 @@ export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "@id": WEBSITE_ID,
-  url: absoluteUrl("/"),
+  url: HOME,
   name: site.siteName,
   description: site.siteDescription,
   inLanguage: site.locale,
@@ -63,7 +76,7 @@ export function eventSchema({
     inLanguage: site.locale,
     isAccessibleForFree: false,
     keywords: [...site.keywords].join(", "),
-    url: absoluteUrl("/"),
+    url: HOME,
     image: [absoluteUrl(site.ogImage)],
     location: {
       "@type": "Place",
@@ -71,7 +84,7 @@ export function eventSchema({
       ...(settings.venueMapUrl ? { hasMap: settings.venueMapUrl } : {}),
       address: {
         "@type": "PostalAddress",
-        streetAddress: settings.venueAddress,
+        streetAddress: streetAddress(settings.venueAddress),
         addressLocality: site.city,
         addressRegion: site.region,
         addressCountry: site.country,
