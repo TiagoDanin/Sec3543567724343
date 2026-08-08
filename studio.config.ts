@@ -254,7 +254,14 @@ const config: StudioConfig = {
             label: "Grupo no rodapé",
             options: [opt("evento", "Evento"), opt("participar", "Participar")],
           },
-          { name: "noMenu", type: "boolean", label: "Aparece no menu principal" },
+          {
+            name: "secao",
+            type: "text",
+            label: "Seção correspondente",
+            description:
+              "Chave em Configuração → Seções visíveis. Com a seção desligada, o item some do menu.",
+          },
+          { name: "noMenu", type: "boolean", label: "Esconder do menu principal" },
         ],
       },
     },

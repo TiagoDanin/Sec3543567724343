@@ -105,7 +105,14 @@ export const SECAO_VAZIA: Secao = {
 
 export type Fato = { valor: string; label: string };
 
-export type NavItem = { label: string; href: string; grupo: string; noMenu: boolean };
+export type NavItem = {
+  label: string;
+  href: string;
+  /** Chave em settings.sections. Vazia = item sempre visível. */
+  secao: string;
+  grupo: string;
+  noMenu: boolean;
+};
 
 export type Ingresso = {
   nome: string;

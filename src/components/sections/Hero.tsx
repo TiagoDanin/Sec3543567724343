@@ -10,6 +10,8 @@ const MASCOTE_ALT =
 export type HeroProps = {
   hero: HeroContent;
   settings: Settings;
+  /** Destino do botão secundário. Ausente, o botão não é renderizado. */
+  ctaSecundarioHref?: string;
 };
 
 /**
@@ -17,7 +19,7 @@ export type HeroProps = {
  * mascote flutuando sobre o brilho menta. Em tela estreita o véu vira vertical:
  * o texto atravessaria a parte clara da mata.
  */
-export function Hero({ hero, settings }: HeroProps) {
+export function Hero({ hero, settings, ctaSecundarioHref }: HeroProps) {
   // "Av. Pedro Álvares Cabral, 9031. Marambaia, Belém/PA" → "Belém/PA"
   const cidade = settings.venueAddress.split(",").slice(-1)[0]?.trim() ?? "";
 
@@ -69,8 +71,8 @@ export function Hero({ hero, settings }: HeroProps) {
             <Button href="#ingressos" arrow>
               {hero.ctaPrimario}
             </Button>
-            {hero.ctaSecundario ? (
-              <Button href="#programacao" variant="ghost">
+            {hero.ctaSecundario && ctaSecundarioHref ? (
+              <Button href={ctaSecundarioHref} variant="ghost">
                 {hero.ctaSecundario}
               </Button>
             ) : null}

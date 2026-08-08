@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
+import { ShellTerminal, type ShellNode } from "@/components/data/ShellTerminal";
 import { asset, site } from "@/lib/site";
 import type { Organizacao, Settings } from "@/lib/cms";
 
@@ -10,10 +11,12 @@ const COL_REALIZACAO = "Realização";
 export type SiteFooterProps = {
   settings: Settings;
   equipe: Organizacao[];
+  /** Sistema de arquivos do terminal do rodapé. */
+  shellFs: ShellNode;
 };
 
 /** As duas marcas convivem: o evento e quem realiza, separados por filete. */
-export function SiteFooter({ settings, equipe }: SiteFooterProps) {
+export function SiteFooter({ settings, equipe, shellFs }: SiteFooterProps) {
   const organizacao = equipe[0];
   const tagline = `${site.siteTagline}. ${site.city}, ${site.regionName}, Brasil`;
 
@@ -76,6 +79,8 @@ export function SiteFooter({ settings, equipe }: SiteFooterProps) {
           ],
         },
       ]}
-    />
+    >
+      <ShellTerminal fs={shellFs} target={settings.eventStartDate} />
+    </Footer>
   );
 }

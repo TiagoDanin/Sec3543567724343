@@ -24,7 +24,9 @@ import { Fechamento } from "@/components/sections/Fechamento";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 
 import { SchemaMarkup, eventSchema, organizationWithSocial, websiteSchema } from "@/lib/schema";
+import { buildShellFs } from "@/lib/shell-fs";
 import { pageMetadata, site } from "@/lib/site";
+import type { SectionKey } from "@/lib/cms";
 import {
   SECAO_VAZIA,
   formatDate,
@@ -96,7 +98,11 @@ export default function Page() {
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
-        items={navegacao.filter((item) => !item.noMenu)}
+        items={navegacao.filter(
+          // Item cuja seção está desligada some do menu: link para âncora que
+          // não existe na página não leva a lugar nenhum.
+          (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
+        )}
         action={
           <Button size="sm" href="#ingressos">
             {NAV_CTA}
@@ -105,7 +111,11 @@ export default function Page() {
       />
 
       <main id="conteudo" className="flex-1">
-        <Hero hero={hero} settings={settings} />
+        <Hero
+          hero={hero}
+          settings={settings}
+          ctaSecundarioHref={sections.agenda ? "#programacao" : undefined}
+        />
 
         {sections.ingressos ? <CountdownBar settings={settings} ingressos={ingressos} /> : null}
 
@@ -187,7 +197,7 @@ export default function Page() {
         <Fechamento settings={settings} secao={secao("fechamento")} />
       </main>
 
-      <SiteFooter settings={settings} equipe={equipe} />
+      <SiteFooter settings={settings} equipe={equipe} shellFs={buildShellFs()} />
 
       {sections.ingressos && cheapest !== null && lote ? (
         <Dock

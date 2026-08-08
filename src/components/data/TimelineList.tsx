@@ -9,6 +9,10 @@ export type TimelineEntry = {
   detail?: string;
   /** A edição atual, marcada em laranja. */
   current?: boolean;
+  /** A linha espelha qual registro está sendo visto agora. */
+  active?: boolean;
+  /** Intercepta o salto por âncora quando o destino é `sticky`. */
+  onNavigate?: () => void;
 };
 
 export type TimelineListProps = {
@@ -30,7 +34,11 @@ export function TimelineList({ entries, className }: TimelineListProps) {
               className={cn(
                 "w-[3.6em] shrink-0 font-mono text-[15px] leading-none font-medium tabular-nums",
                 "ease-brand transition-colors duration-300",
-                entry.current ? "text-orange font-bold" : "text-mint group-hover:text-cream",
+                entry.current
+                  ? "text-orange font-bold"
+                  : entry.active
+                    ? "text-cream"
+                    : "text-mint group-hover:text-cream",
               )}
             >
               {entry.year}
@@ -55,25 +63,46 @@ export function TimelineList({ entries, className }: TimelineListProps) {
           </>
         );
 
-        const rowClasses = "flex items-baseline gap-[22px] px-[26px] py-[22px]";
+        // A seta aparece no hover, no foco e na linha do registro em vista.
+        const rowClasses = cn(
+          "flex items-baseline gap-[22px] px-[26px] py-[22px]",
+          "after:ease-brand after:ml-auto after:size-[0.85em] after:shrink-0 after:bg-current",
+          "after:opacity-0 after:-translate-x-2 after:transition after:duration-300",
+          "after:[content:''] after:[mask:var(--ico-arw)_center/contain_no-repeat]",
+          "hover:after:translate-x-0 hover:after:opacity-72",
+          "focus-visible:after:translate-x-0 focus-visible:after:opacity-72",
+          entry.active && "after:translate-x-0 after:opacity-72",
+        );
 
         return (
           <li
             key={entry.year}
             className={cn(
               "group ease-brand transition-colors duration-300",
-              entry.current ? "bg-orange/8 hover:bg-orange/15" : "bg-ink hover:bg-panel",
+              entry.current
+                ? "bg-orange/8 hover:bg-orange/15"
+                : entry.active
+                  ? "bg-panel"
+                  : "bg-ink hover:bg-panel",
             )}
           >
             {entry.href ? (
               <a
                 href={entry.href}
+                onClick={
+                  entry.onNavigate
+                    ? (event) => {
+                        event.preventDefault();
+                        entry.onNavigate?.();
+                      }
+                    : undefined
+                }
                 className={cn(rowClasses, "focus-visible:outline-offset-[-4px]")}
               >
                 {row}
               </a>
             ) : (
-              <span className={rowClasses}>{row}</span>
+              <span className="flex items-baseline gap-[22px] px-[26px] py-[22px]">{row}</span>
             )}
           </li>
         );

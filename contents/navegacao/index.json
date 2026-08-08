@@ -2,42 +2,49 @@
   {
     "label": "O evento",
     "href": "#evento",
+    "secao": "sobre",
     "grupo": "evento",
     "noMenu": false
   },
   {
     "label": "Programação",
     "href": "#programacao",
+    "secao": "agenda",
     "grupo": "evento",
     "noMenu": false
   },
   {
     "label": "CTF",
     "href": "#ctf",
+    "secao": "ctf",
     "grupo": "evento",
     "noMenu": false
   },
   {
     "label": "Palestrantes",
     "href": "#palestrantes",
+    "secao": "palestrantes",
     "grupo": "evento",
     "noMenu": false
   },
   {
     "label": "Participe",
     "href": "#participe",
+    "secao": "participe",
     "grupo": "participar",
     "noMenu": false
   },
   {
     "label": "Patrocínio",
     "href": "#patrocinio",
+    "secao": "patrocinio",
     "grupo": "participar",
     "noMenu": false
   },
   {
     "label": "Local",
     "href": "#local",
+    "secao": "local",
     "grupo": "evento",
     "noMenu": false
   }

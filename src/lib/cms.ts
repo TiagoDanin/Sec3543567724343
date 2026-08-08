@@ -103,6 +103,7 @@ export function getNavegacao(): NavItem[] {
   return rows("navegacao").map((row) => ({
     label: str(row, "label"),
     href: str(row, "href"),
+    secao: str(row, "secao"),
     grupo: str(row, "grupo"),
     noMenu: bool(row, "noMenu"),
   }));

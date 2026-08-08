@@ -14,6 +14,8 @@ export type EditionCardProps = {
   /** Registro no topo da pilha agora. */
   active?: boolean;
   className?: string;
+  /** Marcador usado pelo bloco de edições para localizar as cartas. */
+  "data-carta"?: string;
 };
 
 /**
@@ -30,17 +32,27 @@ export function EditionCard({
   index = 0,
   active = false,
   className,
+  ...rest
 }: EditionCardProps) {
   return (
     <figure
       id={id}
-      style={{ "--i": index } as React.CSSProperties}
+      // A inclinação sai do fluxo do Tailwind e vem por estilo: `active` e o
+      // hover precisam zerá-la, e três utilities de rotate competindo por
+      // especificidade não têm ordem garantida.
+      style={
+        {
+          "--i": index,
+          "--tilt": active ? "0deg" : `${(index - 1) * 1.6}deg`,
+        } as React.CSSProperties
+      }
       className={cn(
-        "bg-ink border-line m-0 border",
+        "bg-ink border-line m-0 rotate-(--tilt) border",
         "ease-brand transition-transform duration-400 hover:rotate-0",
-        active && "border-mint rotate-0",
+        active && "border-mint",
         className,
       )}
+      {...rest}
     >
       <div className="mx-3 mt-3">
         {photo ? (
