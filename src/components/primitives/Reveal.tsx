@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
+import { useEffect, useRef, type ElementType, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export type RevealProps = {
@@ -12,25 +12,28 @@ export type RevealProps = {
 };
 
 /**
- * O gesto autoral do projeto, repetido: subida com desfoque. Sem JavaScript o
- * conteúdo aparece inteiro — o estado invisível só passa a valer depois que o
- * componente monta.
+ * O gesto autoral do projeto, repetido: subida com desfoque.
+ *
+ * O estado invisível é aplicado por classe no próprio nó, depois da montagem —
+ * sem JavaScript o conteúdo aparece inteiro, como manda o DESIGN.md. Por isso o
+ * efeito escreve direto no DOM em vez de guardar estado em React: o alvo é o
+ * elemento, e o React não precisa re-renderizar por causa disso.
  */
 export function Reveal({ children, as: Tag = "div", className, step = 0 }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
-  const [armed, setArmed] = useState(false);
-  const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    setArmed(true);
     const node = ref.current;
     if (!node) return;
+
+    node.style.transitionDelay = `${step * 80}ms`;
+    node.classList.add("reveal");
 
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setShown(true);
+            node.classList.add("reveal-in");
             observer.disconnect();
           }
         }
@@ -40,14 +43,10 @@ export function Reveal({ children, as: Tag = "div", className, step = 0 }: Revea
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [step]);
 
   return (
-    <Tag
-      ref={ref}
-      style={armed ? { transitionDelay: `${step * 80}ms` } : undefined}
-      className={cn(armed && "reveal", shown && "reveal-in", className)}
-    >
+    <Tag ref={ref} className={cn(className)}>
       {children}
     </Tag>
   );
