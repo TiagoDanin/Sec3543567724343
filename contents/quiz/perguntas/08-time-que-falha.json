@@ -1,6 +1,6 @@
 {
   "chave": "time-que-falha",
-  "enunciado": "O time errou feio e o incidente foi público. Qual é o seu papel na segunda-feira?",
+  "enunciado": "O incidente vazou e virou notícia. E na segunda-feira?",
   "order": 8,
   "alternativas": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "chave": "treinar",
-      "texto": "Montar o treino para o erro não se repetir, sem humilhar ninguém",
+      "texto": "Montar o treino, sem humilhar quem clicou",
       "pesos": {
         "isca-consciente": 3,
         "labia-de-acesso": 1

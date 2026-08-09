@@ -1,11 +1,11 @@
 {
   "chave": "madrugada",
-  "enunciado": "Três da manhã, o alerta dispara. O que te faz levantar da cama de verdade?",
+  "enunciado": "Três da manhã, o alerta dispara. O que te tira da cama?",
   "order": 2,
   "alternativas": [
     {
       "chave": "entender",
-      "texto": "A chance de ver um ataque acontecendo ao vivo",
+      "texto": "Ver um ataque acontecendo ao vivo, e ninguém mais está vendo",
       "pesos": {
         "coruja-de-plantao": 3,
         "faro-de-anomalia": 1
@@ -13,7 +13,7 @@
     },
     {
       "chave": "reconstruir",
-      "texto": "Amanhã alguém vai perguntar exatamente o que aconteceu",
+      "texto": "Saber que amanhã vão perguntar e alguém precisa ter a resposta",
       "pesos": {
         "perito-do-rastro": 3,
         "coruja-de-plantao": 1
@@ -21,7 +21,7 @@
     },
     {
       "chave": "consertar",
-      "texto": "A brecha continua aberta enquanto eu durmo",
+      "texto": "A brecha continua aberta enquanto você tenta dormir",
       "pesos": {
         "muralha-viva": 3,
         "guarda-do-codigo": 1
@@ -29,7 +29,7 @@
     },
     {
       "chave": "avisar",
-      "texto": "Alguém precisa decidir agora, e essa pessoa vai me ligar",
+      "texto": "Seu telefone vai tocar em quinze minutos de qualquer jeito",
       "pesos": {
         "escudo-de-crise": 3,
         "tradutor-de-risco": 1

@@ -228,6 +228,8 @@ export type QuizCopy = {
   cartaRodapeEsquerda: string;
   cartaRodapeDireita: string;
   fotoTrocar: string;
+  verVerso: string;
+  verFrente: string;
   fotoRemover: string;
   fotoAjuda: string;
   zoomLabel: string;

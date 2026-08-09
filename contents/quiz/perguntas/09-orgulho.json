@@ -1,11 +1,11 @@
 {
   "chave": "orgulho",
-  "enunciado": "Do que você mais se orgulha no trabalho?",
+  "enunciado": "Do que você mais se orgulha?",
   "order": 9,
   "alternativas": [
     {
       "chave": "nao-aconteceu",
-      "texto": "Do ataque que nunca aconteceu, e que ninguém soube que evitei",
+      "texto": "Do ataque que não aconteceu e que ninguém soube que evitei",
       "pesos": {
         "cofre-de-segredos": 2,
         "muralha-viva": 2
@@ -13,7 +13,7 @@
     },
     {
       "chave": "mudou-cultura",
-      "texto": "De ver alguém desconfiar de um golpe por causa de mim",
+      "texto": "De alguém ter desconfiado de um golpe por sua causa",
       "pesos": {
         "isca-consciente": 3,
         "labia-de-acesso": 1
@@ -21,7 +21,7 @@
     },
     {
       "chave": "uniu-times",
-      "texto": "De ter feito ataque e defesa conversarem de verdade",
+      "texto": "De ter feito ataque e defesa conversarem sem briga",
       "pesos": {
         "arbitro-do-simulado": 3,
         "radar-antecipado": 1
@@ -29,7 +29,7 @@
     },
     {
       "chave": "provei",
-      "texto": "De ter provado o que todo mundo achava impossível",
+      "texto": "De ter provado o que todo mundo dizia ser impossível",
       "pesos": {
         "cacador-de-bounty": 2,
         "sombra-na-rede": 2

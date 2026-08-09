@@ -1,11 +1,11 @@
 {
   "chave": "o-que-cansa",
-  "enunciado": "O que mais te irrita no dia a dia da área?",
+  "enunciado": "O que mais te irrita no trabalho?",
   "order": 6,
   "alternativas": [
     {
       "chave": "alerta-falso",
-      "texto": "Alerta que grita sem motivo e treina todo mundo a ignorar",
+      "texto": "Alerta que grita à toa e ensina todo mundo a ignorar",
       "pesos": {
         "faro-de-anomalia": 3,
         "coruja-de-plantao": 1
@@ -13,7 +13,7 @@
     },
     {
       "chave": "remendo",
-      "texto": "Corrigir pela terceira vez a mesma falha em lugares diferentes",
+      "texto": "Corrigir a mesma falha pela terceira vez em lugar diferente",
       "pesos": {
         "pedreiro-de-pipeline": 3,
         "guarda-do-codigo": 1
@@ -21,7 +21,7 @@
     },
     {
       "chave": "ignorado",
-      "texto": "Apresentar o risco, ser ignorado, e ver acontecer exatamente aquilo",
+      "texto": "Avisar do risco, ser ignorado, e ver acontecer igualzinho",
       "pesos": {
         "tradutor-de-risco": 2,
         "escudo-de-crise": 2

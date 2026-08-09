@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { EVENTOS, evento } from "@/lib/analytics";
 import { apurar, type Arquetipo, type Quiz } from "@/lib/content-types";
 import { semAssinatura } from "@/lib/exportar-carta";
+import { normalizarNome } from "@/lib/nome";
 import { conexaoEconomica, precarregarRecorte } from "@/lib/recorte-fundo";
 import { Button } from "@/components/primitives/Button";
 import { Resultado } from "./Resultado";
@@ -56,7 +57,7 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
   const daUrl = arquetipos.find((item) => item.slug === slug) ?? null;
 
   // Recarregar mantém o nome: sem isso a carta reaberta perde quem é a pessoa.
-  const nome = nomeDigitado || (comecou ? "" : nomeDaUrl);
+  const nome = normalizarNome(nomeDigitado || (comecou ? "" : nomeDaUrl));
   const arquetipo = apurado ?? (comecou ? null : daUrl);
   const etapa: Etapa = arquetipo ? "resultado" : comecou ? "perguntas" : "abertura";
 
@@ -173,7 +174,7 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
             <h2
               ref={tituloRef}
               tabIndex={-1}
-              className="font-display text-cream text-[clamp(22px,3.4vw,32px)] leading-[1.16] tracking-[-0.01em] outline-none"
+              className="font-display text-cream text-[clamp(26px,4.2vw,40px)] leading-[1.12] tracking-[-0.015em] text-balance outline-none"
             >
               {pergunta.enunciado}
             </h2>
@@ -195,7 +196,7 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
                   />
                   <label
                     htmlFor={id}
-                    className="border-line bg-panel text-cream-2 hover:border-mint hover:text-cream peer-checked:border-mint peer-checked:text-cream peer-focus-visible:outline-mint block cursor-pointer border px-5 py-4 text-[16px] leading-[1.5] transition-colors duration-200 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2"
+                    className="border-line bg-panel text-cream-2 hover:border-mint hover:text-cream peer-checked:border-mint peer-checked:text-cream peer-focus-visible:outline-mint block cursor-pointer border px-5 py-4.5 text-[18px] leading-[1.45] transition-colors duration-200 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2"
                   >
                     {alternativa.texto}
                   </label>

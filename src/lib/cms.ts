@@ -459,6 +459,8 @@ function getQuizCopy(): QuizCopy {
     cartaRodapeEsquerda: str(row, "cartaRodapeEsquerda"),
     cartaRodapeDireita: str(row, "cartaRodapeDireita"),
     fotoTrocar: str(row, "fotoTrocar"),
+    verVerso: str(row, "verVerso"),
+    verFrente: str(row, "verFrente"),
     fotoRemover: str(row, "fotoRemover"),
     fotoAjuda: str(row, "fotoAjuda"),
     zoomLabel: str(row, "zoomLabel"),

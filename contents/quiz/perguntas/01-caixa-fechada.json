@@ -1,11 +1,11 @@
 {
   "chave": "caixa-fechada",
-  "enunciado": "Cai na sua mão um aparelho que você nunca viu, sem manual e sem senha. Qual é o primeiro movimento?",
+  "enunciado": "Cai na sua mão um aparelho sem manual e sem senha.",
   "order": 1,
   "alternativas": [
     {
       "chave": "abrir",
-      "texto": "Abrir a carcaça e ver onde a placa fala com o mundo",
+      "texto": "Abrir a carcaça, porque a resposta está lá dentro",
       "pesos": {
         "chave-de-fenda": 3,
         "arrombador-de-portas": 1
@@ -13,7 +13,7 @@
     },
     {
       "chave": "escutar",
-      "texto": "Ligar na rede e observar em silêncio com quem ele conversa",
+      "texto": "Ligar na rede e ficar só ouvindo o que ele fala",
       "pesos": {
         "faro-de-anomalia": 3,
         "radar-antecipado": 1
@@ -21,7 +21,7 @@
     },
     {
       "chave": "forcar",
-      "texto": "Testar todo caminho de entrada até algum ceder",
+      "texto": "Tentar todas as senhas óbvias antes de pensar direito",
       "pesos": {
         "arrombador-de-portas": 3,
         "cacador-de-bounty": 1
@@ -29,7 +29,7 @@
     },
     {
       "chave": "procedencia",
-      "texto": "Descobrir de onde ele veio e quem o instalou antes de encostar",
+      "texto": "Perguntar de onde veio isso antes de encostar o dedo",
       "pesos": {
         "perito-do-rastro": 2,
         "guardiao-da-norma": 2

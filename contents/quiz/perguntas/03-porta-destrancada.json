@@ -1,11 +1,11 @@
 {
   "chave": "porta-destrancada",
-  "enunciado": "Você encontra uma falha grave num sistema que não é seu. E agora?",
+  "enunciado": "Você achou uma falha grave num sistema que não é seu.",
   "order": 3,
   "alternativas": [
     {
       "chave": "reportar",
-      "texto": "Reporto pelo canal certo e documento tudo com cuidado",
+      "texto": "Reporto pelo canal certo, com print de tudo",
       "pesos": {
         "cacador-de-bounty": 3,
         "guardiao-da-norma": 1
@@ -13,7 +13,7 @@
     },
     {
       "chave": "confirmar",
-      "texto": "Confirmo até onde ela vai antes de falar qualquer coisa",
+      "texto": "Confirmo até onde ela vai antes de abrir a boca",
       "pesos": {
         "arrombador-de-portas": 2,
         "sombra-na-rede": 2
@@ -21,7 +21,7 @@
     },
     {
       "chave": "impacto",
-      "texto": "Calculo quem se machuca se isso vazar, e é esse o meu relatório",
+      "texto": "Calculo quem se machuca se isso vazar",
       "pesos": {
         "tradutor-de-risco": 3,
         "escudo-de-crise": 1
@@ -29,7 +29,7 @@
     },
     {
       "chave": "quem",
-      "texto": "Verifico se mais alguém já achou antes de mim",
+      "texto": "Vou ver se alguém já achou antes de mim",
       "pesos": {
         "radar-antecipado": 3,
         "faro-de-anomalia": 1

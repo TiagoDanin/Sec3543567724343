@@ -1,6 +1,6 @@
 {
   "chave": "mesa-do-ctf",
-  "enunciado": "No CTF do evento, você abre o placar e escolhe um desafio. Qual?",
+  "enunciado": "No CTF você escolhe um desafio. Qual?",
   "order": 7,
   "alternativas": [
     {
@@ -21,7 +21,7 @@
     },
     {
       "chave": "osint",
-      "texto": "O de OSINT: achar a pessoa a partir de uma foto",
+      "texto": "O de OSINT, achar a pessoa a partir de uma foto",
       "pesos": {
         "labia-de-acesso": 2,
         "radar-antecipado": 2
@@ -29,7 +29,7 @@
     },
     {
       "chave": "captura",
-      "texto": "A captura de tráfego gigante que precisa ser lida com calma",
+      "texto": "A captura de tráfego gigante que precisa de paciência",
       "pesos": {
         "perito-do-rastro": 2,
         "faro-de-anomalia": 2

@@ -583,6 +583,8 @@ const config: StudioConfig = {
           { name: "cartaRodapeEsquerda", type: "text", label: "Carta — rodapé à esquerda" },
           { name: "cartaRodapeDireita", type: "text", label: "Carta — rodapé à direita" },
           { name: "fotoTrocar", type: "text", label: "Botão — trocar foto" },
+          { name: "verVerso", type: "text", label: "Botão — ver o verso" },
+          { name: "verFrente", type: "text", label: "Botão — ver a frente" },
           { name: "fotoRemover", type: "text", label: "Botão — voltar ao mascote" },
           { name: "fotoAjuda", type: "long-text", rows: 2, label: "Ajuda do enquadramento" },
           { name: "zoomLabel", type: "text", label: "Rótulo do zoom" },

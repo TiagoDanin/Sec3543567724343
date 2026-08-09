@@ -1,11 +1,11 @@
 {
   "chave": "ferramenta",
-  "enunciado": "Qual dessas janelas fica aberta mais tempo na sua tela?",
+  "enunciado": "Qual janela fica aberta mais tempo na sua tela?",
   "order": 4,
   "alternativas": [
     {
       "chave": "disassembler",
-      "texto": "Um disassembler e um editor hexadecimal",
+      "texto": "Disassembler e editor hexadecimal",
       "pesos": {
         "chave-de-fenda": 3,
         "sombra-na-rede": 1
@@ -13,7 +13,7 @@
     },
     {
       "chave": "logs",
-      "texto": "Painel de logs com filtro que só eu entendo",
+      "texto": "Painel de log com filtro que só você entende",
       "pesos": {
         "coruja-de-plantao": 3,
         "perito-do-rastro": 1
@@ -21,7 +21,7 @@
     },
     {
       "chave": "editor",
-      "texto": "O editor de código, com um pull request esperando revisão",
+      "texto": "Editor de código, com um pull request esperando revisão",
       "pesos": {
         "guarda-do-codigo": 3,
         "pedreiro-de-pipeline": 1

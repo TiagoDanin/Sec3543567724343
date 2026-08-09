@@ -419,17 +419,16 @@ function blocoQuiz(): string {
   const { copy, perguntas, arquetipos } = getQuiz();
   if (arquetipos.length === 0) return "";
 
-  const trilhaLabel = (trilha: string) => (trilha === "gerencial" ? "Gerencial" : "Técnica");
-
   return bloco(
     `## ${copy.titulo}`,
     copy.lede,
     `Disponível em ${link("/quiz", absoluteUrl("/quiz"))}. São ${perguntas.length} perguntas, respondidas no navegador; ao final a pessoa recebe um arquétipo e uma imagem para compartilhar. Nada é enviado ao servidor — o site é estático e não coleta resposta, nome ou foto.`,
     "### Arquétipos",
     tabela(
-      ["Arquétipo", "Área", "Trilha", "Resumo"],
-      arquetipos.map((item) => [item.nome, item.area, trilhaLabel(item.trilha), item.resumo]),
+      ["Arquétipo", "Time", "Área", "Resumo"],
+      arquetipos.map((item) => [item.nome, item.time, item.area, item.resumo]),
     ),
+    "As porcentagens de raridade mostradas na página são rótulo editorial, não medição: o site é estático e não registra resposta.",
   );
 }
 

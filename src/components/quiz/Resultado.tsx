@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { EVENTOS, evento } from "@/lib/analytics";
 import type { Arquetipo, QuizCopy } from "@/lib/content-types";
 import {
   baixar,
@@ -19,6 +20,7 @@ import {
 import { Button } from "@/components/primitives/Button";
 import { cn } from "@/lib/utils";
 import { Carta, COR_DO_TIME } from "./Carta";
+import { CartaVerso } from "./CartaVerso";
 
 /** Snapshot de servidor estável: recriar o objeto a cada render faz laço. */
 const OCIOSO: EstadoRecorte = { fase: "ocioso" };
@@ -46,6 +48,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
   ref,
 ) {
   const cartaRef = useRef<HTMLDivElement>(null);
+  const versoRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [foto, setFoto] = useState<string | undefined>();
@@ -53,6 +56,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
   const [posicao, setPosicao] = useState({ x: 50, y: 20 });
   const [zoom, setZoom] = useState(1);
   const [estado, setEstado] = useState<Estado>("pronto");
+  const [virada, setVirada] = useState(false);
 
   // Guardado para reprocessar se o recorte for ligado depois da escolha.
   const originalRef = useRef<File | null>(null);
@@ -111,6 +115,8 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
   const escolherFoto = useCallback(
     (arquivo: File | undefined) => {
       if (!arquivo) return;
+
+      evento(EVENTOS.quizFotoEnviada, { comRecorte: recortar && recorteDisponivel });
 
       originalRef.current = arquivo;
       setPosicao({ x: 50, y: 20 });
@@ -203,9 +209,11 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
     try {
       if (noCelular) {
         await navigator.share({ text: texto });
+        evento(EVENTOS.quizCompartilhado, { arquetipo: arquetipo.slug, via: "desafio" });
         return;
       }
       await navigator.clipboard.writeText(texto);
+      evento(EVENTOS.quizCompartilhado, { arquetipo: arquetipo.slug, via: "desafio-copia" });
       setDesafioCopiado(true);
     } catch {
       // Cancelar a folha ou negar a permissão não merece mensagem de erro.
@@ -214,25 +222,44 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
 
   const exportar = useCallback(
     async (modo: "baixar" | "compartilhar") => {
-      const node = cartaRef.current;
-      if (!node) return;
+      const frente = cartaRef.current;
+      const verso = versoRef.current;
+      if (!frente || !verso) return;
 
       setEstado("gerando");
 
       try {
-        const blob = await gerarCarta(node);
-        const arquivo = `xibesec-${arquetipo.slug}.png`;
-        const file = new File([blob], arquivo, { type: "image/png" });
+        if (modo === "compartilhar") {
+          // A face em foco, não as duas: compartilhar é um gesto único, e
+          // mandar dois arquivos deixa a pessoa escolher na hora errada.
+          const node = virada ? verso : frente;
+          const sufixo = virada ? "-verso" : "";
+          const arquivo = `xibesec-${arquetipo.slug}${sufixo}.png`;
+          const blob = await gerarCarta(node);
+          const file = new File([blob], arquivo, { type: "image/png" });
 
-        if (modo === "compartilhar" && podeCompartilhar(file)) {
-          const texto = interpolar(copy.compartilharTexto, {
-            resumo: arquetipo.resumo,
-            arquetipo: arquetipo.nome,
-            url: dominio,
-          });
-          await compartilhar(file, arquetipo.nome, texto);
+          if (podeCompartilhar(file)) {
+            const texto = interpolar(copy.compartilharTexto, {
+              resumo: arquetipo.resumo,
+              arquetipo: arquetipo.nome,
+              url: dominio,
+            });
+            await compartilhar(file, arquetipo.nome, texto);
+            evento(EVENTOS.quizCompartilhado, {
+              arquetipo: arquetipo.slug,
+              via: "arquivo",
+              face: virada ? "verso" : "frente",
+            });
+          } else {
+            baixar(blob, arquivo);
+            evento(EVENTOS.quizCartaBaixada, { arquetipo: arquetipo.slug });
+          }
         } else {
-          baixar(blob, arquivo);
+          // Baixar leva as duas faces: é o caso em que a pessoa quer o par
+          // inteiro para montar o carrossel depois.
+          baixar(await gerarCarta(frente), `xibesec-${arquetipo.slug}.png`);
+          baixar(await gerarCarta(verso), `xibesec-${arquetipo.slug}-verso.png`);
+          evento(EVENTOS.quizCartaBaixada, { arquetipo: arquetipo.slug, faces: 2 });
         }
 
         setEstado("pronto");
@@ -246,7 +273,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         setEstado("erro");
       }
     },
-    [arquetipo, dominio, copy.compartilharTexto],
+    [arquetipo, dominio, copy.compartilharTexto, virada],
   );
 
   const ocupado = estado === "gerando";
@@ -254,29 +281,57 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
   return (
     <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-14">
       <div>
-        <div
-          ref={cartaRef}
-          onPointerDown={arrastar}
-          className={foto ? "cursor-grab touch-none active:cursor-grabbing" : undefined}
-        >
-          <Carta
-            arquetipo={arquetipo}
-            nome={nome}
-            copy={copy}
+        {/* As duas faces ficam montadas o tempo todo: `html-to-image` não
+            fotografa nó ausente, e o verso precisa estar no DOM para exportar
+            sem a pessoa ter que virar a carta antes. */}
+        <div style={{ perspective: "1600px" }}>
+          <div
+            className="ease-brand relative transition-transform duration-700 motion-reduce:transition-none"
+            style={{
+              transformStyle: "preserve-3d",
+              transform: virada ? "rotateY(180deg)" : undefined,
+            }}
+          >
+            <div
+              ref={cartaRef}
+              onPointerDown={arrastar}
+              style={{ backfaceVisibility: "hidden" }}
+              className={
+                foto && !virada ? "cursor-grab touch-none active:cursor-grabbing" : undefined
+              }
+            >
+              <Carta
+                arquetipo={arquetipo}
+                nome={nome}
+                copy={copy}
+                foto={foto}
+                fotoFundo={fotoFundo}
+                fotoX={posicao.x}
+                fotoY={posicao.y}
+                fotoZoom={zoom}
+              />
+            </div>
 
-            foto={foto}
-            fotoFundo={fotoFundo}
-            fotoX={posicao.x}
-            fotoY={posicao.y}
-            fotoZoom={zoom}
-          />
+            <div
+              ref={versoRef}
+              className="absolute inset-0"
+              style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+            >
+              <CartaVerso arquetipo={arquetipo} nome={nome} copy={copy} />
+            </div>
+          </div>
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
-          <Button variant="ghost" size="sm" onClick={() => inputRef.current?.click()}>
-            {copy.fotoTrocar}
+          <Button variant="ghost" size="sm" onClick={() => setVirada((v) => !v)}>
+            {virada ? copy.verFrente : copy.verVerso}
           </Button>
-          {foto ? (
+          {!virada ? (
+            <Button variant="ghost" size="sm" onClick={() => inputRef.current?.click()}>
+              {copy.fotoTrocar}
+            </Button>
+          ) : null}
+          {foto && !virada ? (
             <Button variant="ghost" size="sm" onClick={removerFoto}>
               {copy.fotoRemover}
             </Button>

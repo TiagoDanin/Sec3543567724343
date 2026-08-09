@@ -1,11 +1,11 @@
 {
   "chave": "elo-fraco",
-  "enunciado": "Para entrar numa empresa bem protegida, por onde você começaria?",
+  "enunciado": "Empresa bem protegida. Por onde você entraria?",
   "order": 5,
   "alternativas": [
     {
       "chave": "pessoas",
-      "texto": "Por uma conversa. Alguém sempre abre a porta se o pedido parecer legítimo",
+      "texto": "Pela conversa, porque tem sempre alguém disposto a ajudar",
       "pesos": {
         "labia-de-acesso": 3,
         "cofre-de-segredos": 1
@@ -13,7 +13,7 @@
     },
     {
       "chave": "codigo",
-      "texto": "Pelo que eles mesmos escreveram e publicaram sem revisar",
+      "texto": "Pelo que eles publicaram no repositório sem revisar",
       "pesos": {
         "cacador-de-bounty": 2,
         "guarda-do-codigo": 2
@@ -21,7 +21,7 @@
     },
     {
       "chave": "esquecido",
-      "texto": "Por aquele servidor antigo que ninguém lembra que existe",
+      "texto": "Pelo servidor de 2015 que ninguém lembra que existe",
       "pesos": {
         "sombra-na-rede": 2,
         "muralha-viva": 2
@@ -29,7 +29,7 @@
     },
     {
       "chave": "credencial",
-      "texto": "Por uma senha antiga que ainda funciona em algum lugar",
+      "texto": "Pela senha antiga que continua funcionando em algum canto",
       "pesos": {
         "cofre-de-segredos": 3,
         "labia-de-acesso": 1
