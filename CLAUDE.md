@@ -99,6 +99,16 @@ Três regras governam isso:
 
 `pageMetadata()` deriva o alternate sozinho — `/` → `/index.md` — e emite `<link rel="alternate" type="text/markdown">`. Rota nova nasce com espelho anunciado; passar `markdown: null` desliga quando a rota não tiver um.
 
+## Git
+
+**Nunca trocar de branch sem pedido explícito.** `git checkout`, `git switch` e qualquer coisa que mova o `HEAD` só acontecem quando a pessoa pede, com essas palavras. Trocar de branch por conta própria — para "organizar", para deixar o trabalho no lugar certo, para o commit sair da branch que parece a correta — muda o chão embaixo de quem está trabalhando: o editor recarrega, o servidor de dev perde o `dist/`, e mudança não commitada vai junto para uma branch que não era a esperada.
+
+O trabalho é feito **na branch em que a sessão está**, seja ela qual for. Parecendo errada, diga isso e pergunte; não corrija sozinho.
+
+Para levar commit de uma branch a outra sem sair da atual, `git fetch . origem:destino` faz o fast-forward sem mexer no `HEAD` nem no working tree. É a ferramenta certa quando o pedido é "puxar para a main" e há trabalho sujo em cima da mesa.
+
+Vale também para o resto do que é irreversível ou compartilhado: sem `push`, sem `reset --hard`, sem reescrever histórico já publicado, sem apagar branch — a não ser que peçam.
+
 ## Regras de escrita de código
 
 **Nenhuma copy dentro de `.tsx`.** Texto visível vem de `contents/`. Corrigir uma frase não pode exigir PR de código. Valor calculado no build entra como token `{placeholder}` no JSON e é interpolado no render.
