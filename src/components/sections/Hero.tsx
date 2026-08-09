@@ -58,7 +58,7 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
         </div>
       </div>
 
-      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[720px]:min-h-0 max-[720px]:grid-cols-[1fr_38vw] max-[720px]:items-center max-[720px]:gap-[2vw] max-[720px]:pt-[clamp(20px,5vw,36px)] max-[720px]:pb-[clamp(28px,6vw,76px)]">
+      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[720px]:min-h-0 max-[720px]:grid-cols-1 max-[720px]:items-start max-[720px]:gap-0 max-[720px]:pt-[clamp(20px,5vw,36px)] max-[720px]:pb-[clamp(28px,6vw,76px)]">
         <div>
           <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase max-[720px]:mb-2 max-[720px]:text-[11px]">
             {hero.lugares.map((lugar, index) => (
@@ -75,20 +75,20 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             width={1600}
             height={1282}
             priority
-            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(100%,62vw)] max-[720px]:mb-3 max-[720px]:w-full"
+            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(100%,62vw)] max-[720px]:mb-3 max-[720px]:w-[min(100%,300px)]"
           />
 
-          <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase max-[720px]:mb-4 max-[720px]:text-[clamp(1.35rem,5.9vw,2rem)]">
+          <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase max-[720px]:mb-4 max-[720px]:max-w-[60%] max-[720px]:text-[clamp(1.5rem,6.6vw,2.1rem)]">
             {hero.tituloLinha}
             <br />
             <em className="text-orange not-italic">{hero.tituloDestaque}</em>
           </h1>
 
-          <p className="text-cream-2 mb-8 max-w-[520px] text-[17px] leading-[1.6] max-[720px]:mb-5 max-[720px]:text-[15px]">
+          <p className="text-cream-2 mb-8 max-w-[520px] text-[17px] leading-[1.6] max-[720px]:mb-5 max-[720px]:max-w-[62%] max-[720px]:text-[15px]">
             {hero.lede}
           </p>
 
-          <div className="mb-9 flex flex-wrap gap-3.5 max-[720px]:mb-5 [&>a]:max-[720px]:flex-auto [&>a]:max-[720px]:px-4 [&>a]:max-[720px]:text-[12px]">
+          <div className="mb-9 flex flex-wrap gap-3.5 max-[720px]:mb-5 [&>a]:max-[720px]:flex-auto">
             <BotaoMedido medirComo={EVENTOS.ingressoClicado} local="hero" {...ctaPrimario} arrow>
               {hero.ctaPrimario}
             </BotaoMedido>
@@ -113,10 +113,11 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
           </p>
         </div>
 
-        {/* Coluna própria da arte, também no celular: empilhada sobre o texto o
-            mascote virava adesivo boiando. Gavião acima, mascote abaixo, na
-            mesma diagonal do desktop. */}
-        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:translate-x-0 max-[720px]:translate-y-0 max-[720px]:flex-col max-[720px]:items-center max-[720px]:gap-[2vw]">
+        {/* No celular sai da grade e vira camada: dentro dela, a coluna estreita
+            que a arte exige espremia também o CTA e a data, que precisam da
+            linha inteira. Encostada na direita porque a `section` tem
+            `overflow-hidden` e recuo negativo decepa o mascote. */}
+        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:pointer-events-none max-[720px]:absolute max-[720px]:top-[44%] max-[720px]:right-0 max-[720px]:w-[31vw] max-[720px]:max-w-[138px] max-[720px]:translate-x-0 max-[720px]:translate-y-0 max-[720px]:flex-col max-[720px]:items-end max-[720px]:gap-[2vw]">
           <span
             aria-hidden="true"
             className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)] max-[720px]:hidden"
