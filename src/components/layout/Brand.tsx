@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { asset } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export type BrandProps = {
@@ -6,17 +8,20 @@ export type BrandProps = {
 };
 
 /**
- * Marca do cabeçalho composta em tipo, não em imagem: o lockup completo fica
- * ilegível a 38px de altura.
+ * Lettering da marca, sem a cuia: o lockup completo fica ilegível na altura do
+ * cabeçalho. O SVG é bitmap vetorizado — as lascas menores que um pixel nesta
+ * escala foram descartadas, senão são 5 MB de granulado invisível.
  */
 export function Brand({ href = "/", className }: BrandProps) {
   const word = (
-    <span className="font-display text-cream text-[19px] leading-none font-bold tracking-[0.01em] whitespace-nowrap uppercase max-[360px]:hidden">
-      Xibé<em className="text-orange not-italic">Sec</em>
-      <b className="text-orange ml-[3px] align-[0.55em] font-mono text-[10px] font-bold tracking-[0.06em]">
-        26
-      </b>
-    </span>
+    <Image
+      src={asset("/images/marca/lockup-xibesec.svg")}
+      alt=""
+      width={1000}
+      height={335}
+      priority
+      className="h-[30px] w-auto max-[360px]:hidden"
+    />
   );
 
   return (
