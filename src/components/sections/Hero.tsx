@@ -75,7 +75,7 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             width={1600}
             height={1282}
             priority
-            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[720px]:mb-2 max-[720px]:w-[min(100%,88vw)]"
+            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(100%,62vw)] max-[720px]:mb-3 max-[720px]:w-[min(100%,72vw)]"
           />
 
           <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase max-[720px]:mb-4 max-[720px]:text-[clamp(1.75rem,7.6vw,2.1rem)]">
@@ -115,19 +115,19 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
 
         {/* No mobile é faixa em fluxo, não camada solta: o mascote precisa de
             chão, e `absolute` sobre o texto foi o que o deixou boiando. */}
-        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:order-1 max-[720px]:mb-0 max-[720px]:translate-x-0 max-[720px]:translate-y-0 max-[720px]:items-start max-[720px]:justify-between">
+        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:order-1 max-[720px]:mb-3 max-[720px]:translate-x-0 max-[720px]:translate-y-0 max-[720px]:items-end max-[720px]:justify-start max-[720px]:gap-[2vw]">
           <span
             aria-hidden="true"
             className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)] max-[720px]:hidden"
           />
           <Mascote
             alt={MASCOTE_ALT}
-            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[720px]:w-[min(34vw,138px)]"
+            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[720px]:w-[min(40vw,164px)]"
           />
-          {/* No mobile é irmão do mascote na linha, não camada colada nele: é o
-              que faz a cena ocupar a largura inteira em vez de amontoar à
-              esquerda. Sobe um pouco para manter a diagonal do desktop. */}
-          <div className="animate-floaty absolute top-[4%] -right-[46%] hidden w-[min(19vw,74px)] max-[720px]:relative max-[720px]:top-0 max-[720px]:right-0 max-[720px]:mt-[3vw] max-[720px]:mr-[2vw] max-[720px]:block max-[720px]:w-[min(26vw,104px)] max-[720px]:self-start">
+          {/* No mobile é irmão do mascote na linha, não camada colada nele.
+              `self-start` mantém a diagonal do desktop: o gavião voa na altura
+              da cabeça, não ao lado dos pés. */}
+          <div className="animate-floaty absolute top-[4%] -right-[46%] hidden w-[min(19vw,74px)] max-[720px]:relative max-[720px]:top-0 max-[720px]:right-0 max-[720px]:mt-[2vw] max-[720px]:block max-[720px]:w-[min(24vw,96px)] max-[720px]:self-start">
             <Gaviao className="w-full drop-shadow-[0_18px_30px_rgba(0,0,0,.5)]" />
           </div>
         </div>
