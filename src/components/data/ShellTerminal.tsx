@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Container } from "@/components/primitives/Container";
+import { EVENTOS, evento } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 export type ShellNode = string[] | { [name: string]: ShellNode };
@@ -173,6 +174,8 @@ export function ShellTerminal({
   const abertura = useRef(0);
   const tentativas = useRef(0);
   const navegou = useRef(false);
+  /** O terminal está sempre na página: quem conta como uso é o primeiro comando. */
+  const usou = useRef(false);
 
   useEffect(() => {
     abertura.current = Date.now();
@@ -340,6 +343,8 @@ export function ShellTerminal({
             // Nega e cala, como o shell de verdade: quem souber, sabe.
             const restrito = SO_ROOT.has(nomeArquivo);
             if (restrito && !comoRoot) return erro(`cat: ${a}: Permissão negada`);
+            // O nome do arquivo, nunca o conteúdo: a flag é o segredo do desafio.
+            if (restrito) evento(EVENTOS.shellFlagEncontrada, { arquivo: nomeArquivo });
             no.forEach((linha) => escrever(linha, restrito ? "ok" : null));
           }
           return;
@@ -460,6 +465,7 @@ export function ShellTerminal({
   const conferirSenha = (tentada: string) => {
     const args = senhaPendente ?? [];
     if (SENHAS.has(tentada.trim().toLowerCase())) {
+      evento(EVENTOS.shellSudoSucesso, { tentativas: tentativas.current + 1 });
       setSenhaPendente(null);
       escrever("Senha aceita. E é por isso que existe evento de segurança.", "dim");
       if (/^(su|-s|-i)$/.test(args[0] ?? "")) {
@@ -472,6 +478,7 @@ export function ShellTerminal({
     }
 
     tentativas.current += 1;
+    evento(EVENTOS.shellSudoTentativa, { tentativa: tentativas.current });
     if (tentativas.current >= 3) {
       setSenhaPendente(null);
       return erro("sudo: 3 tentativas incorretas de senha");
@@ -486,6 +493,14 @@ export function ShellTerminal({
     } else {
       const linha = bruto.trim();
       if (!linha) return;
+
+      if (!usou.current) {
+        usou.current = true;
+        evento(EVENTOS.shellAberto);
+      }
+      // Só o nome do comando: o que vem depois dele a pessoa digitou.
+      evento(EVENTOS.shellComando, { comando: linha.split(/\s+/)[0]?.slice(0, 20) });
+
       ecoar(linha);
       historico.current.push(linha);
       posicao.current = historico.current.length;

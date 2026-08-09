@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { LinkMedido } from "@/components/analytics/LinkMedido";
+import { EVENTOS } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 export type SponsorSlotProps = {
@@ -36,7 +38,9 @@ export function SponsorSlot({ name, logo, href, tier, className }: SponsorSlotPr
   );
 
   return href ? (
-    <a
+    <LinkMedido
+      medirComo={EVENTOS.patrocinadorClicado}
+      dados={{ nome: name, ...(tier ? { cota: tier } : {}) }}
       href={href}
       target="_blank"
       rel="noopener"
@@ -44,7 +48,7 @@ export function SponsorSlot({ name, logo, href, tier, className }: SponsorSlotPr
       aria-label={tier ? `${name}, patrocinador ${tier} (abre em nova aba)` : name}
     >
       {content}
-    </a>
+    </LinkMedido>
   ) : (
     <div className={classes}>{content}</div>
   );

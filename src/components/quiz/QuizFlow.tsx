@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { EVENTOS, evento } from "@/lib/analytics";
 import { apurar, type Arquetipo, type Quiz } from "@/lib/content-types";
 import { semAssinatura } from "@/lib/exportar-carta";
 import { conexaoEconomica, precarregarRecorte } from "@/lib/recorte-fundo";
@@ -86,6 +87,7 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
       setApurado(vencedor);
 
       if (vencedor) {
+        evento(EVENTOS.quizConcluido, { arquetipo: vencedor.slug });
         const url = new URL(window.location.href);
         url.searchParams.set(PARAM, vencedor.slug);
         if (nomeDigitado) url.searchParams.set(PARAM_NOME, nomeDigitado);
@@ -96,6 +98,7 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
   );
 
   const refazer = useCallback(() => {
+    evento(EVENTOS.quizIniciado, { refazendo: true });
     setRespostas({});
     setIndice(0);
     setApurado(null);
@@ -113,6 +116,7 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
         className="max-w-xl"
         onSubmit={(event) => {
           event.preventDefault();
+          evento(EVENTOS.quizIniciado);
           setComecou(true);
         }}
       >

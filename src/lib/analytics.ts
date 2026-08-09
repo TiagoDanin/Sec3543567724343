@@ -36,10 +36,28 @@ gtag('js',new Date());
 gtag('config','${MEASUREMENT_ID}',{anonymize_ip:true,page_path:location.pathname.replace(/(.)\\/$/,'$1')});
 `.trim();
 
+/** Nome digitado à mão no componente vira uma linha separada no painel. */
+export const EVENTOS = {
+  ingressoClicado: "ingresso_clicado",
+  patrocinadorClicado: "patrocinador_clicado",
+  shellAberto: "shell_aberto",
+  shellComando: "shell_comando",
+  shellFlagEncontrada: "shell_flag_encontrada",
+  shellSudoTentativa: "shell_sudo_tentativa",
+  shellSudoSucesso: "shell_sudo_sucesso",
+  quizIniciado: "quiz_iniciado",
+  quizConcluido: "quiz_concluido",
+  quizFotoEnviada: "quiz_foto_enviada",
+  quizCartaBaixada: "quiz_carta_baixada",
+  quizCompartilhado: "quiz_compartilhado",
+} as const;
+
 /**
- * Evento no padrão objeto-ação: `ingresso_clicado`. Passa pela `window.gtag`, e
- * não por `dataLayer.push`: o gtag.js lê `arguments` de dentro da fila, e um
- * array empurrado à mão chegaria como um parâmetro só.
+ * Passa pela `window.gtag`, e não por `dataLayer.push`: o gtag.js lê `arguments`
+ * de dentro da fila, e um array empurrado à mão chegaria como um parâmetro só.
+ *
+ * Nenhum parâmetro carrega o que a pessoa digitou: nome do quiz, senha tentada e
+ * o valor da flag ficam de fora. Contagem, não conteúdo.
  */
 export function evento(nome: string, dados?: Record<string, unknown>): void {
   window.gtag?.("event", nome, dados);

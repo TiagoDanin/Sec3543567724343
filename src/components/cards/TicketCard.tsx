@@ -1,4 +1,5 @@
 import { BotaoMedido } from "@/components/analytics/BotaoMedido";
+import { EVENTOS } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -56,7 +57,7 @@ export function TicketCard({
       )}
 
       <BotaoMedido
-        medirComo="ingresso_clicado"
+        medirComo={EVENTOS.ingressoClicado}
         local="tabela"
         item={name}
         variant="ghost"

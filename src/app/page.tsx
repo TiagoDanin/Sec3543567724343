@@ -4,7 +4,7 @@ import { Section } from "@/components/primitives/Section";
 import { Container } from "@/components/primitives/Container";
 import { Reveal } from "@/components/primitives/Reveal";
 import { HighlightPanel } from "@/components/primitives/HighlightPanel";
-import { Button } from "@/components/primitives/Button";
+import { BotaoMedido } from "@/components/analytics/BotaoMedido";
 import { FactStrip } from "@/components/data/FactStrip";
 import { NavBar } from "@/components/layout/NavBar";
 import { Dock } from "@/components/layout/Dock";
@@ -33,6 +33,7 @@ import {
 } from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
 import { alvoCompra, ancoraViva, externo } from "@/lib/links";
+import { EVENTOS } from "@/lib/analytics";
 import { pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
 import {
@@ -146,9 +147,9 @@ export default function Page() {
           (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
         )}
         action={
-          <Button size="sm" {...checkout}>
+          <BotaoMedido medirComo={EVENTOS.ingressoClicado} local="navbar" size="sm" {...checkout}>
             {NAV_CTA}
-          </Button>
+          </BotaoMedido>
         }
       />
 
@@ -257,9 +258,14 @@ export default function Page() {
           headline={`Lote ${lote.lote} · a partir de ${formatPrice(cheapest)}`}
           detail={`vendas até ${formatDate(lote.validThrough)}`}
           action={
-            <Button size="sm" href="#ingressos">
+            <BotaoMedido
+              medirComo={EVENTOS.ingressoClicado}
+              local="dock"
+              size="sm"
+              href="#ingressos"
+            >
               {DOCK_CTA}
-            </Button>
+            </BotaoMedido>
           }
         />
       ) : null}
