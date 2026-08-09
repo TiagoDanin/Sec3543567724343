@@ -185,13 +185,35 @@ export interface PatrocinadoresEntry {
   order: number;
 }
 
+/** Data shape for the "privacidade" collection. */
+export interface PrivacidadeEntry {
+  titulo: string;
+  atualizadoEm: ISODate;
+  lede: string;
+  destaque: {
+    titulo: string;
+    texto: string;
+  };
+  blocos: Array<{
+    titulo: string;
+    texto: string;
+  }>;
+}
+
 /** Data shape for the "quiz" collection. */
 export interface QuizEntry {
   slug: string;
   nome: string;
   sigla: string;
+  time: string;
+  timeCor: string;
+  timeCorNome: string;
+  timePapel: string;
   area: string;
+  ferramenta: string;
   trilha: string;
+  raridade: string;
+  raridadeLabel: string;
   resumo: string;
   texto: string;
   noEvento: string;
@@ -202,14 +224,24 @@ export interface QuizEntry {
     chave: string;
     texto: string;
     pesos: {
-      desmontador: number;
-      arquiteta-de-caos: number;
-      sentinela-de-igapo: number;
-      leitor-de-sinais: number;
-      cacador-de-rastros: number;
-      negociador-de-risco: number;
-      engenheira-de-confianca: number;
-      ilusionista-social: number;
+      chave-de-fenda: number;
+      arrombador-de-portas: number;
+      faro-de-anomalia: number;
+      radar-antecipado: number;
+      cacador-de-bounty: number;
+      perito-do-rastro: number;
+      guardiao-da-norma: number;
+      coruja-de-plantao: number;
+      muralha-viva: number;
+      guarda-do-codigo: number;
+      escudo-de-crise: number;
+      tradutor-de-risco: number;
+      sombra-na-rede: number;
+      pedreiro-de-pipeline: number;
+      labia-de-acesso: number;
+      cofre-de-segredos: number;
+      isca-consciente: number;
+      arbitro-do-simulado: number;
     };
   }>;
   eyebrow: string;
@@ -223,14 +255,30 @@ export interface QuizEntry {
   ctaRefazer: string;
   progressoPrefixo: string;
   resultadoEyebrow: string;
-  resultadoTrilhaLabel: string;
+  resultadoTimeLabel: string;
+  resultadoCorLabel: string;
+  resultadoAreaLabel: string;
+  resultadoFerramentaLabel: string;
+  resultadoSiglaLabel: string;
+  resultadoRaridadeLabel: string;
   cartaLabel: string;
+  cartaRodapeEsquerda: string;
+  cartaRodapeDireita: string;
   fotoTrocar: string;
+  verVerso: string;
+  verFrente: string;
   fotoRemover: string;
   fotoAjuda: string;
   zoomLabel: string;
+  recorteLabel: string;
+  recorteBaixando: string;
+  recorteProcessando: string;
   baixar: string;
   compartilhar: string;
+  desafiar: string;
+  desafiarCopiado: string;
+  desafioTexto: string;
+  compartilharTexto: string;
   gerando: string;
   erroExportar: string;
   avisoSafariTitulo: string;
@@ -314,6 +362,7 @@ declare module 'nextjs-studio' {
     "palestrantes": PalestrantesEntry;
     "parceiros": ParceirosEntry;
     "patrocinadores": PatrocinadoresEntry;
+    "privacidade": PrivacidadeEntry;
     "quiz": QuizEntry;
     "secoes": SecoesEntry;
     "settings": SettingsEntry;
@@ -341,6 +390,7 @@ declare module 'nextjs-studio/server' {
     "palestrantes": PalestrantesEntry;
     "parceiros": ParceirosEntry;
     "patrocinadores": PatrocinadoresEntry;
+    "privacidade": PrivacidadeEntry;
     "quiz": QuizEntry;
     "secoes": SecoesEntry;
     "settings": SettingsEntry;
