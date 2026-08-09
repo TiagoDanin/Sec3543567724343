@@ -17,10 +17,10 @@ export function Brand({ href = "/", className }: BrandProps) {
     <Image
       src={asset("/images/marca/lockup-xibesec.svg")}
       alt=""
-      width={1000}
-      height={335}
+      width={1194}
+      height={235}
       priority
-      className="h-[30px] w-auto max-[360px]:hidden"
+      className="h-[22px] w-auto max-[360px]:hidden"
     />
   );
 
