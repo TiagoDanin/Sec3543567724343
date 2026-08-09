@@ -1,0 +1,35 @@
+{
+  "titulo": "Privacidade",
+  "atualizadoEm": "2026-08-08",
+  "lede": "Este site conta quantas pessoas passam por aqui e por onde chegaram. Isso é tudo. Não gravamos cookie, não pedimos permissão e não temos como saber quem você é.",
+  "destaque": {
+    "titulo": "Por que não tem aviso de cookies",
+    "texto": "Porque o site não usa cookies. O Google Analytics roda aqui no modo sem armazenamento: ele conta a visita e esquece. Como nada fica gravado no seu aparelho, não há permissão a pedir, e foi por isso que nenhuma tarja apareceu quando você abriu a página."
+  },
+  "blocos": [
+    {
+      "titulo": "O que medimos",
+      "texto": "Quais páginas foram abertas, de onde veio o acesso, que navegador e que tipo de aparelho, e a cidade aproximada. Também contamos os cliques nos botões de ingresso, que é como descobrimos se a página explica bem o evento."
+    },
+    {
+      "titulo": "O que não coletamos",
+      "texto": "Nome, e-mail, telefone, documento. Nada disso é pedido em lugar nenhum do site: não existe cadastro, login nem formulário de contato aqui. O IP é anonimizado antes de qualquer processamento, e nenhum dado que chega até nós aponta para uma pessoa específica."
+    },
+    {
+      "titulo": "Nada fica no seu aparelho",
+      "texto": "Nenhum cookie, nenhum identificador, nada em armazenamento local. Sem identificador, também não sabemos se você já esteve aqui antes: cada visita começa do zero, inclusive do nosso lado. Abrir em aba anônima ou limpar o navegador não muda o que medimos, porque não existe nada gravado para limpar."
+    },
+    {
+      "titulo": "O quiz roda no seu navegador",
+      "texto": "O nome que você digita e a foto que você escolhe não saem do aparelho. A carta é montada e baixada localmente, sem passar por servidor, e nenhuma resposta é registrada."
+    },
+    {
+      "titulo": "Como não ser medido",
+      "texto": "Não há cookie para recusar, então o controle está no navegador: qualquer bloqueador de rastreadores, a proteção reforçada do Firefox ou o sinal Do Not Track já bastam. O site é estático e não depende do Google Analytics para funcionar, então nada deixa de abrir se você bloquear."
+    },
+    {
+      "titulo": "Quem processa e por quanto tempo",
+      "texto": "Quem faz a medição é o Google Analytics, da Google LLC, na condição de operadora dos dados. Os números agregados ficam guardados por 14 meses e depois são apagados. Se algum dia passarmos a gravar dado no seu aparelho, esta página muda antes e um pedido de consentimento aparece."
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { Button } from "@/components/primitives/Button";
+import { BotaoMedido } from "@/components/analytics/BotaoMedido";
 import { cn } from "@/lib/utils";
 
 const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
@@ -55,7 +55,10 @@ export function TicketCard({
         <div className="mb-[clamp(14px,2vw,22px)]" />
       )}
 
-      <Button
+      <BotaoMedido
+        medirComo="ingresso_clicado"
+        local="tabela"
+        item={name}
         variant="ghost"
         full
         href={href}
@@ -64,7 +67,7 @@ export function TicketCard({
         aria-label={`${ctaLabel} — ${name}, ${price}`}
       >
         {ctaLabel}
-      </Button>
+      </BotaoMedido>
     </article>
   );
 }

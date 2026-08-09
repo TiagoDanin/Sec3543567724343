@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { Analytics, ConsentBootstrap } from "@/components/analytics/Analytics";
 import { fontVariables } from "@/lib/fonts";
 import { site, absoluteUrl, asset } from "@/lib/site";
 import "./globals.css";
@@ -40,7 +41,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR" className={`${fontVariables} h-full antialiased`}>
-      <body className="flex min-h-full flex-col font-sans">{children}</body>
+      <head>
+        <ConsentBootstrap />
+      </head>
+      <body className="flex min-h-full flex-col font-sans">
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }

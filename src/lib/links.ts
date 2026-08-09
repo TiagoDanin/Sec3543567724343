@@ -19,6 +19,9 @@ export function externo(href: string): LinkAlvo {
 /** Âncora da seção de ingressos, onde fica a tabela de preços. */
 export const ANCORA_INGRESSOS = "#ingressos";
 
+/** Nenhuma feature flag governa esta rota: o rodapé sempre a linka. */
+export const ROTA_PRIVACIDADE = "/privacidade/";
+
 /**
  * Destino de um CTA de compra cujo rótulo não promete o checkout ("Garantir
  * presença", "Quero participar"): rola até a tabela de preços, onde cada lote

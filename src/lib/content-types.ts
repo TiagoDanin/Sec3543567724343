@@ -267,6 +267,14 @@ export type Quiz = {
   arquetipos: Arquetipo[];
 };
 
+export type Privacidade = {
+  titulo: string;
+  atualizadoEm: string;
+  lede: string;
+  destaque: { titulo: string; texto: string };
+  blocos: Array<{ titulo: string; texto: string }>;
+};
+
 /**
  * Soma os pesos das respostas e devolve o arquétipo vencedor.
  *

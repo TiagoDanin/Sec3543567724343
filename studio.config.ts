@@ -642,6 +642,40 @@ const config: StudioConfig = {
       },
     },
 
+    // ── Privacidade (singleton) ──────────────────────────────────────────
+    // O texto descreve o que `src/lib/analytics.ts` faz. Ligar armazenamento no
+    // código obriga a mudar esta página no mesmo commit.
+    privacidade: {
+      schema: {
+        collection: "privacidade",
+        label: "Privacidade",
+        fields: [
+          { name: "titulo", type: "text", required: true, label: "Título" },
+          { name: "atualizadoEm", type: "date", required: true, label: "Atualizado em" },
+          { name: "lede", type: "long-text", rows: 3, label: "Texto de apoio" },
+          {
+            name: "destaque",
+            type: "object",
+            label: "Bloco em destaque",
+            description: "Abre a página explicando a ausência do aviso de cookies.",
+            fields: [
+              { name: "titulo", type: "text", required: true, label: "Título" },
+              { name: "texto", type: "long-text", rows: 3, required: true, label: "Texto" },
+            ],
+          },
+          {
+            name: "blocos",
+            type: "array",
+            label: "Seções da política",
+            itemFields: [
+              { name: "titulo", type: "text", required: true, label: "Título" },
+              { name: "texto", type: "long-text", rows: 4, required: true, label: "Texto" },
+            ],
+          },
+        ],
+      },
+    },
+
     // ── Link-in-bio ──────────────────────────────────────────────────────
     // Página de QR code do evento: muda de destino sem redeploy de código.
     links: {

@@ -1,12 +1,15 @@
 import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { ShellTerminal, type ShellNode } from "@/components/data/ShellTerminal";
+import { ROTA_PRIVACIDADE } from "@/lib/links";
 import { asset, site } from "@/lib/site";
 import type { Organizacao, Settings } from "@/lib/cms";
 
 // Títulos de coluna são estrutura de navegação, não conteúdo editorial.
 const COL_REDES = "Redes";
 const COL_REALIZACAO = "Realização";
+const COL_LEGAL = "Transparência";
+const LINK_PRIVACIDADE = "Privacidade";
 
 export type SiteFooterProps = {
   settings: Settings;
@@ -77,6 +80,10 @@ export function SiteFooter({ settings, equipe, shellFs }: SiteFooterProps) {
               external: true,
             },
           ],
+        },
+        {
+          title: COL_LEGAL,
+          links: [{ label: LINK_PRIVACIDADE, href: ROTA_PRIVACIDADE }],
         },
       ]}
     >

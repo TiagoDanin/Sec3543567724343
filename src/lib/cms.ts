@@ -23,6 +23,7 @@ import type {
   Patrocinador,
   Pergunta,
   Pesos,
+  Privacidade,
   Quiz,
   QuizCopy,
   Secao,
@@ -514,6 +515,26 @@ function getArquetipos(): Arquetipo[] {
 
 export function getQuiz(): Quiz {
   return { copy: getQuizCopy(), perguntas: getPerguntas(), arquetipos: getArquetipos() };
+}
+
+export function getPrivacidade(): Privacidade {
+  const row = singleton("privacidade");
+  const destaque = (row.destaque ?? {}) as Row;
+  const blocos = Array.isArray(row.blocos) ? (row.blocos as Row[]) : [];
+
+  return {
+    titulo: str(row, "titulo"),
+    atualizadoEm: str(row, "atualizadoEm"),
+    lede: str(row, "lede"),
+    destaque: {
+      titulo: str(destaque, "titulo"),
+      texto: str(destaque, "texto"),
+    },
+    blocos: blocos.map((bloco) => ({
+      titulo: str(bloco, "titulo"),
+      texto: str(bloco, "texto"),
+    })),
+  };
 }
 
 export function getEquipe(): Organizacao[] {

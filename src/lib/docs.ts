@@ -18,6 +18,7 @@ import {
   getPalestrantes,
   getParceiros,
   getPatrocinadores,
+  getPrivacidade,
   getQuiz,
   getSecoes,
   getSettings,
@@ -432,6 +433,20 @@ function blocoQuiz(): string {
   );
 }
 
+function blocoPrivacidade(): string {
+  const privacidade = getPrivacidade();
+  if (privacidade.blocos.length === 0) return "";
+
+  return bloco(
+    `## ${privacidade.titulo}`,
+    privacidade.lede,
+    `Disponível em ${link("/privacidade", absoluteUrl("/privacidade"))}.`,
+    `### ${privacidade.destaque.titulo}`,
+    privacidade.destaque.texto,
+    ...privacidade.blocos.flatMap((item) => [`### ${item.titulo}`, item.texto]),
+  );
+}
+
 // ── Catálogo de documentos ───────────────────────────────────────────────────
 
 export type Doc = {
@@ -533,6 +548,14 @@ const DOCS: Doc[] = [
     secao: null,
     rota: "/quiz",
     corpo: blocoQuiz,
+  },
+  {
+    slug: "privacidade",
+    titulo: "Privacidade",
+    resumo: "O que o site mede, o que não coleta e por que não há aviso de cookies.",
+    secao: null,
+    rota: "/privacidade",
+    corpo: blocoPrivacidade,
   },
 ];
 

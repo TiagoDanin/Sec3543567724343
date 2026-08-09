@@ -20,6 +20,10 @@ const meta = {
         lead: "Nome da realizadora",
         links: [{ label: "contato@exemplo.com", href: "mailto:contato@exemplo.com" }],
       },
+      {
+        title: "Transparência",
+        links: [{ label: "Privacidade", href: "#" }],
+      },
     ],
   },
   decorators: [
