@@ -6,22 +6,34 @@
     {
       "chave": "entender",
       "texto": "A chance de ver um ataque acontecendo ao vivo",
-      "pesos": { "sentinela-de-igapo": 3, "cacador-de-rastros": 1 }
+      "pesos": {
+        "coruja-de-plantao": 3,
+        "faro-de-anomalia": 1
+      }
     },
     {
       "chave": "reconstruir",
-      "texto": "Saber que amanhã alguém vai perguntar exatamente o que aconteceu",
-      "pesos": { "cacador-de-rastros": 3, "sentinela-de-igapo": 1 }
+      "texto": "Amanhã alguém vai perguntar exatamente o que aconteceu",
+      "pesos": {
+        "perito-do-rastro": 3,
+        "coruja-de-plantao": 1
+      }
     },
     {
       "chave": "consertar",
       "texto": "A brecha continua aberta enquanto eu durmo",
-      "pesos": { "engenheira-de-confianca": 3, "arquiteta-de-caos": 1 }
+      "pesos": {
+        "muralha-viva": 3,
+        "guarda-do-codigo": 1
+      }
     },
     {
       "chave": "avisar",
       "texto": "Alguém precisa decidir agora, e essa pessoa vai me ligar",
-      "pesos": { "negociador-de-risco": 3, "leitor-de-sinais": 1 }
+      "pesos": {
+        "escudo-de-crise": 3,
+        "tradutor-de-risco": 1
+      }
     }
   ]
 }

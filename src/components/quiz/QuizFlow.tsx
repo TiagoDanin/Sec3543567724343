@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { apurar, type Arquetipo, type Quiz } from "@/lib/content-types";
 import { semAssinatura } from "@/lib/exportar-carta";
+import { conexaoEconomica, precarregarRecorte } from "@/lib/recorte-fundo";
 import { Button } from "@/components/primitives/Button";
 import { Resultado } from "./Resultado";
 
 export type QuizFlowProps = {
   quiz: Quiz;
-  data: string;
   dominio: string;
   ctaHref: string;
   ctaTarget?: "_blank";
@@ -17,29 +17,31 @@ export type QuizFlowProps = {
 
 type Etapa = "abertura" | "perguntas" | "resultado";
 
-/** Guarda o resultado na URL para a pessoa reabrir e reenviar o link. */
+/** Guardam o resultado na URL para a pessoa reabrir e reenviar o link. */
 const PARAM = "r";
+const PARAM_NOME = "n";
 
 /**
- * Slug pedido na URL, ou vazio no servidor.
- *
- * `useSyncExternalStore` e não efeito com `setState`: o ESLint 9 barra o
- * segundo (`react-hooks/set-state-in-effect`), e é a via sancionada para ler
- * algo que só existe no cliente sem divergir da hidratação. Sem assinatura —
- * `replaceState` não emite evento, e o único leitor é o primeiro render.
+ * `useSyncExternalStore` e não efeito com `setState`, barrado pela regra
+ * `react-hooks/set-state-in-effect`. Sem assinatura: `replaceState` não emite
+ * evento, e o único leitor é o primeiro render.
  */
-function useSlugDaUrl(): string {
-  return useSyncExternalStore(
-    semAssinatura,
-    () => new URLSearchParams(window.location.search).get(PARAM) ?? "",
-    () => "",
+function useParametroDaUrl(chave: string): string {
+  // O snapshot precisa ser estável entre renders, senão o React relê em laço.
+  const ler = useCallback(
+    () => new URLSearchParams(window.location.search).get(chave) ?? "",
+    [chave],
   );
+
+  return useSyncExternalStore(semAssinatura, ler, VAZIO);
 }
 
-export function QuizFlow({ quiz, data, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlowProps) {
+const VAZIO = () => "";
+
+export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlowProps) {
   const { copy, perguntas, arquetipos } = quiz;
 
-  const [nome, setNome] = useState("");
+  const [nomeDigitado, setNome] = useState("");
   const [indice, setIndice] = useState(0);
   const [respostas, setRespostas] = useState<Record<string, string>>({});
 
@@ -48,16 +50,24 @@ export function QuizFlow({ quiz, data, dominio, ctaHref, ctaTarget, ctaRel }: Qu
   const [apurado, setApurado] = useState<Arquetipo | null>(null);
   const [comecou, setComecou] = useState(false);
 
-  const slug = useSlugDaUrl();
+  const slug = useParametroDaUrl(PARAM);
+  const nomeDaUrl = useParametroDaUrl(PARAM_NOME);
   const daUrl = arquetipos.find((item) => item.slug === slug) ?? null;
 
+  // Recarregar mantém o nome: sem isso a carta reaberta perde quem é a pessoa.
+  const nome = nomeDigitado || (comecou ? "" : nomeDaUrl);
   const arquetipo = apurado ?? (comecou ? null : daUrl);
   const etapa: Etapa = arquetipo ? "resultado" : comecou ? "perguntas" : "abertura";
 
   const tituloRef = useRef<HTMLHeadingElement>(null);
 
-  // O foco precisa acompanhar a troca de tela: sem isso o teclado continua no
-  // botão que sumiu, e o leitor de tela nunca sai da pergunta anterior.
+  // Na abertura, para o download ter as sete perguntas de vantagem. Em conexão
+  // econômica não começa: são dados do plano de alguém.
+  useEffect(() => {
+    if (!conexaoEconomica()) void precarregarRecorte();
+  }, []);
+
+  // Sem mover o foco, o leitor de tela nunca sai da pergunta anterior.
   useEffect(() => {
     if (etapa !== "abertura") tituloRef.current?.focus();
   }, [etapa, indice]);
@@ -78,10 +88,11 @@ export function QuizFlow({ quiz, data, dominio, ctaHref, ctaTarget, ctaRel }: Qu
       if (vencedor) {
         const url = new URL(window.location.href);
         url.searchParams.set(PARAM, vencedor.slug);
+        if (nomeDigitado) url.searchParams.set(PARAM_NOME, nomeDigitado);
         window.history.replaceState(null, "", url);
       }
     },
-    [respostas, indice, perguntas, arquetipos],
+    [respostas, indice, perguntas, arquetipos, nomeDigitado],
   );
 
   const refazer = useCallback(() => {
@@ -92,6 +103,7 @@ export function QuizFlow({ quiz, data, dominio, ctaHref, ctaTarget, ctaRel }: Qu
 
     const url = new URL(window.location.href);
     url.searchParams.delete(PARAM);
+    url.searchParams.delete(PARAM_NOME);
     window.history.replaceState(null, "", url);
   }, []);
 
@@ -104,14 +116,17 @@ export function QuizFlow({ quiz, data, dominio, ctaHref, ctaTarget, ctaRel }: Qu
           setComecou(true);
         }}
       >
-        <label htmlFor="quiz-nome" className="text-cream font-mono block text-[12px] tracking-[0.18em] uppercase">
+        <label
+          htmlFor="quiz-nome"
+          className="text-cream block font-mono text-[12px] tracking-[0.18em] uppercase"
+        >
           {copy.nomeLabel}
         </label>
         <input
           id="quiz-nome"
           name="nome"
           type="text"
-          value={nome}
+          value={nomeDigitado}
           maxLength={28}
           autoComplete="name"
           placeholder={copy.nomePlaceholder}
@@ -203,7 +218,6 @@ export function QuizFlow({ quiz, data, dominio, ctaHref, ctaTarget, ctaRel }: Qu
       arquetipo={arquetipo}
       nome={nome}
       copy={copy}
-      data={data}
       dominio={dominio}
       onRefazer={refazer}
       ctaHref={ctaHref}

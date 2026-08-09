@@ -5,23 +5,35 @@
   "alternativas": [
     {
       "chave": "abrir",
-      "texto": "Abrir a carcaça e procurar onde a placa fala com o mundo",
-      "pesos": { "desmontador": 3, "arquiteta-de-caos": 1 }
+      "texto": "Abrir a carcaça e ver onde a placa fala com o mundo",
+      "pesos": {
+        "chave-de-fenda": 3,
+        "arrombador-de-portas": 1
+      }
     },
     {
       "chave": "escutar",
       "texto": "Ligar na rede e observar em silêncio com quem ele conversa",
-      "pesos": { "sentinela-de-igapo": 3, "leitor-de-sinais": 1 }
+      "pesos": {
+        "faro-de-anomalia": 3,
+        "radar-antecipado": 1
+      }
     },
     {
       "chave": "forcar",
       "texto": "Testar todo caminho de entrada até algum ceder",
-      "pesos": { "arquiteta-de-caos": 3, "desmontador": 1 }
+      "pesos": {
+        "arrombador-de-portas": 3,
+        "cacador-de-bounty": 1
+      }
     },
     {
       "chave": "procedencia",
       "texto": "Descobrir de onde ele veio e quem o instalou antes de encostar",
-      "pesos": { "cacador-de-rastros": 2, "negociador-de-risco": 2 }
+      "pesos": {
+        "perito-do-rastro": 2,
+        "guardiao-da-norma": 2
+      }
     }
   ]
 }

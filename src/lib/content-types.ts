@@ -218,14 +218,28 @@ export type QuizCopy = {
   ctaRefazer: string;
   progressoPrefixo: string;
   resultadoEyebrow: string;
-  resultadoTrilhaLabel: string;
+  resultadoTimeLabel: string;
+  resultadoCorLabel: string;
+  resultadoAreaLabel: string;
+  resultadoFerramentaLabel: string;
+  resultadoSiglaLabel: string;
+  resultadoRaridadeLabel: string;
   cartaLabel: string;
+  cartaRodapeEsquerda: string;
+  cartaRodapeDireita: string;
   fotoTrocar: string;
   fotoRemover: string;
   fotoAjuda: string;
   zoomLabel: string;
+  recorteLabel: string;
+  recorteBaixando: string;
+  recorteProcessando: string;
   baixar: string;
   compartilhar: string;
+  desafiar: string;
+  desafiarCopiado: string;
+  desafioTexto: string;
+  compartilharTexto: string;
   gerando: string;
   erroExportar: string;
   avisoSafariTitulo: string;
@@ -249,12 +263,29 @@ export type Pergunta = {
   order: number;
 };
 
+/** Roda de cores dos times de cibersegurança. */
+export type TimeCor = "red" | "blue" | "purple" | "yellow" | "orange" | "white";
+
 export type Arquetipo = {
   slug: string;
   nome: string;
   sigla: string;
+  /** Time na roda de cores: "Red Team", "Blue Team"… */
+  time: string;
+  timeCor: TimeCor;
+  /** Nome da cor em português, para leitura. */
+  timeCorNome: string;
+  timePapel: string;
   area: string;
+  /** Ferramenta que identifica o arquétipo à primeira vista. */
+  ferramenta: string;
   trilha: Trilha;
+  /**
+   * Fatia declarada no conteúdo, não medida: o site é estático e não conta
+   * resposta. É rótulo editorial de raridade, no espírito da carta de futebol.
+   */
+  raridade: string;
+  raridadeLabel: string;
   resumo: string;
   texto: string;
   noEvento: string;

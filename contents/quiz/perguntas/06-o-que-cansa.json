@@ -6,22 +6,34 @@
     {
       "chave": "alerta-falso",
       "texto": "Alerta que grita sem motivo e treina todo mundo a ignorar",
-      "pesos": { "sentinela-de-igapo": 3, "engenheira-de-confianca": 1 }
-    },
-    {
-      "chave": "sem-log",
-      "texto": "Descobrir, no meio da investigação, que o log não foi guardado",
-      "pesos": { "cacador-de-rastros": 3, "sentinela-de-igapo": 1 }
+      "pesos": {
+        "faro-de-anomalia": 3,
+        "coruja-de-plantao": 1
+      }
     },
     {
       "chave": "remendo",
       "texto": "Corrigir pela terceira vez a mesma falha em lugares diferentes",
-      "pesos": { "engenheira-de-confianca": 3, "desmontador": 1 }
+      "pesos": {
+        "pedreiro-de-pipeline": 3,
+        "guarda-do-codigo": 1
+      }
     },
     {
       "chave": "ignorado",
       "texto": "Apresentar o risco, ser ignorado, e ver acontecer exatamente aquilo",
-      "pesos": { "negociador-de-risco": 3, "ilusionista-social": 1 }
+      "pesos": {
+        "tradutor-de-risco": 2,
+        "escudo-de-crise": 2
+      }
+    },
+    {
+      "chave": "papel",
+      "texto": "Controle que existe no documento e não existe na máquina",
+      "pesos": {
+        "guardiao-da-norma": 3,
+        "cofre-de-segredos": 1
+      }
     }
   ]
 }

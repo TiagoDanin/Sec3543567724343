@@ -30,6 +30,7 @@ import type {
   SectionKey,
   Settings,
   Sobre,
+  TimeCor,
   TerminalKind,
   TipoImprensa,
   Tom,
@@ -448,14 +449,28 @@ function getQuizCopy(): QuizCopy {
     ctaRefazer: str(row, "ctaRefazer"),
     progressoPrefixo: str(row, "progressoPrefixo"),
     resultadoEyebrow: str(row, "resultadoEyebrow"),
-    resultadoTrilhaLabel: str(row, "resultadoTrilhaLabel"),
+    resultadoTimeLabel: str(row, "resultadoTimeLabel"),
+    resultadoCorLabel: str(row, "resultadoCorLabel"),
+    resultadoAreaLabel: str(row, "resultadoAreaLabel"),
+    resultadoFerramentaLabel: str(row, "resultadoFerramentaLabel"),
+    resultadoSiglaLabel: str(row, "resultadoSiglaLabel"),
+    resultadoRaridadeLabel: str(row, "resultadoRaridadeLabel"),
     cartaLabel: str(row, "cartaLabel"),
+    cartaRodapeEsquerda: str(row, "cartaRodapeEsquerda"),
+    cartaRodapeDireita: str(row, "cartaRodapeDireita"),
     fotoTrocar: str(row, "fotoTrocar"),
     fotoRemover: str(row, "fotoRemover"),
     fotoAjuda: str(row, "fotoAjuda"),
     zoomLabel: str(row, "zoomLabel"),
+    recorteLabel: str(row, "recorteLabel"),
+    recorteBaixando: str(row, "recorteBaixando"),
+    recorteProcessando: str(row, "recorteProcessando"),
     baixar: str(row, "baixar"),
     compartilhar: str(row, "compartilhar"),
+    desafiar: str(row, "desafiar"),
+    desafiarCopiado: str(row, "desafiarCopiado"),
+    desafioTexto: str(row, "desafioTexto"),
+    compartilharTexto: str(row, "compartilharTexto"),
     gerando: str(row, "gerando"),
     erroExportar: str(row, "erroExportar"),
     avisoSafariTitulo: str(row, "avisoSafariTitulo"),
@@ -478,13 +493,11 @@ function getPerguntas(): Pergunta[] {
         enunciado: str(row, "enunciado"),
         order: num(row, "order"),
         alternativas: lista
-          .map(
-            (item): Alternativa => ({
-              chave: str(item, "chave"),
-              texto: str(item, "texto"),
-              pesos: pesos(item.pesos),
-            }),
-          )
+          .map((item): Alternativa => ({
+            chave: str(item, "chave"),
+            texto: str(item, "texto"),
+            pesos: pesos(item.pesos),
+          }))
           .filter((item) => item.chave && item.texto),
       };
     })
@@ -492,17 +505,27 @@ function getPerguntas(): Pergunta[] {
     .sort(byOrder);
 }
 
+const TIMES: TimeCor[] = ["red", "blue", "purple", "yellow", "orange", "white"];
+
 function getArquetipos(): Arquetipo[] {
   return rows("quiz")
     .filter((row) => !ehPergunta(row) && !ehCopy(row))
     .map((row) => {
       const trilha = str(row, "trilha") as Trilha;
+      const timeCor = str(row, "timeCor") as TimeCor;
       return {
         slug: str(row, "slug"),
         nome: str(row, "nome"),
         sigla: str(row, "sigla"),
+        time: str(row, "time"),
+        timeCor: TIMES.includes(timeCor) ? timeCor : "blue",
+        timeCorNome: str(row, "timeCorNome"),
+        timePapel: str(row, "timePapel"),
         area: str(row, "area"),
+        ferramenta: str(row, "ferramenta"),
         trilha: TRILHAS.includes(trilha) ? trilha : "geral",
+        raridade: str(row, "raridade"),
+        raridadeLabel: str(row, "raridadeLabel"),
         resumo: str(row, "resumo"),
         texto: str(row, "texto"),
         noEvento: str(row, "noEvento"),

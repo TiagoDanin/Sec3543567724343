@@ -6,22 +6,34 @@
     {
       "chave": "pessoas",
       "texto": "Por uma conversa. Alguém sempre abre a porta se o pedido parecer legítimo",
-      "pesos": { "ilusionista-social": 3, "leitor-de-sinais": 1 }
+      "pesos": {
+        "labia-de-acesso": 3,
+        "cofre-de-segredos": 1
+      }
     },
     {
       "chave": "codigo",
       "texto": "Pelo que eles mesmos escreveram e publicaram sem revisar",
-      "pesos": { "engenheira-de-confianca": 2, "arquiteta-de-caos": 2 }
+      "pesos": {
+        "cacador-de-bounty": 2,
+        "guarda-do-codigo": 2
+      }
     },
     {
       "chave": "esquecido",
       "texto": "Por aquele servidor antigo que ninguém lembra que existe",
-      "pesos": { "arquiteta-de-caos": 2, "sentinela-de-igapo": 2 }
+      "pesos": {
+        "sombra-na-rede": 2,
+        "muralha-viva": 2
+      }
     },
     {
-      "chave": "fornecedor",
-      "texto": "Pelo fornecedor menor que tem acesso e metade do orçamento",
-      "pesos": { "leitor-de-sinais": 2, "negociador-de-risco": 2 }
+      "chave": "credencial",
+      "texto": "Por uma senha antiga que ainda funciona em algum lugar",
+      "pesos": {
+        "cofre-de-segredos": 3,
+        "labia-de-acesso": 1
+      }
     }
   ]
 }

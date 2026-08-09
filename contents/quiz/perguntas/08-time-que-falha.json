@@ -1,0 +1,39 @@
+{
+  "chave": "time-que-falha",
+  "enunciado": "O time errou feio e o incidente foi público. Qual é o seu papel na segunda-feira?",
+  "order": 8,
+  "alternativas": [
+    {
+      "chave": "comunicar",
+      "texto": "Escrever o que a empresa vai dizer, e para quem",
+      "pesos": {
+        "escudo-de-crise": 3,
+        "tradutor-de-risco": 1
+      }
+    },
+    {
+      "chave": "treinar",
+      "texto": "Montar o treino para o erro não se repetir, sem humilhar ninguém",
+      "pesos": {
+        "isca-consciente": 3,
+        "labia-de-acesso": 1
+      }
+    },
+    {
+      "chave": "automatizar",
+      "texto": "Fazer o controle rodar sozinho, sem depender de lembrete",
+      "pesos": {
+        "cofre-de-segredos": 2,
+        "pedreiro-de-pipeline": 2
+      }
+    },
+    {
+      "chave": "simular",
+      "texto": "Repetir o ataque internamente até a detecção pegar",
+      "pesos": {
+        "arbitro-do-simulado": 3,
+        "sombra-na-rede": 1
+      }
+    }
+  ]
+}

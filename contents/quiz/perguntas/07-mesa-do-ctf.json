@@ -6,22 +6,34 @@
     {
       "chave": "binario",
       "texto": "O binário que ninguém resolveu ainda",
-      "pesos": { "desmontador": 3, "arquiteta-de-caos": 1 }
+      "pesos": {
+        "chave-de-fenda": 3,
+        "cacador-de-bounty": 1
+      }
     },
     {
       "chave": "web",
       "texto": "A aplicação web com formulário suspeito demais",
-      "pesos": { "arquiteta-de-caos": 2, "engenheira-de-confianca": 2 }
+      "pesos": {
+        "arrombador-de-portas": 2,
+        "guarda-do-codigo": 2
+      }
     },
     {
       "chave": "osint",
-      "texto": "O de OSINT, achar a pessoa a partir de uma foto",
-      "pesos": { "leitor-de-sinais": 2, "ilusionista-social": 2 }
+      "texto": "O de OSINT: achar a pessoa a partir de uma foto",
+      "pesos": {
+        "labia-de-acesso": 2,
+        "radar-antecipado": 2
+      }
     },
     {
       "chave": "captura",
       "texto": "A captura de tráfego gigante que precisa ser lida com calma",
-      "pesos": { "cacador-de-rastros": 2, "sentinela-de-igapo": 2 }
+      "pesos": {
+        "perito-do-rastro": 2,
+        "faro-de-anomalia": 2
+      }
     }
   ]
 }

@@ -6,22 +6,34 @@
     {
       "chave": "disassembler",
       "texto": "Um disassembler e um editor hexadecimal",
-      "pesos": { "desmontador": 3, "arquiteta-de-caos": 1 }
+      "pesos": {
+        "chave-de-fenda": 3,
+        "sombra-na-rede": 1
+      }
     },
     {
       "chave": "logs",
       "texto": "Painel de logs com filtro que só eu entendo",
-      "pesos": { "sentinela-de-igapo": 3, "cacador-de-rastros": 1 }
+      "pesos": {
+        "coruja-de-plantao": 3,
+        "perito-do-rastro": 1
+      }
     },
     {
       "chave": "editor",
       "texto": "O editor de código, com um pull request esperando revisão",
-      "pesos": { "engenheira-de-confianca": 3, "desmontador": 1 }
+      "pesos": {
+        "guarda-do-codigo": 3,
+        "pedreiro-de-pipeline": 1
+      }
     },
     {
       "chave": "planilha",
       "texto": "Planilha de risco e um slide que precisa convencer alguém",
-      "pesos": { "negociador-de-risco": 3, "ilusionista-social": 1 }
+      "pesos": {
+        "tradutor-de-risco": 2,
+        "guardiao-da-norma": 2
+      }
     }
   ]
 }

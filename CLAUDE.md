@@ -99,6 +99,21 @@ Três regras governam isso:
 
 `pageMetadata()` deriva o alternate sozinho — `/` → `/index.md` — e emite `<link rel="alternate" type="text/markdown">`. Rota nova nasce com espelho anunciado; passar `markdown: null` desliga quando a rota não tiver um.
 
+### O quiz em `/quiz`
+
+Sete perguntas, um arquétipo no fim e uma carta em imagem (1080×1920) para compartilhar. Roda inteira no navegador: nome e foto **não saem do aparelho**, e não há coleta de resposta. A rota existe sempre — o que a esconde do menu é `noMenu: true` em `contents/navegacao`.
+
+Quatro decisões que não se desfazem sem quebrar algo:
+
+- **A carta é DOM fotografado por `html-to-image`, não `canvas`.** O recorte sem borda são três máscaras em gradiente aninhadas, e `ctx.drawImage()` não aplica máscara. Aninhadas porque `mask-composite` diverge entre navegadores.
+- **`cacheBust: false` na exportação.** Ligado, concatena `?<timestamp>` na URL de cada imagem — e `blob:` com query string não existe. O sintoma engana: baixar funciona com o mascote e só quebra depois que a pessoa envia a foto.
+- **Os assets da carta são data URI** (`carta-assets.ts`), gerados de `public/images/`. Recurso por URL externa sai em branco no arquivo exportado. Regerar quando a marca mudar.
+- **`onnxruntime-web` fixado em `1.21.0`**, a peer dependency exata de `@imgly/background-removal`. Com a `1.27` o recorte falha em runtime, e o erro só aparece depois de baixar ~91 MB.
+
+**O recorte de fundo é opcional por construção.** São ~127 MB de um CDN externo, e o WASM leva o `dist/` de ~15 MB para ~175 MB — nada disso no bundle inicial, que segue em 48 KB. O download começa na abertura da página e **não começa** em conexão econômica ou 2g/3g. Falhando, a carta funciona com as máscaras em gradiente.
+
+O WebKit não exporta a imagem, e a interface pede para abrir no Chrome. Detectado por motor, não por nome: todo navegador no iOS é WebKit, inclusive o Chrome de iPhone.
+
 ## Git
 
 **Nunca trocar de branch sem pedido explícito.** `git checkout`, `git switch` e qualquer coisa que mova o `HEAD` só acontecem quando a pessoa pede, com essas palavras. Trocar de branch por conta própria — para "organizar", para deixar o trabalho no lugar certo, para o commit sair da branch que parece a correta — muda o chão embaixo de quem está trabalhando: o editor recarrega, o servidor de dev perde o `dist/`, e mudança não commitada vai junto para uma branch que não era a esperada.

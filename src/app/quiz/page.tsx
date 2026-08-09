@@ -11,7 +11,7 @@ import { buildShellFs } from "@/lib/shell-fs";
 import { alvoCompra } from "@/lib/links";
 import { pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
-import { formatDate, getEquipe, getNavegacao, getQuiz, getSettings } from "@/lib/cms";
+import { getEquipe, getNavegacao, getQuiz, getSettings } from "@/lib/cms";
 
 const SKIP = "Pular para o conteúdo";
 const NAV_CTA = "Ingressos";
@@ -19,7 +19,7 @@ const NAV_CTA = "Ingressos";
 export const metadata = pageMetadata({
   title: "Que tipo de hacker você é? · Quiz",
   description:
-    "Sete perguntas para descobrir seu arquétipo em segurança da informação e a trilha do XibéSec 2026 que combina com ele. No fim, uma carta pronta para compartilhar.",
+    "Sete perguntas para descobrir seu arquétipo em segurança da informação e seu time na roda de cores — red, blue, purple e os demais. No fim, uma carta pronta para compartilhar.",
   path: "/quiz",
 });
 
@@ -52,21 +52,21 @@ export default function QuizPage() {
             <p className="text-orange font-mono text-[11px] tracking-[0.24em] uppercase">
               {quiz.copy.eyebrow}
             </p>
-            <h1 className="font-display text-cream mt-5 max-w-4xl text-[clamp(30px,6vw,60px)] leading-[1.02] tracking-[-0.02em] uppercase text-balance">
+            <h1 className="font-display text-cream mt-5 max-w-4xl text-[clamp(30px,6vw,60px)] leading-[1.02] tracking-[-0.02em] text-balance uppercase">
               {quiz.copy.titulo}
             </h1>
             <p className="text-cream-2 mt-6 max-w-2xl text-[17px] leading-[1.65]">
               {quiz.copy.lede}
             </p>
 
-            {/* Sem JavaScript o quiz não existe — mas a página continua dizendo
-                o que é e levando ao evento. */}
             <noscript>
               <div className="border-orange bg-panel mt-9 max-w-2xl border-l-2 px-5 py-4">
                 <p className="text-orange font-mono text-[10px] tracking-[0.2em] uppercase">
                   {quiz.copy.semJsTitulo}
                 </p>
-                <p className="text-cream-2 mt-2 text-[15px] leading-[1.6]">{quiz.copy.semJsTexto}</p>
+                <p className="text-cream-2 mt-2 text-[15px] leading-[1.6]">
+                  {quiz.copy.semJsTexto}
+                </p>
               </div>
             </noscript>
           </Container>
@@ -78,9 +78,6 @@ export default function QuizPage() {
           <Container>
             <QuizFlow
               quiz={quiz}
-              // Numérica, não por extenso: o rodapé da carta é uma linha de duas
-              // colunas, e "19 de setembro de 2026" a quebra.
-              data={formatDate(settings.eventStartDate)}
               dominio={site.siteUrl.replace(/^https?:\/\//, "")}
               ctaHref={compra.href}
               ctaTarget={compra.target}

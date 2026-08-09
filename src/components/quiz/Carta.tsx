@@ -1,54 +1,51 @@
 import type { CSSProperties } from "react";
-import type { Arquetipo, QuizCopy } from "@/lib/content-types";
-import {
-  GRAFISMO_LARANJA_DATA_URI,
-  GRAFISMO_VERDE_DATA_URI,
-  LOGO_DATA_URI,
-  MASCOTE_DATA_URI,
-} from "./carta-assets";
+import type { Arquetipo, QuizCopy, TimeCor } from "@/lib/content-types";
+import { GRAFISMO_VERDE_DATA_URI, LOGO_DATA_URI, MASCOTE_DATA_URI } from "./carta-assets";
 
 /**
- * Recorte da foto sem borda: três máscaras empilhadas, e é isso que faz a
- * pessoa parecer parte da cena em vez de colada dentro de uma moldura.
- *
- * 1. elipse radial apaga as quatro bordas de uma vez;
- * 2. queda diagonal dissolve o ombro no ângulo em que o corpo sai do quadro;
- * 3. o topo desaparece, para o alto da cabeça não bater numa linha reta.
- *
- * Empilhadas em três elementos, não em `mask-image` com três camadas: máscaras
- * na mesma propriedade se sobrepõem por `mask-composite`, cujo suporte diverge
- * entre navegadores. Aninhar é o que se comporta igual em todos.
+ * Recorte da foto sem borda. Empilhadas em três elementos, e não em três
+ * camadas da mesma propriedade, porque `mask-composite` diverge entre
+ * navegadores.
  */
 const MASCARA_ELIPSE = "radial-gradient(ellipse 64% 86% at 50% 40%, #000 52%, transparent 82%)";
 const MASCARA_BASE = "linear-gradient(200deg, #000 66%, transparent 100%)";
 const MASCARA_TOPO = "linear-gradient(180deg, transparent 0%, #000 16%)";
 
-/**
- * O mascote é figura inteira, não retrato: as três máscaras foram calibradas
- * para uma foto em que a cabeça sangra pela borda de cima, e aplicadas a ele
- * comiam a cabeça. Só a dissolução dos pés, que apoia a figura no chão da cena.
- */
+/** As três máscaras acima são para retrato; no mascote elas comem a cabeça. */
 const MASCARA_MASCOTE = "linear-gradient(180deg, #000 82%, transparent 100%)";
 
-/**
- * Formato de story do Instagram e do WhatsApp: 9:16, tela cheia no celular.
- * O feed (4:5) recorta a carta pelas pontas; o story é onde ela é postada.
- */
+/** Story do Instagram: 9:16. O feed (4:5) recortaria a carta pelas pontas. */
 export const CARTA_LARGURA = 1080;
 export const CARTA_ALTURA = 1920;
+
+/**
+ * Cor do time na roda de cibersegurança. É acento local do selo — os tokens da
+ * marca continuam mandando no resto da carta.
+ *
+ * Escrita como valor, não como classe do Tailwind: o scanner é estático e uma
+ * classe montada em tempo de execução some do CSS.
+ */
+export const COR_DO_TIME: Record<TimeCor, string> = {
+  red: "#E2564A",
+  blue: "#4F9BE3",
+  purple: "#A97BE0",
+  yellow: "#E3C44F",
+  orange: "#EE7B2E",
+  white: "#F2E4C4",
+};
 
 export type CartaProps = {
   arquetipo: Arquetipo;
   nome: string;
   copy: QuizCopy;
-  data: string;
-  dominio: string;
   /** Ausente: o mascote. */
   foto?: string;
   /** Enquadramento da foto, em porcentagem do quadro. */
   fotoX?: number;
   fotoY?: number;
   fotoZoom?: number;
+  /** Original por trás da recortada, a meia opacidade. */
+  fotoFundo?: string;
 };
 
 const mask = (image: string): CSSProperties => ({
@@ -61,31 +58,23 @@ const mask = (image: string): CSSProperties => ({
 });
 
 /**
- * A carta do resultado, desenhada em DOM para ser fotografada por
- * `html-to-image` — a prévia na tela e o arquivo exportado são o mesmo nó, então
- * não existe a classe de bug em que os dois divergem.
- *
- * A composição é a mesma da home: cena de mata em contraluz ao fundo, véu de
- * leitura por cima, figura recortada com `drop-shadow` e faixa de grafismo
- * marajoara como régua. Sem a cena a carta vira um retângulo de gradiente, que
- * é exatamente o que a marca não é.
- *
- * Tudo é dimensionado em `cqw` sobre um container query: a mesma marcação serve
- * à prévia de 320px e à exportação de 1080px sem uma segunda tabela de posições.
+ * A carta do resultado. É o mesmo nó que a prévia mostra e que `html-to-image`
+ * exporta, dimensionado em `cqw` para servir aos dois tamanhos sem uma segunda
+ * tabela de posições.
  */
 export function Carta({
   arquetipo,
   nome,
   copy,
-  data,
-  dominio,
   foto,
   fotoX = 50,
   fotoY = 20,
   fotoZoom = 1,
+  fotoFundo,
 }: CartaProps) {
   const temFoto = Boolean(foto);
-  const gerencial = arquetipo.trilha === "gerencial";
+  const corTime = COR_DO_TIME[arquetipo.timeCor] ?? COR_DO_TIME.blue;
+  const maiorPalavra = Math.max(...arquetipo.nome.split(" ").map((p) => p.length));
 
   return (
     <div
@@ -93,9 +82,7 @@ export function Carta({
       className="bg-ink-deep relative isolate w-full overflow-hidden select-none"
       style={{ containerType: "inline-size", aspectRatio: `${CARTA_LARGURA} / ${CARTA_ALTURA}` }}
     >
-      {/* Chão de cor, sem arte de fundo: com a foto de uma pessoa, a mata atrás
-          vira uma segunda cena e as duas competem. O brilho em menta dá
-          profundidade sem disputar com o retrato. */}
+      {/* Cor, e não arte: atrás de um retrato, a mata vira uma segunda cena. */}
       <div
         aria-hidden
         className="absolute inset-0"
@@ -108,10 +95,8 @@ export function Carta({
       <div
         className="absolute z-1"
         style={{
-          // A foto ocupa a carta inteira em largura e mais da metade da altura:
-          // é o assunto da peça, e o formato 9:16 dá espaço para isso.
-          // O mascote fica mais estreito porque `contain` encaixa pela menor
-          // dimensão — quadro largo demais o encolhe no meio do vazio.
+          // Quadro mais estreito para o mascote: `contain` encaixa pela menor
+          // dimensão, e um quadro largo o encolheria no meio do vazio.
           left: temFoto ? "2cqw" : "13cqw",
           top: temFoto ? "26cqw" : "30cqw",
           width: temFoto ? "96cqw" : "74cqw",
@@ -128,23 +113,33 @@ export function Carta({
                 "drop-shadow(0 3cqw 5cqw rgba(0,0,0,.6)) drop-shadow(0 0 4cqw rgba(79,227,172,.3))",
             }}
           >
-            {/* `next/image` não serve aqui: ele embrulha a tag em wrapper com
-                estilo próprio, e a foto da pessoa é um `blob:` local que não
-                passa pelo otimizador. `html-to-image` precisa de uma <img>
-                simples com a fonte já resolvida. */}
+            {/* `next/image` embrulha a tag em wrapper próprio, e a foto é um
+                `blob:` que não passa pelo otimizador. */}
+            {fotoFundo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={fotoFundo}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 h-full w-full"
+                style={{
+                  objectFit: "cover",
+                  objectPosition: `${fotoX}% ${fotoY}%`,
+                  transform: fotoZoom !== 1 ? `scale(${fotoZoom})` : undefined,
+                  opacity: 0.5,
+                }}
+              />
+            ) : null}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={foto ?? MASCOTE_DATA_URI}
               alt=""
               aria-hidden
-              className="h-full w-full"
+              className="relative h-full w-full"
               style={{
-                // `contain` para o mascote: ele é figura recortada e inteira, e
-                // `cover` cortaria braço e martelo fora do quadro.
+                // `cover` cortaria o martelo do mascote fora do quadro.
                 objectFit: temFoto ? "cover" : "contain",
-                // Ancorado acima do centro: cortar no meio decapita quem mandou
-                // foto vertical de celular. O mascote fica pelos pés, apoiado no
-                // chão da cena em vez de boiar no quadro.
+                // Acima do centro: cortar no meio decapita foto de celular.
                 objectPosition: temFoto ? `${fotoX}% ${fotoY}%` : "center bottom",
                 transform: temFoto && fotoZoom !== 1 ? `scale(${fotoZoom})` : undefined,
               }}
@@ -168,10 +163,7 @@ export function Carta({
         }}
       />
 
-      {/* Uma faixa só, no fechamento. A segunda, atrás do bloco de texto,
-          cruzava o nome do arquétipo e disputava a leitura com ele. */}
-      {/* Véu local sob o texto: a foto desce até aqui, e sem ele o nome do
-          arquétipo assenta sobre o ombro da pessoa. */}
+      {/* Sem este véu o nome do arquétipo assenta sobre o ombro da pessoa. */}
       <div
         aria-hidden
         className="absolute inset-x-0 bottom-0 z-1"
@@ -184,26 +176,45 @@ export function Carta({
 
       <div
         className="absolute z-2 text-center"
-        style={{ left: "6cqw", right: "6cqw", bottom: "17cqw" }}
+        // Sem o nome o bloco encurta e desceria até encostar no rodapé.
+        style={{ left: "6cqw", right: "6cqw", bottom: nome ? "17cqw" : "20cqw" }}
       >
-        <p
-          className="text-mint font-mono"
-          style={{ fontSize: "3.1cqw", letterSpacing: "0.28em", margin: 0 }}
-        >
-          {arquetipo.sigla || "XBS"} · {gerencial ? "TRILHA GERENCIAL" : "TRILHA TÉCNICA"}
-        </p>
+        {arquetipo.time ? (
+          <p
+            className="inline-block border font-mono uppercase"
+            style={{
+              fontSize: "3cqw",
+              letterSpacing: "0.22em",
+              padding: "1.4cqw 3.4cqw",
+              margin: "0 0 3cqw",
+              color: corTime,
+              borderColor: corTime,
+              backgroundColor: "rgba(15,26,12,.5)",
+            }}
+          >
+            {arquetipo.time}
+          </p>
+        ) : null}
+        {arquetipo.raridade ? (
+          <p
+            className="text-mint font-mono"
+            style={{ fontSize: "2.8cqw", letterSpacing: "0.28em", margin: 0 }}
+          >
+            {arquetipo.raridadeLabel} · {arquetipo.raridade}
+          </p>
+        ) : null}
         <p
           className="text-orange font-display uppercase"
           style={{
-            // Três degraus: "Desmontador" (11) cabe grande em uma linha,
-            // "Arquiteta de Caos" (17) quebra em duas, "Engenheira de
-            // Confiança" (23) precisa do menor corpo para não tocar as bordas.
+            // Pela maior palavra, não pelo nome: é ela que não tem onde quebrar.
             fontSize:
-              arquetipo.nome.length > 20
-                ? "8.6cqw"
-                : arquetipo.nome.length > 12
-                  ? "10cqw"
-                  : "11.4cqw",
+              maiorPalavra > 12
+                ? "7.6cqw"
+                : maiorPalavra > 10
+                  ? "8.8cqw"
+                  : maiorPalavra > 8
+                    ? "10cqw"
+                    : "11.4cqw",
             lineHeight: 0.94,
             letterSpacing: "-0.02em",
             textWrap: "balance",
@@ -215,7 +226,7 @@ export function Carta({
         </p>
         {nome ? (
           <p
-            className="text-cream border-line-2 font-mono border-t"
+            className="text-cream border-line-2 border-t font-mono"
             style={{
               fontSize: nome.length > 22 ? "3.2cqw" : "4cqw",
               letterSpacing: "0.16em",
@@ -236,14 +247,16 @@ export function Carta({
         style={{
           height: "8cqw",
           opacity: 0.92,
-          backgroundImage: `url("${gerencial ? GRAFISMO_LARANJA_DATA_URI : GRAFISMO_VERDE_DATA_URI}")`,
+          // Verde fixo: a faixa é grafismo da marca, não do time. Colorida pelo
+          // arquétipo, a carta deixaria de se parecer com o XibéSec.
+          backgroundImage: `url("${GRAFISMO_VERDE_DATA_URI}")`,
           backgroundRepeat: "repeat-x",
           backgroundSize: "auto 100%",
         }}
       />
 
       <div
-        className="text-cream-3 font-mono absolute z-2 flex justify-between"
+        className="text-cream-3 absolute z-2 flex justify-between font-mono"
         style={{
           left: "6cqw",
           right: "6cqw",
@@ -252,8 +265,8 @@ export function Carta({
           letterSpacing: "0.12em",
         }}
       >
-        <span>{dominio}</span>
-        <span>{data}</span>
+        <span>{copy.cartaRodapeEsquerda}</span>
+        <span>{copy.cartaRodapeDireita}</span>
       </div>
 
       <span className="sr-only">

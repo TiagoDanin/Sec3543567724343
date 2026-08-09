@@ -1,29 +1,14 @@
 // Exportação da carta do quiz para PNG, no navegador.
-//
-// O site é estático: não há servidor para renderizar imagem, e a carta precisa
-// sair do mesmo DOM que a pessoa está vendo. `html-to-image` fotografa o nó via
-// `<foreignObject>` em SVG — é o que preserva as máscaras em gradiente da carta,
-// que `canvas` desenhado à mão não reproduz sem composição manual de camadas.
 
-/** Largura final do PNG. Formato de feed do Instagram. */
 const LARGURA = 1080;
 
-/**
- * O WebKit falha ao rasterizar o `<foreignObject>` que `html-to-image` monta:
- * a imagem sai vazia, cortada ou sem as máscaras. Não há contorno confiável, e
- * um arquivo quebrado é pior que um aviso — então a interface manda usar Chrome.
- *
- * Detectado por motor, não por nome: todo navegador no iOS é WebKit por baixo,
- * inclusive o Chrome de iPhone. Checar "Safari" no user agent deixaria passar
- * justamente os casos que falham.
- */
-/**
- * Assinatura vazia para `useSyncExternalStore` quando o valor lido não muda
- * depois da hidratação — é o caso do motor do navegador e do parâmetro da URL.
- * Precisa ser a mesma referência entre renders, senão o React reassina em laço.
- */
+/** Estável entre renders: `useSyncExternalStore` reassina em laço se mudar. */
 export const semAssinatura = () => () => {};
 
+/**
+ * Detectado por motor, não por nome: todo navegador no iOS é WebKit por baixo,
+ * inclusive o Chrome de iPhone, e é no WebKit que a exportação sai vazia.
+ */
 export function isWebKitRestrito(): boolean {
   if (typeof navigator === "undefined") return false;
 
@@ -35,21 +20,16 @@ export function isWebKitRestrito(): boolean {
 }
 
 async function paraBlob(node: HTMLElement): Promise<Blob> {
-  // Import dinâmico: a biblioteca só é baixada quando alguém exporta de fato,
-  // então ela fica fora do bundle inicial da rota.
   const { toBlob } = await import("html-to-image");
 
   const opcoes = {
     pixelRatio: LARGURA / node.offsetWidth,
-    // A carta tem ponta em V; sem fundo próprio, o vazio sai preto em alguns
-    // visualizadores em vez de transparente.
-    backgroundColor: undefined,
-    cacheBust: true,
+    // Ligado, concatena `?<timestamp>` na URL de cada imagem — e `blob:` com
+    // query string não existe, então a exportação morre assim que há foto.
+    cacheBust: false,
   };
 
-  // A primeira passada costuma sair sem as imagens: elas ainda estão sendo
-  // decodificadas quando o SVG é serializado. Descartar a primeira é o contorno
-  // conhecido — a segunda encontra tudo em cache.
+  // A primeira passada sai sem as imagens; a segunda as encontra em cache.
   await toBlob(node, opcoes);
   const blob = await toBlob(node, opcoes);
 
@@ -57,12 +37,25 @@ async function paraBlob(node: HTMLElement): Promise<Blob> {
   return blob;
 }
 
+async function imagensProntas(node: HTMLElement): Promise<void> {
+  const imagens = [...node.querySelectorAll("img")];
+
+  await Promise.all(
+    imagens.map(async (img) => {
+      if (img.complete && img.naturalWidth > 0) return;
+      // Imagem que falha não derruba a carta inteira.
+      await img.decode().catch(() => undefined);
+    }),
+  );
+}
+
 export async function gerarCarta(node: HTMLElement): Promise<Blob> {
-  // Sem isso a carta sai em Arial: fonte ainda não carregada no momento da
-  // serialização é substituída, e o arquivo fica com a tipografia errada.
+  // Sem esperar a fonte, a carta é serializada em Arial.
   if (typeof document !== "undefined" && document.fonts) {
     await document.fonts.ready;
   }
+
+  await imagensProntas(node);
 
   return paraBlob(node);
 }
@@ -78,11 +71,7 @@ export function baixar(blob: Blob, nomeArquivo: string): void {
   URL.revokeObjectURL(url);
 }
 
-/**
- * Compartilhamento nativo, que no celular entrega o arquivo direto ao Instagram
- * ou ao WhatsApp. `canShare` é consultado com o arquivo em mãos porque o suporte
- * a texto não implica suporte a arquivo — em desktop a chamada falharia.
- */
+/** Consultado com o arquivo em mãos: suporte a texto não implica a arquivo. */
 export function podeCompartilhar(file: File): boolean {
   return (
     typeof navigator !== "undefined" &&

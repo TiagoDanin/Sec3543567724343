@@ -6,22 +6,34 @@
     {
       "chave": "reportar",
       "texto": "Reporto pelo canal certo e documento tudo com cuidado",
-      "pesos": { "engenheira-de-confianca": 2, "cacador-de-rastros": 2 }
+      "pesos": {
+        "cacador-de-bounty": 3,
+        "guardiao-da-norma": 1
+      }
     },
     {
       "chave": "confirmar",
       "texto": "Confirmo até onde ela vai antes de falar qualquer coisa",
-      "pesos": { "arquiteta-de-caos": 3, "desmontador": 1 }
+      "pesos": {
+        "arrombador-de-portas": 2,
+        "sombra-na-rede": 2
+      }
     },
     {
       "chave": "impacto",
       "texto": "Calculo quem se machuca se isso vazar, e é esse o meu relatório",
-      "pesos": { "negociador-de-risco": 3, "leitor-de-sinais": 1 }
+      "pesos": {
+        "tradutor-de-risco": 3,
+        "escudo-de-crise": 1
+      }
     },
     {
       "chave": "quem",
       "texto": "Verifico se mais alguém já achou antes de mim",
-      "pesos": { "leitor-de-sinais": 3, "sentinela-de-igapo": 1 }
+      "pesos": {
+        "radar-antecipado": 3,
+        "faro-de-anomalia": 1
+      }
     }
   ]
 }
