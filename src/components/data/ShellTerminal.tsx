@@ -37,12 +37,15 @@ const SENHAS = new Set(["admin", "123456", "12345678", "000000", "00000000", "xi
 const SO_ROOT = new Set([".flag", ".premio.txt"]);
 
 const SEGREDO: Record<string, ShellNode> = {
+  // A flag saiu: era estática num site estático, e bastou a primeira pessoa
+  // colar no grupo para o resto não precisar procurar. Prêmio por descoberta
+  // só volta com valor conferido fora do bundle.
   ".premio.txt": [
     "Você virou root num rodapé. Isso não conta como pentest,",
     "mas conta como curiosidade — que é o que a gente procura.",
     "",
-    "Mostre esta linha na credencial e diga que achou o .premio:",
-    "XIBESEC{r00t_n0_r0d4p3}",
+    "Leve essa curiosidade para setembro: o CTF do XibéSec",
+    "premia quem procura de verdade.",
   ],
 };
 
