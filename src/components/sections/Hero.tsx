@@ -45,20 +45,22 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
         <div className="nevoa nevoa--longe absolute inset-0" />
         <div className="nevoa nevoa--perto absolute inset-0" />
 
-        <div className="absolute inset-0 bg-[linear-gradient(100deg,#0F1A0C_4%,rgba(15,26,12,.88)_30%,rgba(15,26,12,.34)_56%,rgba(15,26,12,.18)_100%),linear-gradient(#12200D_0%,transparent_14%),linear-gradient(0deg,#152310_0%,rgba(21,35,16,.55)_12%,transparent_30%)] max-[900px]:bg-[linear-gradient(#12200D_0%,rgba(15,26,12,.9)_26%,rgba(15,26,12,.72)_62%,rgba(21,35,16,.55)_100%),linear-gradient(0deg,#152310_0%,rgba(21,35,16,.6)_10%,transparent_26%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,#0F1A0C_4%,rgba(15,26,12,.88)_30%,rgba(15,26,12,.34)_56%,rgba(15,26,12,.18)_100%),linear-gradient(#12200D_0%,transparent_14%),linear-gradient(0deg,#152310_0%,rgba(21,35,16,.55)_12%,transparent_30%)] max-[720px]:bg-[linear-gradient(#12200D_0%,rgba(15,26,12,.72)_26%,rgba(15,26,12,.42)_62%,rgba(21,35,16,.28)_100%),linear-gradient(100deg,rgba(15,26,12,.72)_0%,rgba(15,26,12,.34)_58%,transparent_100%),linear-gradient(0deg,#152310_0%,rgba(21,35,16,.6)_10%,transparent_26%)]" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(620px_620px_at_72%_58%,rgba(79,227,172,.13),transparent_68%)]" />
 
         {/* Sobrevoa o dossel, atrás da névoa de perto para entrar na cena em vez
-            de pousar sobre ela. Some junto com o mascote: sem a coluna da arte,
-            o gavião cairia sobre a manchete. */}
-        <div className="animate-floaty absolute top-[7%] right-[7%] w-[clamp(120px,13vw,210px)] max-[900px]:hidden">
-          <Gaviao className="w-full opacity-90 drop-shadow-[0_18px_30px_rgba(0,0,0,.5)]" />
+            de pousar sobre ela. O piso do clamp existe porque `vw` sozinho
+            encolhe até virar borrão. */}
+        <div className="animate-floaty absolute top-[7%] right-[7%] w-[clamp(120px,13vw,210px)] max-[720px]:hidden">
+          <Gaviao className="w-full drop-shadow-[0_18px_30px_rgba(0,0,0,.5)]" />
         </div>
       </div>
 
-      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[900px]:min-h-0 max-[900px]:grid-cols-1 max-[900px]:items-start max-[900px]:gap-[clamp(12px,3vw,24px)] max-[900px]:pt-[clamp(24px,7vw,48px)] max-[900px]:pb-[clamp(28px,6vw,76px)]">
-        <div>
-          <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase max-[900px]:mb-4">
+      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[720px]:flex max-[720px]:min-h-0 max-[720px]:flex-col max-[720px]:items-stretch max-[720px]:gap-0 max-[720px]:pt-[clamp(20px,5vw,36px)] max-[720px]:pb-[clamp(28px,6vw,76px)]">
+        {/* Abaixo de 900px a arte vira uma faixa própria (a segunda coluna da
+            grade, reordenada para cima) e o texto volta à largura inteira. */}
+        <div className="max-[720px]:order-2">
+          <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase max-[720px]:mb-4 max-[720px]:text-[11px]">
             {hero.lugares.map((lugar, index) => (
               <span key={lugar}>
                 {index > 0 ? <span className="text-mint/50 mx-[0.3em]">·</span> : null}
@@ -73,20 +75,20 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             width={1600}
             height={1282}
             priority
-            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:mb-5 max-[900px]:w-[min(74%,264px)]"
+            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[720px]:mb-4 max-[720px]:w-[min(62%,232px)]"
           />
 
-          <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase">
+          <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase max-[720px]:mb-4 max-[720px]:text-[clamp(1.75rem,7.6vw,2.1rem)]">
             {hero.tituloLinha}
             <br />
             <em className="text-orange not-italic">{hero.tituloDestaque}</em>
           </h1>
 
-          <p className="text-cream-2 mb-8 max-w-[520px] text-[17px] leading-[1.6] max-[900px]:mb-7">
+          <p className="text-cream-2 mb-8 max-w-[520px] text-[17px] leading-[1.6] max-[720px]:mb-6 max-[720px]:text-[15px]">
             {hero.lede}
           </p>
 
-          <div className="mb-9 flex flex-wrap gap-3.5 max-[900px]:mb-7 [&>a]:max-[900px]:flex-auto">
+          <div className="mb-9 flex flex-wrap gap-3.5 max-[720px]:mb-5 [&>a]:max-[720px]:flex-auto">
             <Button {...ctaPrimario} arrow>
               {hero.ctaPrimario}
             </Button>
@@ -111,15 +113,22 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
           </p>
         </div>
 
-        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[900px]:hidden">
+        {/* No mobile é faixa em fluxo, não camada solta: o mascote precisa de
+            chão, e `absolute` sobre o texto foi o que o deixou boiando. */}
+        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:order-1 max-[720px]:mb-1 max-[720px]:w-fit max-[720px]:translate-x-0 max-[720px]:translate-y-0">
           <span
             aria-hidden="true"
-            className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)]"
+            className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)] max-[720px]:hidden"
           />
           <Mascote
             alt={MASCOTE_ALT}
-            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)]"
+            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[720px]:w-[min(38vw,152px)]"
           />
+          {/* Voa sobre o ombro do mascote, atrás dele: é o par que o desktop
+              compõe na diagonal, aqui em escala de bolso. */}
+          <div className="animate-floaty absolute top-[4%] -right-[46%] hidden w-[min(19vw,74px)] max-[720px]:block">
+            <Gaviao className="w-full drop-shadow-[0_18px_30px_rgba(0,0,0,.5)]" />
+          </div>
         </div>
       </div>
     </section>
