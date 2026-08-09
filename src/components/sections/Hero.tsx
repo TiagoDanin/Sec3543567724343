@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { Button } from "@/components/primitives/Button";
+import { BotaoMedido } from "@/components/analytics/BotaoMedido";
 import { Mascote } from "@/components/primitives/Mascote";
 import { Gaviao } from "@/components/primitives/Gaviao";
+import { EVENTOS } from "@/lib/analytics";
 import { asset, site } from "@/lib/site";
 import type { LinkAlvo } from "@/lib/links";
 import type { Hero as HeroContent, Settings } from "@/lib/cms";
@@ -56,10 +58,8 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
         </div>
       </div>
 
-      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[720px]:flex max-[720px]:min-h-0 max-[720px]:flex-col max-[720px]:items-stretch max-[720px]:gap-0 max-[720px]:pt-[clamp(20px,5vw,36px)] max-[720px]:pb-[clamp(28px,6vw,76px)]">
-        {/* Abaixo de 900px a arte vira uma faixa própria (a segunda coluna da
-            grade, reordenada para cima) e o texto volta à largura inteira. */}
-        <div className="max-[720px]:order-2">
+      <div className="max-w-site relative mx-auto grid min-h-[min(760px,calc(100svh-var(--nav-h)))] grid-cols-[1.12fr_.88fr] items-center gap-[clamp(24px,3vw,48px)] px-(--gutter) pt-[clamp(40px,5vw,64px)] pb-[clamp(48px,6vw,76px)] max-[720px]:min-h-0 max-[720px]:grid-cols-[1fr_38vw] max-[720px]:items-center max-[720px]:gap-[2vw] max-[720px]:pt-[clamp(20px,5vw,36px)] max-[720px]:pb-[clamp(28px,6vw,76px)]">
+        <div>
           <p className="text-mint mb-[26px] font-mono text-[12px] tracking-[0.28em] uppercase max-[720px]:mb-2 max-[720px]:text-[11px]">
             {hero.lugares.map((lugar, index) => (
               <span key={lugar}>
@@ -75,10 +75,10 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             width={1600}
             height={1282}
             priority
-            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(100%,62vw)] max-[720px]:mb-3 max-[720px]:w-[min(100%,72vw)]"
+            className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(100%,62vw)] max-[720px]:mb-3 max-[720px]:w-full"
           />
 
-          <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase max-[720px]:mb-4 max-[720px]:text-[clamp(1.75rem,7.6vw,2.1rem)]">
+          <h1 className="font-display mb-5 text-[clamp(2.1rem,4.3vw,3.25rem)] leading-[1.02] font-bold tracking-[0.01em] uppercase max-[720px]:mb-4 max-[720px]:text-[clamp(1.35rem,5.9vw,2rem)]">
             {hero.tituloLinha}
             <br />
             <em className="text-orange not-italic">{hero.tituloDestaque}</em>
@@ -88,10 +88,10 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
             {hero.lede}
           </p>
 
-          <div className="mb-9 flex flex-wrap gap-3.5 max-[720px]:mb-5 [&>a]:max-[720px]:flex-auto">
-            <Button {...ctaPrimario} arrow>
+          <div className="mb-9 flex flex-wrap gap-3.5 max-[720px]:mb-5 [&>a]:max-[720px]:flex-auto [&>a]:max-[720px]:px-4 [&>a]:max-[720px]:text-[12px]">
+            <BotaoMedido medirComo={EVENTOS.ingressoClicado} local="hero" {...ctaPrimario} arrow>
               {hero.ctaPrimario}
-            </Button>
+            </BotaoMedido>
             {hero.ctaSecundario && ctaSecundarioHref ? (
               <Button href={ctaSecundarioHref} variant="ghost">
                 {hero.ctaSecundario}
@@ -113,21 +113,19 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
           </p>
         </div>
 
-        {/* No mobile é faixa em fluxo, não camada solta: o mascote precisa de
-            chão, e `absolute` sobre o texto foi o que o deixou boiando. */}
-        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:order-1 max-[720px]:mb-3 max-[720px]:translate-x-0 max-[720px]:translate-y-0 max-[720px]:items-end max-[720px]:justify-start max-[720px]:gap-[2vw]">
+        {/* Coluna própria da arte, também no celular: empilhada sobre o texto o
+            mascote virava adesivo boiando. Gavião acima, mascote abaixo, na
+            mesma diagonal do desktop. */}
+        <div className="relative flex translate-x-[-7%] translate-y-[6%] items-end justify-center max-[720px]:translate-x-0 max-[720px]:translate-y-0 max-[720px]:flex-col max-[720px]:items-center max-[720px]:gap-[2vw]">
           <span
             aria-hidden="true"
             className="absolute aspect-square w-[78%] rounded-full bg-[radial-gradient(circle,rgba(79,227,172,.18),transparent_65%)] max-[720px]:hidden"
           />
           <Mascote
             alt={MASCOTE_ALT}
-            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[720px]:w-[min(40vw,164px)]"
+            className="mascote animate-floaty relative w-full max-w-[min(46vw,520px)] drop-shadow-[0_30px_50px_rgba(0,0,0,.55)] max-[720px]:order-2 max-[720px]:w-full"
           />
-          {/* No mobile é irmão do mascote na linha, não camada colada nele.
-              `self-start` mantém a diagonal do desktop: o gavião voa na altura
-              da cabeça, não ao lado dos pés. */}
-          <div className="animate-floaty absolute top-[4%] -right-[46%] hidden w-[min(19vw,74px)] max-[720px]:relative max-[720px]:top-0 max-[720px]:right-0 max-[720px]:mt-[2vw] max-[720px]:block max-[720px]:w-[min(24vw,96px)] max-[720px]:self-start">
+          <div className="animate-floaty absolute top-[4%] -right-[46%] hidden w-[min(19vw,74px)] max-[720px]:relative max-[720px]:top-0 max-[720px]:right-0 max-[720px]:order-1 max-[720px]:block max-[720px]:w-[62%] max-[720px]:self-end">
             <Gaviao className="w-full drop-shadow-[0_18px_30px_rgba(0,0,0,.5)]" />
           </div>
         </div>
