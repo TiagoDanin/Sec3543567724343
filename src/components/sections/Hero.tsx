@@ -38,7 +38,7 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
         <div
           className="absolute inset-0 bg-cover bg-no-repeat max-[900px]:bg-[78%_center]"
           style={{
-            backgroundImage: `image-set(url("${asset("/images/hero/hero-bg.webp")}") type("image/webp"), url("${asset("/images/hero/hero-bg.png")}") type("image/png"))`,
+            backgroundImage: `url("${asset("/images/hero/hero-bg.webp")}")`,
             backgroundPosition: "72% center",
           }}
         />
@@ -70,10 +70,10 @@ export function Hero({ hero, settings, ctaPrimario, ctaSecundarioHref }: HeroPro
           </p>
 
           <Image
-            src={asset("/images/marca/logo-xibesec.png")}
+            src={asset("/images/marca/logo-xibesec.webp")}
             alt={site.siteName}
-            width={1600}
-            height={1282}
+            width={800}
+            height={641}
             priority
             className="mb-[clamp(22px,2.6vw,32px)] w-[min(100%,clamp(260px,26vw,390px))] max-[900px]:w-[min(100%,62vw)] max-[720px]:mb-3 max-[720px]:w-[min(100%,300px)]"
           />

@@ -34,10 +34,10 @@ export function Fechamento({ settings, secao }: FechamentoProps) {
         </Reveal>
 
         <Image
-          src={asset("/images/marca/mascote.png")}
+          src={asset("/images/marca/mascote.webp")}
           alt=""
-          width={1400}
-          height={1750}
+          width={700}
+          height={875}
           loading="lazy"
           // Some no celular: empurraria o último botão de compra para fora da dobra.
           className="w-[min(100%,320px)] self-end justify-self-center drop-shadow-[0_20px_40px_rgba(0,0,0,.55)] max-[860px]:hidden"

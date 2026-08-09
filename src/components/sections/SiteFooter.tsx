@@ -29,10 +29,10 @@ export function SiteFooter({ settings, equipe, shellFs }: SiteFooterProps) {
       brand={
         <>
           <Image
-            src={asset("/images/marca/logo-xibesec.png")}
+            src={asset("/images/marca/logo-xibesec.webp")}
             alt={site.siteName}
-            width={1600}
-            height={1282}
+            width={800}
+            height={641}
             loading="lazy"
             className="h-16 w-auto"
           />

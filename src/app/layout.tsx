@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/") },
   icons: {
     icon: [{ url: asset("/favicon.svg"), type: "image/svg+xml" }],
-    apple: asset("/images/marca/logo-xibesec.png"),
+    apple: asset("/apple-icon.png"),
   },
   robots: {
     index: true,

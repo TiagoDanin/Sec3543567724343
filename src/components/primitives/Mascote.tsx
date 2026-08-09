@@ -17,8 +17,8 @@ const LUZES = [
   { nome: "cabo", classe: "animate-led-cabo" },
 ] as const;
 
-const W = 1400;
-const H = 1448;
+const W = 1100;
+const H = 1138;
 
 /**
  * Mascote com as luzes pulsando. A arte é bitmap fatiado em camadas: a base

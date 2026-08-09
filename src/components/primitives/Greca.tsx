@@ -53,7 +53,7 @@ export function Greca({ tone = "orange", className, ratio = 0.35 }: GrecaProps) 
         ref={beltRef}
         className="absolute inset-y-0 left-0 w-[200%] bg-left bg-repeat-x will-change-transform"
         style={{
-          backgroundImage: `url(/images/grafismo/pattern-${tone}.png)`,
+          backgroundImage: `url(/images/grafismo/pattern-${tone}.webp)`,
           backgroundSize: "auto 100%",
           transform: "translate3d(var(--gx, 0px), 0, 0)",
         }}

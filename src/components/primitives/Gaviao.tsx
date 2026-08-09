@@ -15,8 +15,8 @@ export function Gaviao({ alt, className }: GaviaoProps) {
       src={asset("/images/marca/gaviao.webp")}
       alt={alt ?? ""}
       aria-hidden={alt ? undefined : true}
-      width={900}
-      height={919}
+      width={300}
+      height={306}
       loading="lazy"
       className={cn("select-none", className)}
     />
