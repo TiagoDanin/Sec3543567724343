@@ -25,6 +25,7 @@ export function CartaVerso({ arquetipo, nome, copy }: CartaVersoProps) {
   return (
     <div
       data-carta-verso
+      data-clarity-mask="true"
       className="bg-ink-deep relative isolate w-full overflow-hidden select-none"
       style={{ containerType: "inline-size", aspectRatio: `${CARTA_LARGURA} / ${CARTA_ALTURA}` }}
     >

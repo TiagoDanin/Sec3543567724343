@@ -1,5 +1,6 @@
 "use client";
 
+import Clarity from "@microsoft/clarity";
 import { sendGAEvent } from "@next/third-parties/google";
 import { CHAVE_DESLIGA_GA, CHAVE_OPTOUT } from "./analytics";
 
@@ -28,4 +29,14 @@ export function desligarMedicao(desligar: boolean): void {
   }
 
   (window as unknown as Record<string, boolean>)[CHAVE_DESLIGA_GA] = desligar;
+
+  // O Clarity não tem bandeira equivalente: retirar o consentimento interrompe
+  // daqui em diante, e o que ele já gravou nesta sessão não volta.
+  if (desligar) {
+    try {
+      Clarity.consent(false);
+    } catch {
+      // script nunca chegou a carregar
+    }
+  }
 }

@@ -6,6 +6,8 @@
 
 export const MEASUREMENT_ID = "G-0RPCPVFHQS";
 
+export const CLARITY_TAG = "y0f9icx8h8";
+
 export const CHAVE_OPTOUT = "xibesec:sem-medicao";
 
 /** Convenção do gtag.js: com esta chave em `true` no `window`, ele não coleta. */

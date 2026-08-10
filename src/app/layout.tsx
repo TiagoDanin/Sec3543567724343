@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Analytics, ConsentBootstrap } from "@/components/analytics/Analytics";
+import { ClarityTag } from "@/components/analytics/ClarityTag";
 import { fontVariables } from "@/lib/fonts";
 import { site, absoluteUrl, asset } from "@/lib/site";
 import "./globals.css";
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="flex min-h-full flex-col font-sans">
         {children}
         <Analytics />
+        <ClarityTag />
       </body>
     </html>
   );

@@ -79,6 +79,9 @@ export function Carta({
   return (
     <div
       data-carta
+      // A carta mostra o nome digitado e a foto escolhida. No modo padrão o
+      // Clarity só mascara `<input>`, e a gravação levaria os dois embora.
+      data-clarity-mask="true"
       className="bg-ink-deep relative isolate w-full overflow-hidden select-none"
       style={
         {
