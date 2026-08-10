@@ -276,6 +276,7 @@ export interface QuizEntry {
   verFrente: string;
   fotoRemover: string;
   fotoAjuda: string;
+  fotoAjustando: string;
   zoomLabel: string;
   recorteLabel: string;
   recorteBaixando: string;

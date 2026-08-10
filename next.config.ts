@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: true,
   poweredByHeader: false,
+  // Só em `next dev`: sem isto o servidor recusa os chunks quando a página é
+  // aberta pelo IP da máquina, o caminho para testar o quiz num celular.
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.16.*.*"],
   // Fixa a raiz do workspace: existe um yarn.lock no diretório pai.
   turbopack: {
     root: __dirname,

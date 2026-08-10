@@ -46,51 +46,80 @@ export function ouvirRecorte(ouvinte: Ouvinte): () => void {
   return () => ouvintes.delete(ouvinte);
 }
 
+import type { Recorte, RespostaRecorte } from "./recorte-worker";
+
+type Fim = { ok: boolean; blob?: Blob };
+type Espera = { concluir: (fim: Fim) => void; progresso?: (atual: number, total: number) => void };
+
+let worker: Worker | undefined;
+let proximoId = 0;
+const esperando = new Map<number, Espera>();
+
+function abrirWorker(): Worker | undefined {
+  if (worker) return worker;
+
+  try {
+    worker = new Worker(new URL("./recorte-worker.ts", import.meta.url), { type: "module" });
+  } catch {
+    return undefined;
+  }
+
+  worker.onmessage = ({ data }: MessageEvent<RespostaRecorte>) => {
+    const espera = esperando.get(data.id);
+    if (!espera) return;
+
+    if (data.tipo === "progresso") {
+      espera.progresso?.(data.atual, data.total);
+      return;
+    }
+
+    esperando.delete(data.id);
+    espera.concluir({
+      ok: data.tipo !== "erro",
+      blob: data.tipo === "recorte" ? data.blob : undefined,
+    });
+  };
+
+  worker.onerror = () => {
+    for (const espera of esperando.values()) espera.concluir({ ok: false });
+    esperando.clear();
+  };
+
+  return worker;
+}
+
+function pedir(pedido: Recorte, progresso?: Espera["progresso"]): Promise<Fim> {
+  const alvo = abrirWorker();
+  if (!alvo) return Promise.resolve({ ok: false });
+
+  const id = ++proximoId;
+  return new Promise<Fim>((resolve) => {
+    esperando.set(id, { concluir: resolve, progresso });
+    alvo.postMessage({ ...pedido, id });
+  });
+}
+
 let carregando: Promise<boolean> | null = null;
 
-/**
- * Idempotente: chamadas simultâneas compartilham o mesmo download. `isnet_fp16`
- * é o modelo pequeno — 42 MB contra 84 MB, sem perda visível em foto de rosto.
- */
+/** Idempotente: chamadas simultâneas compartilham o mesmo download. */
 export function precarregarRecorte(): Promise<boolean> {
   if (carregando) return carregando;
 
-  carregando = (async () => {
-    publicar({ fase: "baixando", progresso: 0 });
+  publicar({ fase: "baixando", progresso: 0 });
 
-    try {
-      const { preload } = await import("@imgly/background-removal");
-
-      await preload({
-        model: "isnet_fp16",
-        progress: (_chave, atual, total) => {
-          if (total > 0) publicar({ fase: "baixando", progresso: atual / total });
-        },
-      });
-
-      publicar({ fase: "pronto" });
-      return true;
-    } catch (erro) {
-      // Falhando, a carta segue funcionando com as máscaras em gradiente.
-      if (process.env.NODE_ENV !== "production") console.error("[recorte] preload:", erro);
-      publicar({ fase: "indisponivel" });
-      return false;
-    }
-  })();
+  carregando = pedir({ tipo: "preload" }, (atual, total) => {
+    if (total > 0) publicar({ fase: "baixando", progresso: atual / total });
+  }).then(({ ok }) => {
+    // Falhando, a carta segue funcionando com as máscaras em gradiente.
+    publicar(ok ? { fase: "pronto" } : { fase: "indisponivel" });
+    return ok;
+  });
 
   return carregando;
 }
 
 /** Foto sem fundo, em PNG com alfa. Devolve `null` se o recorte falhar. */
 export async function recortarFundo(arquivo: Blob): Promise<Blob | null> {
-  try {
-    const { removeBackground } = await import("@imgly/background-removal");
-
-    return await removeBackground(arquivo, {
-      model: "isnet_fp16",
-      output: { format: "image/png" },
-    });
-  } catch {
-    return null;
-  }
+  const { blob } = await pedir({ tipo: "recortar", blob: arquivo });
+  return blob ?? null;
 }

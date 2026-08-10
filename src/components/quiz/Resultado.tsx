@@ -12,6 +12,7 @@ import {
   podeCompartilhar,
   semAssinatura,
 } from "@/lib/exportar-carta";
+import { normalizarFoto } from "@/lib/foto-normalizada";
 import {
   type EstadoRecorte,
   estadoRecorte,
@@ -29,6 +30,13 @@ const OCIOSO: EstadoRecorte = { fase: "ocioso" };
 /** Limites do enquadramento. Roda, pinça e a barra compartilham a mesma escala. */
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 2.2;
+
+/**
+ * A carta ocupa quase a tela do celular: dedo que arrasta de imediato rouba a
+ * rolagem da página. Enquadrar exige segurar parado, como em editor de foto.
+ */
+const SEGURAR_MS = 320;
+const TOLERANCIA_PX = 10;
 
 const limitar = (valor: number, min: number, max: number) => Math.min(max, Math.max(min, valor));
 
@@ -58,101 +66,104 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
   const versoRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [foto, setFoto] = useState<string | undefined>();
-  const [fotoFundo, setFotoFundo] = useState<string | undefined>();
+  const [fotoBase, setFotoBase] = useState<string | undefined>();
+  const [fotoRecorte, setFotoRecorte] = useState<string | undefined>();
   const [posicao, setPosicao] = useState({ x: 50, y: 20 });
   const [zoom, setZoom] = useState(1);
   const [estado, setEstado] = useState<Estado>("pronto");
   const [virada, setVirada] = useState(false);
+  const [ajustando, setAjustando] = useState(false);
 
-  // Guardado para reprocessar se o recorte for ligado depois da escolha.
-  const originalRef = useRef<File | null>(null);
   const [recortar, setRecortar] = useState(true);
   const [recortando, setRecortando] = useState(false);
+
+  const baseRef = useRef<Blob | null>(null);
+  /** Recorte lento não volta por cima da foto seguinte: pedido vencido é descartado. */
+  const pedidoRef = useRef(0);
 
   const corTime = COR_DO_TIME[arquetipo.timeCor] ?? COR_DO_TIME.blue;
 
   const recorte = useSyncExternalStore(ouvirRecorte, estadoRecorte, () => OCIOSO);
   const recorteDisponivel = recorte.fase === "pronto";
 
+  // O recorte fica em memória: alternar o destaque troca a camada de cima, e
+  // não refaz os segundos de processamento.
+  const destacada = recortar && Boolean(fotoRecorte);
+  const foto = destacada ? fotoRecorte : fotoBase;
+  const fotoFundo = destacada ? fotoBase : undefined;
+
   // O HTML estático é o mesmo para todos: o aviso nasce oculto e aparece no
   // primeiro quadro de cliente.
   const webkit = useSyncExternalStore(semAssinatura, isWebKitRestrito, () => false);
 
-  // A troca revoga a URL anterior dentro do próprio `setFoto`; aqui fica só a
-  // última, ao desmontar. Por ref, senão a dependência revogaria a URL em uso.
-  const fotoRef = useRef<string | undefined>(undefined);
-  const fundoRef = useRef<string | undefined>(undefined);
-  fotoRef.current = foto;
-  fundoRef.current = fotoFundo;
+  // No cleanup do efeito, e não dentro do `setState`: aqui a URL antiga só cai
+  // depois que o DOM já aponta para a nova.
+  useEffect(() => {
+    if (!fotoBase) return;
+    return () => URL.revokeObjectURL(fotoBase);
+  }, [fotoBase]);
 
   useEffect(() => {
-    return () => {
-      if (fotoRef.current) URL.revokeObjectURL(fotoRef.current);
-      if (fundoRef.current) URL.revokeObjectURL(fundoRef.current);
-    };
-  }, []);
+    if (!fotoRecorte) return;
+    return () => URL.revokeObjectURL(fotoRecorte);
+  }, [fotoRecorte]);
 
-  /** Mostra a foto na hora e troca pela recortada quando ela ficar pronta. */
-  const aplicarFoto = useCallback(async (arquivo: File, comRecorte: boolean) => {
-    const original = URL.createObjectURL(arquivo);
-
-    setFoto((anterior) => {
-      if (anterior) URL.revokeObjectURL(anterior);
-      return original;
-    });
-    setFotoFundo((anterior) => {
-      if (anterior) URL.revokeObjectURL(anterior);
-      return undefined;
-    });
-
-    if (!comRecorte) return;
+  const processarRecorte = useCallback(async (pedido: number) => {
+    const base = baseRef.current;
+    if (!base) return;
 
     setRecortando(true);
-    const recortada = await recortarFundo(arquivo);
+    const recortada = await recortarFundo(base);
+    if (pedido !== pedidoRef.current) return;
+
     setRecortando(false);
-
-    if (!recortada) return;
-
-    // A original não é revogada: vira a camada de trás, a meia opacidade.
-    setFoto(URL.createObjectURL(recortada));
-    setFotoFundo(original);
+    if (recortada) setFotoRecorte(URL.createObjectURL(recortada));
   }, []);
+
+  const trocarFoto = useCallback(
+    async (arquivo: File, comRecorte: boolean) => {
+      const pedido = ++pedidoRef.current;
+      const base = await normalizarFoto(arquivo);
+      if (pedido !== pedidoRef.current) return;
+
+      baseRef.current = base;
+      setFotoBase(URL.createObjectURL(base));
+      setFotoRecorte(undefined);
+      setPosicao({ x: 50, y: 20 });
+      setZoom(1);
+
+      if (comRecorte) await processarRecorte(pedido);
+    },
+    [processarRecorte],
+  );
 
   const escolherFoto = useCallback(
     (arquivo: File | undefined) => {
       if (!arquivo) return;
 
       evento(EVENTOS.quizFotoEnviada, { comRecorte: recortar && recorteDisponivel });
-
-      originalRef.current = arquivo;
-      setPosicao({ x: 50, y: 20 });
-      setZoom(1);
-      void aplicarFoto(arquivo, recortar && recorteDisponivel);
+      void trocarFoto(arquivo, recortar && recorteDisponivel);
     },
-    [aplicarFoto, recortar, recorteDisponivel],
+    [trocarFoto, recortar, recorteDisponivel],
   );
 
-  /** Religar o recorte reprocessa a foto que já está na carta. */
   const alternarRecorte = useCallback(
     (ligado: boolean) => {
       setRecortar(ligado);
-      const original = originalRef.current;
-      if (original) void aplicarFoto(original, ligado && recorteDisponivel);
+      if (ligado && !fotoRecorte && recorteDisponivel && baseRef.current) {
+        void processarRecorte(pedidoRef.current);
+      }
     },
-    [aplicarFoto, recorteDisponivel],
+    [fotoRecorte, recorteDisponivel, processarRecorte],
   );
 
   const removerFoto = useCallback(() => {
-    setFoto((anterior) => {
-      if (anterior) URL.revokeObjectURL(anterior);
-      return undefined;
-    });
-    setFotoFundo((anterior) => {
-      if (anterior) URL.revokeObjectURL(anterior);
-      return undefined;
-    });
-    originalRef.current = null;
+    // Invalida o recorte em voo, que voltaria com a foto que já saiu.
+    pedidoRef.current += 1;
+    baseRef.current = null;
+    setFotoBase(undefined);
+    setFotoRecorte(undefined);
+    setRecortando(false);
     if (inputRef.current) inputRef.current.value = "";
   }, []);
 
@@ -162,6 +173,9 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
    */
   const ponteirosRef = useRef(new Map<number, { x: number; y: number }>());
   const pincaRef = useRef<{ distancia: number; zoom: number } | null>(null);
+
+  /** Fora do React porque o `touchmove` nativo o consulta a cada evento. */
+  const ajustandoRef = useRef(false);
 
   /** Valor corrente do gesto, fora do React: o estado só recebe ao soltar. */
   const vivoRef = useRef({ x: 50, y: 20, zoom: 1 });
@@ -192,11 +206,13 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
 
   const arrastar = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
+      if (!foto || virada) return;
+
       const alvo = event.currentTarget;
-      alvo.setPointerCapture(event.pointerId);
+      const meu = event.pointerId;
 
       const ponteiros = ponteirosRef.current;
-      ponteiros.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      ponteiros.set(meu, { x: event.clientX, y: event.clientY });
 
       vivoRef.current = { ...posicao, zoom };
 
@@ -208,23 +224,77 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
       };
 
-      if (ponteiros.size === 2) {
-        pincaRef.current = { distancia: separacao(), zoom: vivoRef.current.zoom };
-      }
+      let espera: ReturnType<typeof setTimeout> | undefined;
+      const desistir = () => {
+        clearTimeout(espera);
+        espera = undefined;
+      };
+
+      const ancorar = (x: number, y: number) => {
+        inicio.px = x;
+        inicio.py = y;
+        inicio.x = vivoRef.current.x;
+        inicio.y = vivoRef.current.y;
+      };
+
+      const ativar = () => {
+        desistir();
+
+        const aqui = ponteiros.get(meu);
+        if (aqui) ancorar(aqui.x, aqui.y);
+
+        if (!ajustandoRef.current) {
+          ajustandoRef.current = true;
+          setAjustando(true);
+          navigator.vibrate?.(12);
+        }
+
+        // Capturar já no `pointerdown` seguraria também o toque que era rolagem.
+        if (!alvo.hasPointerCapture(meu)) alvo.setPointerCapture(meu);
+
+        if (ponteiros.size === 2) {
+          pincaRef.current = { distancia: separacao(), zoom: vivoRef.current.zoom };
+        }
+      };
+
+      // Dois dedos sobre a carta não são rolagem, são pinça: dispensam a espera.
+      if (event.pointerType !== "touch" || ponteiros.size === 2) ativar();
+      else espera = setTimeout(ativar, SEGURAR_MS);
+
+      let pincando = false;
 
       const mover = (e: PointerEvent) => {
         if (!ponteiros.has(e.pointerId)) return;
         ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
+        if (!ajustandoRef.current) {
+          // Saiu do lugar antes da hora: era rolagem, e a página fica com o gesto.
+          if (Math.hypot(e.clientX - inicio.px, e.clientY - inicio.py) > TOLERANCIA_PX) {
+            desistir();
+          }
+          return;
+        }
+
         // Dois dedos: a distância entre eles vira escala, e o arrasto para —
         // senão o enquadramento foge junto com a pinça.
         if (ponteiros.size === 2 && pincaRef.current) {
+          pincando = true;
           const atual = separacao();
           if (atual > 0) {
             const razao = atual / pincaRef.current.distancia;
             vivoRef.current.zoom = limitar(pincaRef.current.zoom * razao, ZOOM_MIN, ZOOM_MAX);
             agendar();
           }
+          return;
+        }
+
+        if (e.pointerId !== meu) return;
+
+        // Sem reancorar ao sair da pinça, o enquadramento salta a distância
+        // inteira que os dois dedos percorreram.
+        if (pincando) {
+          pincando = false;
+          ancorar(e.clientX, e.clientY);
           return;
         }
 
@@ -238,6 +308,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
 
       const soltar = (e: PointerEvent) => {
         ponteiros.delete(e.pointerId);
+        desistir();
         if (ponteiros.size < 2) pincaRef.current = null;
         if (ponteiros.size > 0) return;
 
@@ -250,6 +321,10 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
           quadroRef.current = 0;
         }
 
+        if (!ajustandoRef.current) return;
+        ajustandoRef.current = false;
+        setAjustando(false);
+
         // O React reassume só agora: durante o gesto ele reconstruiria as
         // máscaras a cada evento, e é isso que engasgava.
         const { x, y, zoom: z } = vivoRef.current;
@@ -261,8 +336,25 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
       alvo.addEventListener("pointerup", soltar);
       alvo.addEventListener("pointercancel", soltar);
     },
-    [posicao, zoom, agendar],
+    [foto, virada, posicao, zoom, agendar],
   );
+
+  /**
+   * `touch-action` é resolvido no início do toque: trocá-lo para `none` no meio
+   * do gesto não cancela a rolagem já autorizada, e só o `preventDefault` de um
+   * `touchmove` não passivo segura.
+   */
+  useEffect(() => {
+    const alvo = cartaRef.current;
+    if (!alvo) return;
+
+    const segurar = (event: TouchEvent) => {
+      if (ajustandoRef.current) event.preventDefault();
+    };
+
+    alvo.addEventListener("touchmove", segurar, { passive: false });
+    return () => alvo.removeEventListener("touchmove", segurar);
+  }, []);
 
   /**
    * Roda e pinça de trackpad, em listener nativo: o React anexa `wheel` como
@@ -278,7 +370,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
     let repousar: ReturnType<typeof setTimeout>;
 
     const aoRolar = (event: WheelEvent) => {
-      if (virada) return;
+      if (virada || !foto) return;
       event.preventDefault();
 
       // `deltaMode` 1 conta linhas, não pixels: sem normalizar, o Firefox salta.
@@ -299,7 +391,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
       clearTimeout(repousar);
       alvo.removeEventListener("wheel", aoRolar);
     };
-  }, [virada, agendar]);
+  }, [virada, foto, agendar]);
 
   const [desafioCopiado, setDesafioCopiado] = useState(false);
 
@@ -405,7 +497,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         {/* As duas faces ficam montadas o tempo todo: `html-to-image` não
             fotografa nó ausente, e o verso precisa estar no DOM para exportar
             sem a pessoa ter que virar a carta antes. */}
-        <div style={{ perspective: "1600px" }}>
+        <div className="relative" style={{ perspective: "1600px" }}>
           <div
             className="ease-brand relative transition-transform duration-700 motion-reduce:transition-none"
             style={{
@@ -415,13 +507,17 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
           >
             <div
               ref={cartaRef}
-              onPointerDown={virada ? undefined : arrastar}
+              onPointerDown={arrastar}
               // Sem foto o alvo é o seletor: a carta inteira vira o botão de
               // enviar, que é o gesto que a pessoa tenta antes de achar o texto.
               onClick={!foto && !virada ? () => inputRef.current?.click() : undefined}
-              style={{ backfaceVisibility: "hidden" }}
+              style={{
+                backfaceVisibility: "hidden",
+                // Com um dedo a página rola, até a pessoa segurar a foto.
+                touchAction: !foto || virada ? undefined : ajustando ? "none" : "pan-y",
+              }}
               className={cn(
-                !virada && "touch-none select-none",
+                "select-none",
                 foto && !virada && "cursor-grab active:cursor-grabbing",
                 !foto && !virada && "cursor-pointer",
               )}
@@ -446,6 +542,16 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
               <CartaVerso arquetipo={arquetipo} nome={nome} copy={copy} />
             </div>
           </div>
+
+          {/* Fora do nó que `html-to-image` fotografa, senão a moldura entra na
+              carta exportada. */}
+          {ajustando ? (
+            <div aria-hidden className="border-mint pointer-events-none absolute inset-0 border-2">
+              <span className="bg-ink-deep text-mint absolute top-3 left-3 px-2 py-1 font-mono text-[10px] tracking-[0.2em] uppercase">
+                {copy.fotoAjustando}
+              </span>
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
@@ -490,7 +596,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
                     {copy.recorteBaixando} {Math.round(recorte.progresso * 100)}%
                   </span>
                 ) : null}
-                {recortando ? (
+                {recortando && recortar ? (
                   <span className="text-mint mt-1 block font-mono text-[11px] tracking-[0.12em] uppercase">
                     {copy.recorteProcessando}
                   </span>
