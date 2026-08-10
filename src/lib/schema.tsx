@@ -153,22 +153,21 @@ export function generatePersonSchema(palestrante: Palestrante) {
 }
 
 /**
- * A página do quiz. A entidade que importa não é o formulário, é a lista de
- * arquétipos — e dela só entra o que o HTML publica. O `about` amarra a rota ao
- * evento: sem ele o quiz é lido como peça solta.
+ * Página interna. O `about` amarra a rota à entidade do evento: sem ele cada
+ * página é lida como peça solta, e não como parte do XibéSec.
  */
-export function quizSchema({
+export function webPageSchema({
+  path,
   titulo,
   descricao,
-  listaTitulo,
-  arquetipos,
+  mainEntity,
 }: {
+  path: string;
   titulo: string;
   descricao: string;
-  listaTitulo: string;
-  arquetipos: Arquetipo[];
+  mainEntity?: object;
 }) {
-  const url = canonicalUrl("/quiz");
+  const url = canonicalUrl(path);
 
   return {
     "@context": "https://schema.org",
@@ -181,28 +180,54 @@ export function quizSchema({
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": EVENT_ID },
     publisher: { "@id": ORG_ID },
-    ...(arquetipos.length > 0 && {
-      mainEntity: {
-        "@type": "ItemList",
-        name: listaTitulo,
-        numberOfItems: arquetipos.length,
-        itemListOrder: "https://schema.org/ItemListOrderAscending",
-        itemListElement: arquetipos.map((item, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          item: {
-            "@type": "Thing",
-            name: item.nome,
-            ...(item.sigla ? { alternateName: item.sigla } : {}),
-            ...(item.time || item.area
-              ? { disambiguatingDescription: [item.time, item.area].filter(Boolean).join(" · ") }
-              : {}),
-            ...(item.resumo ? { description: item.resumo } : {}),
-          },
-        })),
-      },
-    }),
+    ...(mainEntity ? { mainEntity } : {}),
   };
+}
+
+/**
+ * A página do quiz. A entidade que importa não é o formulário, é a lista de
+ * arquétipos — e dela só entra o que o HTML publica.
+ */
+export function quizSchema({
+  titulo,
+  descricao,
+  listaTitulo,
+  arquetipos,
+}: {
+  titulo: string;
+  descricao: string;
+  listaTitulo: string;
+  arquetipos: Arquetipo[];
+}) {
+  return webPageSchema({
+    path: "/quiz",
+    titulo,
+    descricao,
+    mainEntity:
+      arquetipos.length > 0
+        ? {
+            "@type": "ItemList",
+            name: listaTitulo,
+            numberOfItems: arquetipos.length,
+            itemListOrder: "https://schema.org/ItemListOrderAscending",
+            itemListElement: arquetipos.map((item, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "Thing",
+                name: item.nome,
+                ...(item.sigla ? { alternateName: item.sigla } : {}),
+                ...(item.time || item.area
+                  ? {
+                      disambiguatingDescription: [item.time, item.area].filter(Boolean).join(" · "),
+                    }
+                  : {}),
+                ...(item.resumo ? { description: item.resumo } : {}),
+              },
+            })),
+          }
+        : undefined,
+  });
 }
 
 export function generateFaqSchema(items: Array<{ pergunta: string; resposta: string }>) {

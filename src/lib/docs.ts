@@ -1,4 +1,6 @@
 import "server-only";
+import type { Metadata } from "next";
+import { rotaPublicada, rotasPublicadas } from "./rotas";
 import {
   formatDate,
   formatPrice,
@@ -26,7 +28,7 @@ import {
   type SectionKey,
   type Settings,
 } from "./cms";
-import { absoluteUrl, canonicalUrl, site } from "./site";
+import { absoluteUrl, canonicalUrl, pageMetadata, site } from "./site";
 
 /**
  * Espelho do site em Markdown, para assistentes de IA e agentes.
@@ -440,6 +442,31 @@ function blocoQuiz(): string {
   );
 }
 
+/**
+ * O mapa do site em Markdown. Cita rotas e arquivos por caminho, nunca pelo
+ * documento montado: é o único bloco que fala de todos os outros.
+ */
+function blocoMapaDoSite(): string {
+  const secao = getSecoes()["sitemap"];
+
+  return bloco(
+    `## ${secao?.eyebrow || "Mapa do site"}`,
+    secao?.lede,
+    tabela(
+      ["Página", "Endereço", "O que traz"],
+      rotasPublicadas().map((rota) => [
+        rota.rotulo,
+        canonicalUrl(rota.path),
+        rota.path === "/" ? site.siteDescription : resumoDaRota(rota.path),
+      ]),
+    ),
+    "### Para máquinas",
+    lista(
+      arquivosParaMaquina().map((arquivo) => `${absoluteUrl(arquivo.path)} — ${arquivo.resumo}`),
+    ),
+  );
+}
+
 function blocoPrivacidade(): string {
   const privacidade = getPrivacidade();
   if (privacidade.blocos.length === 0) return "";
@@ -478,6 +505,7 @@ const DOCS: Doc[] = [
     titulo: "O evento",
     resumo: "O que é o XibéSec, data, local, formato, origem do nome e edições anteriores.",
     secao: "sobre",
+    rota: "/evento",
     corpo: blocoEvento,
   },
   {
@@ -499,6 +527,7 @@ const DOCS: Doc[] = [
     titulo: "CTF",
     resumo: "Competição presencial de captura de bandeira: modalidade, formato e premiação.",
     secao: "ctf",
+    rota: "/ctf",
     corpo: blocoCtf,
   },
   {
@@ -520,6 +549,7 @@ const DOCS: Doc[] = [
     titulo: "Patrocínio",
     resumo: "Cotas, patrocinadores confirmados e contato comercial.",
     secao: "patrocinio",
+    rota: "/patrocinio",
     corpo: blocoPatrocinio,
   },
   {
@@ -534,6 +564,7 @@ const DOCS: Doc[] = [
     titulo: "Local",
     resumo: "Endereço, cidade e como chegar.",
     secao: "local",
+    rota: "/local",
     corpo: blocoLocal,
   },
   {
@@ -560,6 +591,14 @@ const DOCS: Doc[] = [
     corpo: blocoQuiz,
   },
   {
+    slug: "sitemap",
+    titulo: "Mapa do site",
+    resumo: "As páginas publicadas e os arquivos que o site escreve para leitura por máquina.",
+    secao: null,
+    rota: "/sitemap",
+    corpo: blocoMapaDoSite,
+  },
+  {
     slug: "privacidade",
     titulo: "Privacidade",
     resumo: "O que o site mede, o que não coleta e por que não há aviso de cookies.",
@@ -569,11 +608,18 @@ const DOCS: Doc[] = [
   },
 ];
 
+/**
+ * Documentos que a publicação permite. Não renderiza corpo: é o que o documento
+ * do mapa do site consulta para citar os outros sem reentrar na montagem.
+ */
+function docsHabilitados(): Doc[] {
+  const { sections } = getSettings();
+  return DOCS.filter((doc) => doc.secao === null || sections[doc.secao] === true);
+}
+
 /** Documentos publicáveis: seção ligada e corpo com conteúdo. */
 export function docsAtivos(): Array<Doc & { corpoRenderizado: string }> {
-  const { sections } = getSettings();
-
-  return DOCS.filter((doc) => doc.secao === null || sections[doc.secao] === true)
+  return docsHabilitados()
     .map((doc) => ({ ...doc, corpoRenderizado: doc.corpo() }))
     .filter((doc) => doc.corpoRenderizado !== "");
 }
@@ -582,14 +628,54 @@ export function docPath(slug: string): string {
   return `/docs/${slug}.md`;
 }
 
+/** A frase que descreve a rota, quando ela tem documento. */
+export function resumoDaRota(rota: string): string {
+  return docsHabilitados().find((doc) => doc.rota === rota)?.resumo ?? "";
+}
+
+/** Tudo que o build escreve para ser lido por máquina, na ordem de importância. */
+export function arquivosParaMaquina(): Array<{ path: string; resumo: string }> {
+  return [
+    { path: "/llms.txt", resumo: "índice do site para assistentes de IA" },
+    { path: "/llms-full.txt", resumo: "o site inteiro em um arquivo" },
+    { path: docPath("agents"), resumo: "respostas canônicas e o que ainda não está definido" },
+    { path: "/index.md", resumo: "espelho da página inicial em Markdown" },
+    ...docsHabilitados().map((doc) => ({ path: docPath(doc.slug), resumo: doc.resumo })),
+    { path: "/sitemap.xml", resumo: "mapa do site" },
+    { path: "/robots.txt", resumo: "regras de rastreamento" },
+  ];
+}
+
 /**
  * Espelho em Markdown de uma rota HTML, ou `null` quando o build não gera um —
  * anunciar no `<link rel="alternate">` arquivo que não foi escrito é prometer
- * 404 a quem veio pelo Markdown.
+ * 404 a quem veio pelo Markdown. Só o corpo do documento pedido é renderizado:
+ * o do mapa do site cita todas as rotas e cairia em laço se olhasse os demais.
  */
 export function markdownDaRota(rota: string): string | null {
-  const doc = docsAtivos().find((item) => item.rota === rota);
-  return doc ? docPath(doc.slug) : null;
+  if (rota === "/") return "/index.md";
+
+  const doc = docsHabilitados().find((item) => item.rota === rota);
+  return doc && doc.corpo() !== "" ? docPath(doc.slug) : null;
+}
+
+/**
+ * Metadata de uma rota governada por feature flag. `notFound()` não impede o
+ * export de escrever o HTML — ele sai vazio, mas com título e canonical. Sem o
+ * `noindex` daqui, a seção desligada vira um soft 404 indexável, e nada pior:
+ * um endereço que responde 200 anunciando conteúdo que a organização retirou.
+ */
+export function metadataDeRota({
+  path,
+  title,
+  description,
+}: {
+  path: string;
+  title: string;
+  description: string;
+}): Metadata {
+  const base = pageMetadata({ title, description, path, markdown: markdownDaRota(path) });
+  return rotaPublicada(path) ? base : { ...base, robots: { index: false, follow: false } };
 }
 
 // ── Renderização dos arquivos ────────────────────────────────────────────────

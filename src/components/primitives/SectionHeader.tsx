@@ -59,6 +59,8 @@ export type SectionHeaderProps = {
   eyebrowTone?: EyebrowProps["tone"];
   title: ReactNode;
   titleSize?: SectionTitleProps["size"];
+  /** `h1` quando a seção é o assunto de uma rota própria. */
+  titleAs?: SectionTitleProps["as"];
   lede?: ReactNode;
   /** Alinha título e apoio pela base. Colapsa em coluna abaixo de 1000px. */
   alignEnd?: boolean;
@@ -75,6 +77,7 @@ export function SectionHeader({
   eyebrowTone,
   title,
   titleSize,
+  titleAs,
   lede,
   alignEnd = false,
   slim = false,
@@ -97,7 +100,9 @@ export function SectionHeader({
           "max-[860px]:grid-cols-1 max-[860px]:gap-[18px]",
         )}
       >
-        <SectionTitle size={titleSize}>{title}</SectionTitle>
+        <SectionTitle size={titleSize} as={titleAs}>
+          {title}
+        </SectionTitle>
         {lede ? <p className="text-cream-2 text-[17px] leading-[1.65]">{lede}</p> : null}
       </div>
     </header>

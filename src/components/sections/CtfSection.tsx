@@ -15,9 +15,11 @@ export type CtfSectionProps = {
   secao: Secao;
   /** Destino do CTA. Ausente, o botão não é renderizado. */
   cta?: LinkAlvo;
+  /** `h1` na rota dedicada, onde a seção é o assunto da página. */
+  titleAs?: "h1" | "h2";
 };
 
-export function CtfSection({ ctf, secao, cta }: CtfSectionProps) {
+export function CtfSection({ ctf, secao, cta, titleAs }: CtfSectionProps) {
   return (
     <Section id="ctf" variant="panel">
       <Container className="grid grid-cols-[1.15fr_.85fr] items-center gap-[clamp(32px,4.5vw,56px)] max-[900px]:grid-cols-1">
@@ -26,7 +28,9 @@ export function CtfSection({ ctf, secao, cta }: CtfSectionProps) {
             {secao.eyebrow}
           </Eyebrow>
 
-          <SectionTitle size="md">{ctf.titulo}</SectionTitle>
+          <SectionTitle size="md" as={titleAs}>
+            {ctf.titulo}
+          </SectionTitle>
 
           <p className="text-cream-2 mt-[18px] max-w-[600px] text-[17px] leading-[1.7]">
             {ctf.texto}

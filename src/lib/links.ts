@@ -19,9 +19,6 @@ export function externo(href: string): LinkAlvo {
 /** Âncora da seção de ingressos, onde fica a tabela de preços. */
 export const ANCORA_INGRESSOS = "#ingressos";
 
-/** Nenhuma feature flag governa esta rota: o rodapé sempre a linka. */
-export const ROTA_PRIVACIDADE = "/privacidade/";
-
 /**
  * Destino de um CTA de compra cujo rótulo não promete o checkout ("Garantir
  * presença", "Quero participar"): rola até a tabela de preços, onde cada lote
@@ -32,6 +29,16 @@ export const ROTA_PRIVACIDADE = "/privacidade/";
  */
 export function alvoCompra(settings: Settings): LinkAlvo {
   return settings.sections.ingressos ? { href: ANCORA_INGRESSOS } : externo(settings.ticketsUrl);
+}
+
+/**
+ * O mesmo destino, fora da home: a tabela de preços está em outra página, e uma
+ * âncora nua não sairia do lugar.
+ */
+export function alvoCompraDeOutraRota(settings: Settings): LinkAlvo {
+  return settings.sections.ingressos
+    ? { href: `/${ANCORA_INGRESSOS}` }
+    : externo(settings.ticketsUrl);
 }
 
 /**

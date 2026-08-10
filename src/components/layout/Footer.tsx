@@ -28,10 +28,10 @@ export function Footer({ brand, tagline, columns, children, className }: FooterP
   return (
     <footer className={cn("bg-panel border-line border-t", className)}>
       {/* No celular a marca ocupa a linha inteira e as colunas de links ficam
-          lado a lado: enfileiradas, elas custam meia tela para listar sete
-          endereços. */}
-      <Container className="grid grid-cols-[1.2fr_1fr_1fr_1fr] gap-[clamp(24px,3vw,40px)] pt-[clamp(44px,5.5vw,64px)] pb-8 max-[1080px]:grid-cols-[1.4fr_1fr_1fr] max-[860px]:grid-cols-2 max-[860px]:gap-x-6 max-[380px]:grid-cols-1">
-        <div className="max-[1080px]:col-span-3 max-[860px]:col-span-2 max-[380px]:col-span-1">
+          lado a lado — até no aparelho mais estreito. Enfileiradas, elas custam
+          meia tela para listar dez endereços. */}
+      <Container className="grid grid-cols-[1.2fr_1fr_1fr_1fr] gap-[clamp(24px,3vw,40px)] pt-[clamp(44px,5.5vw,64px)] pb-8 max-[1080px]:grid-cols-3 max-[860px]:gap-x-6 max-[560px]:gap-x-4">
+        <div className="max-[1080px]:col-span-3">
           {brand ? (
             <div className="mb-5 flex items-center gap-[clamp(16px,2vw,24px)]">{brand}</div>
           ) : null}
@@ -57,7 +57,7 @@ export function Footer({ brand, tagline, columns, children, className }: FooterP
                 {...(link.external ? { target: "_blank", rel: "noopener" } : {})}
                 // O alvo cresce no toque sem afastar as linhas: o que era
                 // espaço morto entre elas vira área clicável.
-                className="text-cream-2 ease-brand hover:text-orange hover:border-orange focus-visible:text-orange focus-visible:border-orange border-b border-transparent text-[15px] transition-colors duration-250 max-[860px]:py-1.5"
+                className="text-cream-2 ease-brand hover:text-orange hover:border-orange focus-visible:text-orange focus-visible:border-orange border-b border-transparent text-[15px] break-words transition-colors duration-250 max-[860px]:py-1.5"
               >
                 {link.label}
               </a>

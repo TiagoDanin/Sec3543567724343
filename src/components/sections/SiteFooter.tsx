@@ -1,15 +1,14 @@
 import Image from "next/image";
 import { Footer } from "@/components/layout/Footer";
 import { ShellTerminal, type ShellNode } from "@/components/data/ShellTerminal";
-import { ROTA_PRIVACIDADE } from "@/lib/links";
+import { rotasDoRodape } from "@/lib/rotas";
 import { asset, site } from "@/lib/site";
 import type { Organizacao, Settings } from "@/lib/cms";
 
 // Títulos de coluna são estrutura de navegação, não conteúdo editorial.
 const COL_REDES = "Redes";
 const COL_REALIZACAO = "Realização";
-const COL_LEGAL = "Transparência";
-const LINK_PRIVACIDADE = "Privacidade";
+const COL_PAGINAS = "Páginas";
 
 export type SiteFooterProps = {
   settings: Settings;
@@ -65,9 +64,17 @@ export function SiteFooter({ settings, equipe, shellFs }: SiteFooterProps) {
           links: [
             { label: "Instagram", href: site.social.instagram, external: true },
             { label: "LinkedIn", href: site.social.linkedin, external: true },
-            { label: "Linktree", href: site.social.linktree, external: true },
             { label: "Sympla", href: settings.ticketsUrl, external: true },
           ],
+        },
+        // As rotas que espelham uma seção da home ficam de fora: chega-se a elas
+        // pelo mapa do site, que está aqui.
+        {
+          title: COL_PAGINAS,
+          links: rotasDoRodape().map((rota) => ({
+            label: rota.rotulo,
+            href: rota.path === "/" ? "/" : `${rota.path}/`,
+          })),
         },
         {
           title: COL_REALIZACAO,
@@ -80,10 +87,6 @@ export function SiteFooter({ settings, equipe, shellFs }: SiteFooterProps) {
               external: true,
             },
           ],
-        },
-        {
-          title: COL_LEGAL,
-          links: [{ label: LINK_PRIVACIDADE, href: ROTA_PRIVACIDADE }],
         },
       ]}
     >

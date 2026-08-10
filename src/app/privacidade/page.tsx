@@ -9,7 +9,7 @@ import { HighlightPanel } from "@/components/primitives/HighlightPanel";
 
 import { markdownDaRota } from "@/lib/docs";
 import { buildShellFs } from "@/lib/shell-fs";
-import { alvoCompra } from "@/lib/links";
+import { alvoCompraDeOutraRota } from "@/lib/links";
 import { pageMetadata } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
 import { formatDate, getEquipe, getNavegacao, getPrivacidade, getSettings } from "@/lib/cms";
@@ -32,7 +32,7 @@ export default function PrivacidadePage() {
   const navegacao = getNavegacao();
   const equipe = getEquipe();
   const { sections } = settings;
-  const compra = alvoCompra(settings);
+  const compra = alvoCompraDeOutraRota(settings);
 
   return (
     <>

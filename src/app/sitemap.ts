@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { rotasPublicadas } from "@/lib/rotas";
 import { canonicalUrl } from "@/lib/site";
 
 // Exigido pelo `output: "export"`: a rota precisa ser resolvida no build.
@@ -15,24 +16,10 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   const agora = new Date();
 
-  return [
-    {
-      url: canonicalUrl("/"),
-      lastModified: agora,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: canonicalUrl("/quiz"),
-      lastModified: agora,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: canonicalUrl("/privacidade"),
-      lastModified: agora,
-      changeFrequency: "yearly",
-      priority: 0.2,
-    },
-  ];
+  return rotasPublicadas().map((rota) => ({
+    url: canonicalUrl(rota.path),
+    lastModified: agora,
+    changeFrequency: rota.changeFrequency,
+    priority: rota.priority,
+  }));
 }

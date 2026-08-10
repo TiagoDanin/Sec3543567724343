@@ -13,6 +13,8 @@ export type PatrocinioSectionProps = {
   grupos: Array<{ cota: Cota; patrocinadores: Patrocinador[] }>;
   secao: Secao;
   kit: Secao;
+  /** `h1` na rota dedicada, onde a seção é o assunto da página. */
+  titleAs?: "h1" | "h2";
 };
 
 /**
@@ -22,8 +24,7 @@ export type PatrocinioSectionProps = {
  * A seção mostra só patrocinador confirmado — não anuncia cota vaga. Ver
  * PRODUCT.md.
  */
-export function PatrocinioSection({ grupos, secao, kit }: PatrocinioSectionProps) {
-
+export function PatrocinioSection({ grupos, secao, kit, titleAs }: PatrocinioSectionProps) {
   return (
     <Section id="patrocinio" variant="light">
       <Container>
@@ -32,6 +33,7 @@ export function PatrocinioSection({ grupos, secao, kit }: PatrocinioSectionProps
             eyebrow={secao.eyebrow}
             eyebrowTone={secao.eyebrowTom}
             title={secao.titulo}
+            titleAs={titleAs}
             lede={secao.lede}
             alignEnd
           />

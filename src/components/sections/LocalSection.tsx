@@ -36,9 +36,11 @@ const iconClasses =
 export type LocalSectionProps = {
   settings: Settings;
   secao: Secao;
+  /** `h1` na rota dedicada, onde a seção é o assunto da página. */
+  titleAs?: "h1" | "h2";
 };
 
-export function LocalSection({ settings, secao }: LocalSectionProps) {
+export function LocalSection({ settings, secao, titleAs }: LocalSectionProps) {
   // Busca pelo nome do local + cidade, não pelo endereço completo: a pontuação
   // do endereço editorial ("9031. Marambaia, Belém/PA") atrapalha o geocoder, e
   // o hotel é resolvido sem ambiguidade pelo nome.
@@ -66,7 +68,7 @@ export function LocalSection({ settings, secao }: LocalSectionProps) {
 
         <div className="grid grid-cols-2 items-center gap-[clamp(32px,4.5vw,56px)] max-[900px]:grid-cols-1">
           <Reveal>
-            <SectionTitle size="md">
+            <SectionTitle size="md" as={titleAs}>
               {settings.venueName},<br />
               {cidade}.
             </SectionTitle>

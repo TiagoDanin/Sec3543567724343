@@ -86,5 +86,16 @@
     "lede": "Fale com a organização para receber as cotas disponíveis, o perfil de público e os formatos de ativação.",
     "cta": "Falar com a organização",
     "ctaUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfKFpm4ZLnh2eiwGBN60S45NG3UKeyR7YcduILHFpptosBvzA/viewform"
+  },
+  {
+    "chave": "sitemap",
+    "eyebrow": "Mapa do site",
+    "eyebrowTom": "orange",
+    "titulo": "Tudo que está publicado.",
+    "lede": "As páginas no ar nesta edição e os arquivos que o site escreve para leitura por máquina — assistentes de IA, agentes e rastreadores de busca."
+  },
+  {
+    "chave": "sitemap-arquivos",
+    "titulo": "Para máquinas."
   }
 ]

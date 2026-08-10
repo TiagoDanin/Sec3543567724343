@@ -32,6 +32,8 @@ export type EventoSectionProps = {
   settings: Settings;
   secao: Secao;
   showEdicoes: boolean;
+  /** `h1` na rota dedicada, onde a seção é o assunto da página. */
+  titleAs?: "h1" | "h2";
 };
 
 /** Origem do nome. `**termo**` marca o destaque sem exigir MDX. */
@@ -70,6 +72,7 @@ export function EventoSection({
   settings,
   secao,
   showEdicoes,
+  titleAs,
 }: EventoSectionProps) {
   const anoAtual = new Date(settings.eventStartDate).getFullYear();
 
@@ -88,6 +91,7 @@ export function EventoSection({
             eyebrow={secao.eyebrow}
             eyebrowTone={secao.eyebrowTom}
             title={sobre.titulo}
+            titleAs={titleAs}
             lede={sobre.texto}
           />
         </Reveal>

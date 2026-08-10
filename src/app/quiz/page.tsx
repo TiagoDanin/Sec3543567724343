@@ -7,7 +7,7 @@ import { QuizFlow } from "@/components/quiz/QuizFlow";
 
 import { markdownDaRota } from "@/lib/docs";
 import { buildShellFs } from "@/lib/shell-fs";
-import { alvoCompra } from "@/lib/links";
+import { alvoCompraDeOutraRota } from "@/lib/links";
 import { SchemaMarkup, generateBreadcrumbs, quizSchema } from "@/lib/schema";
 import { canonicalUrl, pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
@@ -35,7 +35,7 @@ export default function QuizPage() {
   const navegacao = getNavegacao();
   const equipe = getEquipe();
   const { sections } = settings;
-  const compra = alvoCompra(settings);
+  const compra = alvoCompraDeOutraRota(settings);
 
   const schema = [
     quizSchema({

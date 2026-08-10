@@ -71,11 +71,23 @@ Formato por natureza do dado:
 
 `src/lib/site.ts` concentra nome, tagline, descrição, `siteUrl`, locale, redes e contatos, mais `absoluteUrl(path)` e `pageMetadata({ title, description, path, image })`. Toda página interna monta seu `Metadata` por essa função — é o que impede uma rota nova sair sem canonical. **Nunca** repetir a URL do site em outro arquivo.
 
-`src/lib/links.ts` resolve a pergunta seguinte: **para onde o botão aponta quando a seção que ele buscava não está publicada**. `externo(href)` monta o par `target="_blank"` + `rel="noopener"` — o `Button` lê o `target` e acrescenta sozinho a seta de "sai do site". `alvoCompra(settings)` devolve a âncora `#ingressos` enquanto a seção estiver ligada e cai no `ticketsUrl` quando não estiver. `ancoraViva(href, sections)` diz se uma âncora existe na página: o conteúdo em `contents/` não sabe o que foi ao ar, e é assim que a nota de uma seção deixa de linkar para outra que não foi publicada. Duas regras: **o rótulo manda no destino** — botão que diz "comprar" vai ao Sympla, botão que convida a participar rola até a tabela de preços; e **nenhuma âncora literal `#secao` fora desse arquivo** em CTA que uma feature flag possa desligar.
+`src/lib/links.ts` resolve a pergunta seguinte: **para onde o botão aponta quando a seção que ele buscava não está publicada**. `externo(href)` monta o par `target="_blank"` + `rel="noopener"` — o `Button` lê o `target` e acrescenta sozinho a seta de "sai do site". `alvoCompra(settings)` devolve a âncora `#ingressos` enquanto a seção estiver ligada e cai no `ticketsUrl` quando não estiver; fora da home a tabela de preços está em outra página, e `alvoCompraDeOutraRota(settings)` devolve `/#ingressos` — âncora nua ali não sai do lugar. `ancoraViva(href, sections)` diz se uma âncora existe na página: o conteúdo em `contents/` não sabe o que foi ao ar, e é assim que a nota de uma seção deixa de linkar para outra que não foi publicada. Duas regras: **o rótulo manda no destino** — botão que diz "comprar" vai ao Sympla, botão que convida a participar rola até a tabela de preços; e **nenhuma âncora literal `#secao` fora desse arquivo** em CTA que uma feature flag possa desligar.
 
 `src/lib/schema.tsx` fabrica o JSON-LD: `<SchemaMarkup>` mais `eventSchema`, `organizationSchema`, `websiteSchema`, `generateFaqSchema`, `generateBreadcrumbs`, `generatePersonSchema`. Tudo alimentado por `site.ts` + `contents/`, com `@id` estáveis (`#organization`, `#website`) referenciados pelos schemas de página.
 
 `app/sitemap.ts` e `app/robots.ts` usam as convenções nativas do App Router — compatíveis com `output: "export"`, sem `next-sitemap`, e ambos precisam de `export const dynamic = "force-static"` (sem isso o build do export falha). Só emitir URL de rota que `generateStaticParams` realmente gera. O sitemap usa `canonicalUrl()`, que aplica a barra final imposta pelo `trailingSlash` — sem ela o sitemap aponta para um endereço que o canonical não confirma.
+
+### Rotas e o mapa do site
+
+`src/lib/rotas.ts` é o catálogo das rotas HTML — endereço, rótulo, feature flag que a governa, prioridade e ritmo de atualização. Quatro consumidores leem dele: `app/sitemap.ts`, a página `/sitemap`, o documento `/docs/sitemap.md` que a espelha e a coluna _Páginas_ do rodapé. Escritos à mão, os quatro divergem no primeiro dia em que uma seção é desligada.
+
+O catálogo **não importa `docs.ts`** — a dependência aponta para o outro lado, porque o documento do mapa do site lê as rotas. `markdownDaRota()` e `metadataDeRota()` moram em `docs.ts` por isso, e `markdownDaRota()` renderiza só o corpo do documento pedido: olhar todos poria o mapa do site em laço, já que ele cita os outros.
+
+Rota nova nasce aqui, não no `app/`: sem entrada no catálogo ela não entra no sitemap nem ganha link interno, e página órfã o buscador visita tarde e classifica mal.
+
+`/evento`, `/ctf`, `/patrocinio` e `/local` reusam a seção da home com `titleAs="h1"` — a mesma seção, promovida a assunto da página. Ficam fora do menu **e do rodapé** de propósito: a home continua sendo o caminho de leitura, e essas rotas existem para a busca e para quem chega por link direto. Quem navega chega a elas pelo `/sitemap`, que está no rodapé. Cada uma anuncia `/docs/<slug>.md` como espelho, pela `metadataDeRota()`.
+
+**Feature flag desligada não apaga o arquivo.** Com `output: "export"`, `notFound()` ainda escreve o HTML da rota — vazio, mas com título e canonical. Por isso `metadataDeRota()` devolve `noindex, nofollow` quando a seção está desligada, e a rota sai do sitemap: sem isso o endereço vira um soft 404 que responde 200 anunciando conteúdo que a organização retirou do ar.
 
 `robots.ts` libera nominalmente os rastreadores de assistentes de IA (GPTBot, ClaudeBot, PerplexityBot, Google-Extended e afins). Não é decoração: esses bots leem o bloco do próprio user-agent antes do `*`, e bot bloqueado não cita o evento.
 
