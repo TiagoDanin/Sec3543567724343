@@ -168,7 +168,7 @@ export function Carta({
         className="absolute z-2"
         style={{
           left: "50%",
-          top: "7cqw",
+          top: "2cqw",
           width: "44cqw",
           transform: "translateX(-50%)",
           filter: "drop-shadow(0 1cqw 2cqw rgba(0,0,0,.55))",
