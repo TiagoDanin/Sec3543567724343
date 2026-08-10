@@ -481,6 +481,8 @@ function getQuizCopy(): QuizCopy {
     avisoSafariTexto: str(row, "avisoSafariTexto"),
     semJsTitulo: str(row, "semJsTitulo"),
     semJsTexto: str(row, "semJsTexto"),
+    indiceTitulo: str(row, "indiceTitulo"),
+    indiceLede: str(row, "indiceLede"),
     ctaEvento: str(row, "ctaEvento"),
     fechoTitulo: str(row, "fechoTitulo"),
     fechoTexto: str(row, "fechoTexto"),

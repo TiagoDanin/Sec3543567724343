@@ -1,7 +1,7 @@
 {
   "eyebrow": "XibéSec 26 · quiz",
   "titulo": "Que tipo de hacker você é?",
-  "lede": "Sete perguntas, nenhuma resposta certa. No fim você descobre seu arquétipo e seu time na roda de cores da cibersegurança, em uma carta pronta para compartilhar.",
+  "lede": "Nove perguntas, nenhuma resposta certa. No fim você descobre seu arquétipo e seu time na roda de cores da cibersegurança, em uma carta pronta para compartilhar.",
   "nomeLabel": "Como você quer aparecer na carta",
   "nomePlaceholder": "Seu nome ou apelido",
   "nomeAjuda": "Só isso é usado. Nada é enviado para lugar nenhum: o quiz roda inteiro no seu navegador.",
@@ -41,6 +41,8 @@
   "avisoSafariTexto": "O Safari falha ao converter a carta em imagem. Abra esta página no Chrome para baixar ou compartilhar o resultado.",
   "semJsTitulo": "O quiz precisa de JavaScript",
   "semJsTexto": "Ative o JavaScript para responder às perguntas e gerar sua carta.",
+  "indiceTitulo": "Todos os arquétipos",
+  "indiceLede": "Cada arquétipo é um jeito de estar na segurança da informação — um time na roda de cores e uma área de atuação. O quiz aponta o seu; a lista abaixo tem todos.",
   "ctaEvento": "Garantir presença",
   "fechoTitulo": "O XibéSec é onde esse tipo de gente se encontra",
   "fechoTexto": "4ª edição, 19 de setembro de 2026, no Bristol Marambaia Hotel, em Belém. Dez horas de programação, duas trilhas simultâneas e CTF presencial."

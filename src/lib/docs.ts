@@ -553,7 +553,7 @@ const DOCS: Doc[] = [
   {
     slug: "quiz",
     titulo: "Quiz: que tipo de hacker você é",
-    resumo: "Os oito arquétipos do quiz de divulgação e a trilha do evento de cada um.",
+    resumo: "Os arquétipos do quiz de divulgação, com o time na roda de cores e a área de cada um.",
     // Sem feature flag: a rota existe sempre, só não aparece no menu.
     secao: null,
     rota: "/quiz",
@@ -580,6 +580,16 @@ export function docsAtivos(): Array<Doc & { corpoRenderizado: string }> {
 
 export function docPath(slug: string): string {
   return `/docs/${slug}.md`;
+}
+
+/**
+ * Espelho em Markdown de uma rota HTML, ou `null` quando o build não gera um —
+ * anunciar no `<link rel="alternate">` arquivo que não foi escrito é prometer
+ * 404 a quem veio pelo Markdown.
+ */
+export function markdownDaRota(rota: string): string | null {
+  const doc = docsAtivos().find((item) => item.rota === rota);
+  return doc ? docPath(doc.slug) : null;
 }
 
 // ── Renderização dos arquivos ────────────────────────────────────────────────

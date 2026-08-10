@@ -293,6 +293,8 @@ export interface QuizEntry {
   avisoSafariTexto: string;
   semJsTitulo: string;
   semJsTexto: string;
+  indiceTitulo: string;
+  indiceLede: string;
   ctaEvento: string;
   fechoTitulo: string;
   fechoTexto: string;

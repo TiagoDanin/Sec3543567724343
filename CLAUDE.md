@@ -97,11 +97,13 @@ Três regras governam isso:
 2. **Documento só existe enquanto a seção estiver ligada** em `settings.sections`. Publicar em Markdown o que a página não mostra cria uma segunda verdade — e `llms.txt` lê a mesma lista, então nunca aponta para arquivo que o build não gerou.
 3. **O indefinido é declarado**, não omitido: `/docs/agents.md` traz a lista do que a organização ainda não publicou. É o que faz um assistente responder "ainda não foi anunciado" em vez de estimar.
 
-`pageMetadata()` deriva o alternate sozinho — `/` → `/index.md` — e emite `<link rel="alternate" type="text/markdown">`. Rota nova nasce com espelho anunciado; passar `markdown: null` desliga quando a rota não tiver um.
+`pageMetadata()` deriva o alternate sozinho — `/` → `/index.md` — e emite `<link rel="alternate" type="text/markdown">`. Rota nova nasce com espelho anunciado; passar `markdown: null` desliga quando a rota não tiver um. A convenção de nome só vale para a home: rota com documento próprio passa `markdown: markdownDaRota("/rota")`, que devolve `/docs/<slug>.md` enquanto o build gerar o arquivo — sem isso a página anuncia um Markdown que não existe.
 
 ### O quiz em `/quiz`
 
-Sete perguntas, um arquétipo no fim e uma carta em imagem (1080×1920) para compartilhar. Roda inteira no navegador: nome e foto **não saem do aparelho**, e não há coleta de resposta. A rota existe sempre — o que a esconde do menu é `noMenu: true` em `contents/navegacao`.
+Nove perguntas, um arquétipo no fim e uma carta em imagem (1080×1920) para compartilhar. Roda inteira no navegador: nome e foto **não saem do aparelho**, e não há coleta de resposta. A rota existe sempre — o que a esconde do menu é `noMenu: true` em `contents/navegacao`.
+
+`ArquetiposIndex` fecha a página com os arquétipos em HTML, renderizados no servidor. É o único conteúdo indexável da rota — o resto está atrás do JavaScript e das perguntas — e é o que o `ItemList` de `quizSchema()` declara: tirar a lista é tirar o assunto da página e mentir no JSON-LD.
 
 Quatro decisões que não se desfazem sem quebrar algo:
 

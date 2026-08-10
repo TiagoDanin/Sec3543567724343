@@ -623,6 +623,8 @@ const config: StudioConfig = {
           },
           { name: "semJsTitulo", type: "text", label: "Sem JavaScript — título" },
           { name: "semJsTexto", type: "long-text", rows: 2, label: "Sem JavaScript — texto" },
+          { name: "indiceTitulo", type: "text", label: "Índice de arquétipos — título" },
+          { name: "indiceLede", type: "long-text", rows: 3, label: "Índice de arquétipos — texto" },
           { name: "ctaEvento", type: "text", label: "Botão — ingresso" },
           { name: "fechoTitulo", type: "text", label: "Fecho — título" },
           { name: "fechoTexto", type: "long-text", rows: 3, label: "Fecho — texto" },

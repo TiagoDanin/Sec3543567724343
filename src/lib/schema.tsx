@@ -1,7 +1,14 @@
 // JSON-LD (schema.org). Gerado a partir de `site.ts` + `contents/` — nunca
 // escrito como string fixa, senão volta a divergir do conteúdo publicado.
 import { site, absoluteUrl, canonicalUrl, socialLinks } from "./site";
-import type { AgendaItem, Ingresso, Palestrante, Patrocinador, Settings } from "./content-types";
+import type {
+  AgendaItem,
+  Arquetipo,
+  Ingresso,
+  Palestrante,
+  Patrocinador,
+  Settings,
+} from "./content-types";
 
 /** A home com a barra final, como o canonical a publica. Base dos `@id`. */
 const HOME = canonicalUrl("/");
@@ -142,6 +149,59 @@ export function generatePersonSchema(palestrante: Palestrante) {
       ? { worksFor: { "@type": "Organization", name: palestrante.empresa } }
       : {}),
     ...(palestrante.foto ? { image: absoluteUrl(palestrante.foto) } : {}),
+  };
+}
+
+/**
+ * A página do quiz. A entidade que importa não é o formulário, é a lista de
+ * arquétipos — e dela só entra o que o HTML publica. O `about` amarra a rota ao
+ * evento: sem ele o quiz é lido como peça solta.
+ */
+export function quizSchema({
+  titulo,
+  descricao,
+  listaTitulo,
+  arquetipos,
+}: {
+  titulo: string;
+  descricao: string;
+  listaTitulo: string;
+  arquetipos: Arquetipo[];
+}) {
+  const url = canonicalUrl("/quiz");
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": `${url}#webpage`,
+    url,
+    name: titulo,
+    description: descricao,
+    inLanguage: site.locale,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": EVENT_ID },
+    publisher: { "@id": ORG_ID },
+    ...(arquetipos.length > 0 && {
+      mainEntity: {
+        "@type": "ItemList",
+        name: listaTitulo,
+        numberOfItems: arquetipos.length,
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+        itemListElement: arquetipos.map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "Thing",
+            name: item.nome,
+            ...(item.sigla ? { alternateName: item.sigla } : {}),
+            ...(item.time || item.area
+              ? { disambiguatingDescription: [item.time, item.area].filter(Boolean).join(" · ") }
+              : {}),
+            ...(item.resumo ? { description: item.resumo } : {}),
+          },
+        })),
+      },
+    }),
   };
 }
 

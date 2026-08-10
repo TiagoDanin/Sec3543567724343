@@ -7,6 +7,7 @@ import { NavBar } from "@/components/layout/NavBar";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { HighlightPanel } from "@/components/primitives/HighlightPanel";
 
+import { markdownDaRota } from "@/lib/docs";
 import { buildShellFs } from "@/lib/shell-fs";
 import { alvoCompra } from "@/lib/links";
 import { pageMetadata } from "@/lib/site";
@@ -22,6 +23,7 @@ export const metadata = pageMetadata({
   description:
     "O site do XibéSec mede audiência com base em legítimo interesse, sem publicidade e sem perfil de usuário — e deixa desligar a medição a qualquer momento. O quiz roda no navegador: nome e foto não saem do aparelho.",
   path: "/privacidade",
+  markdown: markdownDaRota("/privacidade"),
 });
 
 export default function PrivacidadePage() {

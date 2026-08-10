@@ -81,9 +81,9 @@ export function socialLinks(): string[] {
 }
 
 /**
- * Caminho do espelho em Markdown de uma rota: `/` → `/index.md`, `/faq` →
- * `/faq.md`. É o arquivo que assistentes e agentes leem no lugar do HTML,
- * anunciado no `<head>` como `<link rel="alternate" type="text/markdown">`.
+ * Caminho do espelho em Markdown pela convenção de nome: `/` → `/index.md`. Só
+ * a home segue essa forma; documento de seção vive em `/docs/`, e a rota que
+ * tem um passa o caminho por `markdown`, vindo de `markdownDaRota()`.
  */
 export function markdownPath(path: string): string {
   const clean = path.replace(/\/+$/, "");
