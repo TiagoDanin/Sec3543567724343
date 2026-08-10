@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   publisher: site.organizationName,
   alternates: { canonical: absoluteUrl("/") },
   icons: {
-    icon: [{ url: asset("/favicon.svg"), type: "image/svg+xml" }],
+    icon: [{ url: `${asset("/favicon.svg")}?v=2`, type: "image/svg+xml" }],
     apple: asset("/apple-icon.png"),
   },
   robots: {
