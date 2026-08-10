@@ -25,6 +25,12 @@ import { CartaVerso } from "./CartaVerso";
 /** Snapshot de servidor estável: recriar o objeto a cada render faz laço. */
 const OCIOSO: EstadoRecorte = { fase: "ocioso" };
 
+/** Limites do enquadramento. Roda, pinça e a barra compartilham a mesma escala. */
+const ZOOM_MIN = 1;
+const ZOOM_MAX = 2.2;
+
+const limitar = (valor: number, min: number, max: number) => Math.min(max, Math.max(min, valor));
+
 /** Troca `{chave}` pelos valores. Token sem valor sai do texto. */
 function interpolar(modelo: string, valores: Record<string, string>): string {
   return modelo.replace(/\{(\w+)\}/g, (_, chave: string) => valores[chave] ?? "");
@@ -149,36 +155,150 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
     if (inputRef.current) inputRef.current.value = "";
   }, []);
 
+  /**
+   * Ponteiros ativos sobre a carta. Um arrasta; dois viram pinça, e é por isso
+   * que a lista mora fora do handler: o segundo dedo chega num evento próprio.
+   */
+  const ponteirosRef = useRef(new Map<number, { x: number; y: number }>());
+  const pincaRef = useRef<{ distancia: number; zoom: number } | null>(null);
+
+  /** Valor corrente do gesto, fora do React: o estado só recebe ao soltar. */
+  const vivoRef = useRef({ x: 50, y: 20, zoom: 1 });
+  const quadroRef = useRef(0);
+
+  const pintar = useCallback(() => {
+    quadroRef.current = 0;
+    const no = cartaRef.current?.querySelector<HTMLElement>("[data-carta]");
+    if (!no) return;
+
+    const { x, y, zoom: z } = vivoRef.current;
+    no.style.setProperty("--foto-x", `${x}%`);
+    no.style.setProperty("--foto-y", `${y}%`);
+    no.style.setProperty("--foto-zoom", String(z));
+  }, []);
+
+  /** Um repinte por quadro: `pointermove` dispara mais rápido que o vsync. */
+  const agendar = useCallback(() => {
+    if (quadroRef.current) return;
+    quadroRef.current = requestAnimationFrame(pintar);
+  }, [pintar]);
+
+  // A barra e o refazer escrevem no estado; sem isto o gesto seguinte partiria
+  // do valor que o ref guardou da última vez.
+  useEffect(() => {
+    vivoRef.current = { x: posicao.x, y: posicao.y, zoom };
+  }, [posicao, zoom]);
+
   const arrastar = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (!foto) return;
-
       const alvo = event.currentTarget;
       alvo.setPointerCapture(event.pointerId);
+
+      const ponteiros = ponteirosRef.current;
+      ponteiros.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      vivoRef.current = { ...posicao, zoom };
 
       const inicio = { px: event.clientX, py: event.clientY, ...posicao };
       const caixa = alvo.getBoundingClientRect();
 
+      const separacao = () => {
+        const [a, b] = [...ponteiros.values()];
+        return a && b ? Math.hypot(a.x - b.x, a.y - b.y) : 0;
+      };
+
+      if (ponteiros.size === 2) {
+        pincaRef.current = { distancia: separacao(), zoom: vivoRef.current.zoom };
+      }
+
       const mover = (e: PointerEvent) => {
+        if (!ponteiros.has(e.pointerId)) return;
+        ponteiros.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+        // Dois dedos: a distância entre eles vira escala, e o arrasto para —
+        // senão o enquadramento foge junto com a pinça.
+        if (ponteiros.size === 2 && pincaRef.current) {
+          const atual = separacao();
+          if (atual > 0) {
+            const razao = atual / pincaRef.current.distancia;
+            vivoRef.current.zoom = limitar(pincaRef.current.zoom * razao, ZOOM_MIN, ZOOM_MAX);
+            agendar();
+          }
+          return;
+        }
+
         const dx = ((e.clientX - inicio.px) / caixa.width) * 100;
         const dy = ((e.clientY - inicio.py) / caixa.height) * 100;
 
-        setPosicao({
-          x: Math.min(100, Math.max(0, inicio.x - dx)),
-          y: Math.min(100, Math.max(0, inicio.y - dy)),
-        });
+        vivoRef.current.x = limitar(inicio.x - dx, 0, 100);
+        vivoRef.current.y = limitar(inicio.y - dy, 0, 100);
+        agendar();
       };
 
-      const soltar = () => {
+      const soltar = (e: PointerEvent) => {
+        ponteiros.delete(e.pointerId);
+        if (ponteiros.size < 2) pincaRef.current = null;
+        if (ponteiros.size > 0) return;
+
         alvo.removeEventListener("pointermove", mover);
         alvo.removeEventListener("pointerup", soltar);
+        alvo.removeEventListener("pointercancel", soltar);
+
+        if (quadroRef.current) {
+          cancelAnimationFrame(quadroRef.current);
+          quadroRef.current = 0;
+        }
+
+        // O React reassume só agora: durante o gesto ele reconstruiria as
+        // máscaras a cada evento, e é isso que engasgava.
+        const { x, y, zoom: z } = vivoRef.current;
+        setPosicao({ x, y });
+        setZoom(z);
       };
 
       alvo.addEventListener("pointermove", mover);
       alvo.addEventListener("pointerup", soltar);
+      alvo.addEventListener("pointercancel", soltar);
     },
-    [foto, posicao],
+    [posicao, zoom, agendar],
   );
+
+  /**
+   * Roda e pinça de trackpad, em listener nativo: o React anexa `wheel` como
+   * passivo, e ali `preventDefault` é ignorado — a página rolaria junto.
+   *
+   * A pinça de trackpad chega como `wheel` com `ctrlKey`, convenção que todo
+   * navegador segue e que nenhum atalho de teclado dispara sobre a carta.
+   */
+  useEffect(() => {
+    const alvo = cartaRef.current;
+    if (!alvo) return;
+
+    let repousar: ReturnType<typeof setTimeout>;
+
+    const aoRolar = (event: WheelEvent) => {
+      if (virada) return;
+      event.preventDefault();
+
+      // `deltaMode` 1 conta linhas, não pixels: sem normalizar, o Firefox salta.
+      const bruto = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+      // A pinça já vem em passos finos; a roda precisa de mais ganho por clique.
+      const fator = event.ctrlKey ? 0.01 : 0.002;
+
+      vivoRef.current.zoom = limitar(vivoRef.current.zoom - bruto * fator, ZOOM_MIN, ZOOM_MAX);
+      agendar();
+
+      // O gesto não tem "soltar": o estado entra quando a roda para.
+      clearTimeout(repousar);
+      repousar = setTimeout(() => setZoom(vivoRef.current.zoom), 140);
+    };
+
+    alvo.addEventListener("wheel", aoRolar, { passive: false });
+    return () => {
+      clearTimeout(repousar);
+      alvo.removeEventListener("wheel", aoRolar);
+    };
+  }, [virada, agendar]);
 
   const [desafioCopiado, setDesafioCopiado] = useState(false);
 
@@ -294,11 +414,16 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
           >
             <div
               ref={cartaRef}
-              onPointerDown={arrastar}
+              onPointerDown={virada ? undefined : arrastar}
+              // Sem foto o alvo é o seletor: a carta inteira vira o botão de
+              // enviar, que é o gesto que a pessoa tenta antes de achar o texto.
+              onClick={!foto && !virada ? () => inputRef.current?.click() : undefined}
               style={{ backfaceVisibility: "hidden" }}
-              className={
-                foto && !virada ? "cursor-grab touch-none active:cursor-grabbing" : undefined
-              }
+              className={cn(
+                !virada && "touch-none select-none",
+                foto && !virada && "cursor-grab active:cursor-grabbing",
+                !foto && !virada && "cursor-pointer",
+              )}
             >
               <Carta
                 arquetipo={arquetipo}
@@ -394,8 +519,8 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
             <input
               id="quiz-zoom"
               type="range"
-              min={1}
-              max={2.2}
+              min={ZOOM_MIN}
+              max={ZOOM_MAX}
               step={0.05}
               value={zoom}
               onChange={(event) => setZoom(Number(event.target.value))}

@@ -1,7 +1,6 @@
 import { SkipLink } from "@/components/primitives/SkipLink";
 import { Section } from "@/components/primitives/Section";
 import { Container } from "@/components/primitives/Container";
-import { Greca } from "@/components/primitives/Greca";
 import { Button } from "@/components/primitives/Button";
 import { NavBar } from "@/components/layout/NavBar";
 import { SiteFooter } from "@/components/sections/SiteFooter";
@@ -47,7 +46,7 @@ export default function QuizPage() {
       />
 
       <main id="conteudo" className="flex-1">
-        <Section className="pt-[calc(var(--sec-y)+64px)]">
+        <Section className="pt-(--nav-h) pb-(--sec-y-tight)">
           <Container>
             <p className="text-orange font-mono text-[11px] tracking-[0.24em] uppercase">
               {quiz.copy.eyebrow}
@@ -71,8 +70,6 @@ export default function QuizPage() {
             </noscript>
           </Container>
         </Section>
-
-        <Greca />
 
         <Section variant="panel">
           <Container>

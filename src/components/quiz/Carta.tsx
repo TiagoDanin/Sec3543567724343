@@ -80,7 +80,17 @@ export function Carta({
     <div
       data-carta
       className="bg-ink-deep relative isolate w-full overflow-hidden select-none"
-      style={{ containerType: "inline-size", aspectRatio: `${CARTA_LARGURA} / ${CARTA_ALTURA}` }}
+      style={
+        {
+          containerType: "inline-size",
+          aspectRatio: `${CARTA_LARGURA} / ${CARTA_ALTURA}`,
+          // O enquadramento entra por variável para o arrasto escrever direto no
+          // nó: a cada `pointermove`, re-renderizar as máscaras engasga.
+          "--foto-x": `${fotoX}%`,
+          "--foto-y": `${fotoY}%`,
+          "--foto-zoom": fotoZoom,
+        } as CSSProperties
+      }
     >
       {/* Cor, e não arte: atrás de um retrato, a mata vira uma segunda cena. */}
       <div
@@ -121,11 +131,12 @@ export function Carta({
                 src={fotoFundo}
                 alt=""
                 aria-hidden
+                draggable={false}
                 className="absolute inset-0 h-full w-full"
                 style={{
                   objectFit: "cover",
-                  objectPosition: `${fotoX}% ${fotoY}%`,
-                  transform: fotoZoom !== 1 ? `scale(${fotoZoom})` : undefined,
+                  objectPosition: "var(--foto-x) var(--foto-y)",
+                  transform: "scale(var(--foto-zoom))",
                   opacity: 0.5,
                 }}
               />
@@ -135,13 +146,14 @@ export function Carta({
               src={foto ?? MASCOTE_DATA_URI}
               alt=""
               aria-hidden
+              draggable={false}
               className="relative h-full w-full"
               style={{
                 // `cover` cortaria o martelo do mascote fora do quadro.
                 objectFit: temFoto ? "cover" : "contain",
                 // Acima do centro: cortar no meio decapita foto de celular.
-                objectPosition: temFoto ? `${fotoX}% ${fotoY}%` : "center bottom",
-                transform: temFoto && fotoZoom !== 1 ? `scale(${fotoZoom})` : undefined,
+                objectPosition: temFoto ? "var(--foto-x) var(--foto-y)" : "center bottom",
+                transform: temFoto ? "scale(var(--foto-zoom))" : undefined,
               }}
             />
           </div>
