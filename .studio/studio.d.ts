@@ -301,6 +301,7 @@ export interface SecoesEntry {
   notaLinkLabel: string;
   notaLinkUrl: string;
   cta: string;
+  ctaUrl: HttpUrl;
 }
 
 /** Data shape for the "settings" collection. */

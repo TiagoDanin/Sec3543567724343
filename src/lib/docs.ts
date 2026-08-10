@@ -324,6 +324,14 @@ function blocoParticipe(): string {
   );
 }
 
+/** Frase única do contato comercial: formulário quando publicado, e-mail como reserva. */
+function contatoPatrocinio(): string {
+  const formulario = getSecoes()["patrocinio-kit"]?.ctaUrl;
+  return formulario
+    ? `O contato para patrocínio é pelo formulário em ${formulario}.`
+    : `O contato para patrocínio é ${site.contactEmail}.`;
+}
+
 function blocoPatrocinio(): string {
   const cotas = getCotas();
   const patrocinadores = getPatrocinadores();
@@ -348,7 +356,7 @@ function blocoPatrocinio(): string {
     confirmados,
     disponiveis.length > 0 &&
       bloco("### Cotas disponíveis", lista(disponiveis.map((cota) => cota.label))),
-    `Contato para patrocínio: ${site.contactEmail} (${site.organizationName}, ${site.organizationUrl}).`,
+    `${contatoPatrocinio()} A realização é da ${site.organizationName} (${site.organizationUrl}).`,
   );
 }
 
@@ -695,7 +703,7 @@ function perguntasCanonicas(): Array<[string, string]> {
     ],
     [
       "Como patrocinar o XibéSec 2026?",
-      `O patrocínio é negociado por cotas, a partir do mídia kit da edição. O contato é ${site.contactEmail}. As cotas dão exposição a um público qualificado de segurança da informação da Região Norte, além de presença na área de exposição do evento.`,
+      `O patrocínio é negociado por cotas, a partir do mídia kit da edição. ${contatoPatrocinio()} As cotas dão exposição a um público qualificado de segurança da informação da Região Norte, além de presença na área de exposição do evento.`,
     ],
     [
       "Quais palestrantes vão participar do XibéSec 2026?",

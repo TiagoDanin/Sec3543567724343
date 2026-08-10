@@ -124,6 +124,12 @@ const config: StudioConfig = {
           { name: "notaLinkLabel", type: "text", label: "Rótulo do link da observação" },
           { name: "notaLinkUrl", type: "text", label: "Destino do link da observação" },
           { name: "cta", type: "text", label: "Botão" },
+          {
+            name: "ctaUrl",
+            type: "url",
+            label: "Destino do botão",
+            description: "Sem destino, o botão não aparece.",
+          },
         ],
       },
     },

@@ -161,6 +161,7 @@ export function getSecoes(): Record<string, Secao> {
         notaLinkLabel: str(row, "notaLinkLabel"),
         notaLinkUrl: str(row, "notaLinkUrl"),
         cta: str(row, "cta"),
+        ctaUrl: str(row, "ctaUrl"),
       },
     ];
   });

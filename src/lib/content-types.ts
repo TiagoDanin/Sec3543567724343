@@ -64,6 +64,7 @@ export type Secao = {
   notaLinkLabel: string;
   notaLinkUrl: string;
   cta: string;
+  ctaUrl: string;
 };
 
 export type Destaque = {
@@ -102,6 +103,7 @@ export const SECAO_VAZIA: Secao = {
   notaLinkLabel: "",
   notaLinkUrl: "",
   cta: "",
+  ctaUrl: "",
 };
 
 export type Fato = { valor: string; label: string };

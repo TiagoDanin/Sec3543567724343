@@ -5,10 +5,9 @@ import { Reveal } from "@/components/primitives/Reveal";
 import { Button } from "@/components/primitives/Button";
 import { KitBanner } from "@/components/primitives/KitBanner";
 import { SponsorSlot } from "@/components/cards/SponsorSlot";
-import { asset, site } from "@/lib/site";
+import { asset } from "@/lib/site";
+import { externo } from "@/lib/links";
 import type { Cota, Patrocinador, Secao } from "@/lib/cms";
-
-const MAIL_SUBJECT = `Patrocínio ${site.siteName}`;
 
 export type PatrocinioSectionProps = {
   grupos: Array<{ cota: Cota; patrocinadores: Patrocinador[] }>;
@@ -24,7 +23,6 @@ export type PatrocinioSectionProps = {
  * PRODUCT.md.
  */
 export function PatrocinioSection({ grupos, secao, kit }: PatrocinioSectionProps) {
-  const mailto = `mailto:${site.contactEmail}?subject=${encodeURIComponent(MAIL_SUBJECT)}`;
 
   return (
     <Section id="patrocinio" variant="light">
@@ -60,7 +58,10 @@ export function PatrocinioSection({ grupos, secao, kit }: PatrocinioSectionProps
         ))}
 
         <Reveal>
-          <KitBanner title={kit.titulo} actions={<Button href={mailto}>{kit.cta}</Button>}>
+          <KitBanner
+            title={kit.titulo}
+            actions={kit.ctaUrl ? <Button {...externo(kit.ctaUrl)}>{kit.cta}</Button> : undefined}
+          >
             {kit.lede}
           </KitBanner>
         </Reveal>
