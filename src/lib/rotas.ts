@@ -23,9 +23,9 @@ export type Rota = {
   changeFrequency: "weekly" | "monthly" | "yearly";
   priority: number;
   /**
-   * Entra na coluna de páginas do rodapé. As rotas que espelham uma seção da
-   * home ficam de fora: elas são para busca e link direto, e quem navega já
-   * tem a seção na própria home. Chega-se a elas pelo mapa do site.
+   * Entra na coluna de páginas do rodapé. Fica de fora o que já tem caminho:
+   * as rotas que espelham uma seção da home, e o que está no menu do topo.
+   * Chega-se a elas por lá e pelo mapa do site.
    */
   rodape: boolean;
 };
@@ -77,7 +77,7 @@ const ROTAS: Rota[] = [
     secao: null,
     changeFrequency: "monthly",
     priority: 0.5,
-    rodape: true,
+    rodape: false,
   },
   {
     path: "/sitemap",

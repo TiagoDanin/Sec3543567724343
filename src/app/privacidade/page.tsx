@@ -9,7 +9,7 @@ import { HighlightPanel } from "@/components/primitives/HighlightPanel";
 
 import { markdownDaRota } from "@/lib/docs";
 import { buildShellFs } from "@/lib/shell-fs";
-import { alvoCompraDeOutraRota } from "@/lib/links";
+import { alvoCompraDeOutraRota, ancoraDaHome } from "@/lib/links";
 import { pageMetadata } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
 import { formatDate, getEquipe, getNavegacao, getPrivacidade, getSettings } from "@/lib/cms";
@@ -39,9 +39,11 @@ export default function PrivacidadePage() {
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
-        items={navegacao.filter(
-          (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
-        )}
+        items={navegacao
+          .filter(
+            (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
+          )
+          .map((item) => ({ ...item, href: ancoraDaHome(item.href) }))}
         action={
           <Button size="sm" {...compra} href={compra.href}>
             {NAV_CTA}

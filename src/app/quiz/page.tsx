@@ -7,7 +7,7 @@ import { QuizFlow } from "@/components/quiz/QuizFlow";
 
 import { markdownDaRota } from "@/lib/docs";
 import { buildShellFs } from "@/lib/shell-fs";
-import { alvoCompraDeOutraRota } from "@/lib/links";
+import { alvoCompraDeOutraRota, ancoraDaHome } from "@/lib/links";
 import { SchemaMarkup, generateBreadcrumbs, quizSchema } from "@/lib/schema";
 import { canonicalUrl, pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
@@ -57,9 +57,11 @@ export default function QuizPage() {
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
-        items={navegacao.filter(
-          (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
-        )}
+        items={navegacao
+          .filter(
+            (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
+          )
+          .map((item) => ({ ...item, href: ancoraDaHome(item.href) }))}
         action={
           <Button size="sm" {...compra} href={compra.href}>
             {NAV_CTA}

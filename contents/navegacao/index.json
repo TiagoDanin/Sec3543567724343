@@ -50,9 +50,9 @@
   },
   {
     "label": "Quiz",
-    "href": "/quiz",
+    "href": "/quiz/",
     "secao": "",
     "grupo": "participar",
-    "noMenu": true
+    "noMenu": false
   }
 ]

@@ -3,7 +3,7 @@ import { SkipLink } from "@/components/primitives/SkipLink";
 import { Button } from "@/components/primitives/Button";
 import { NavBar } from "@/components/layout/NavBar";
 import { SiteFooter } from "@/components/sections/SiteFooter";
-import { alvoCompraDeOutraRota } from "@/lib/links";
+import { alvoCompraDeOutraRota, ancoraDaHome } from "@/lib/links";
 import { SchemaMarkup } from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
 import type { SectionKey } from "@/lib/cms";
@@ -35,10 +35,12 @@ export function PaginaInterna({ children, schema }: PaginaInternaProps) {
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
-        items={navegacao.filter(
-          (item) =>
-            !item.noMenu && (!item.secao || settings.sections[item.secao as SectionKey] === true),
-        )}
+        items={navegacao
+          .filter(
+            (item) =>
+              !item.noMenu && (!item.secao || settings.sections[item.secao as SectionKey] === true),
+          )
+          .map((item) => ({ ...item, href: ancoraDaHome(item.href) }))}
         action={
           <Button size="sm" {...compra} href={compra.href}>
             {NAV_CTA}

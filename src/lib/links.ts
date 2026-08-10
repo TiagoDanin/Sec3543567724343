@@ -41,6 +41,11 @@ export function alvoCompraDeOutraRota(settings: Settings): LinkAlvo {
     : externo(settings.ticketsUrl);
 }
 
+/** Âncora vista de outra rota: sem a home na frente, o clique não sai do lugar. */
+export function ancoraDaHome(href: string): string {
+  return href.startsWith("#") ? `/${href}` : href;
+}
+
 /**
  * Seção que publica cada âncora da home. Só entra âncora que uma feature flag
  * governa — `#topo` e `#conteudo` existem sempre e ficam de fora.
