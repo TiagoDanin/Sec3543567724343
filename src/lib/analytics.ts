@@ -28,9 +28,19 @@ export const EVENTOS = {
   shellFlagEncontrada: "shell_flag_encontrada",
   shellSudoTentativa: "shell_sudo_tentativa",
   shellSudoSucesso: "shell_sudo_sucesso",
+  // Do quiz sai contagem, nunca conteúdo: a alternativa marcada, o nome e a
+  // foto não entram em evento nenhum. É o que `contents/privacidade` promete.
   quizIniciado: "quiz_iniciado",
+  quizProgresso: "quiz_progresso",
+  quizVoltou: "quiz_voltou",
   quizConcluido: "quiz_concluido",
+  quizCartaVirada: "quiz_carta_virada",
   quizFotoEnviada: "quiz_foto_enviada",
+  quizFotoRemovida: "quiz_foto_removida",
+  quizFotoAjustada: "quiz_foto_ajustada",
+  quizRecorteAlternado: "quiz_recorte_alternado",
+  quizRecorteConcluido: "quiz_recorte_concluido",
   quizCartaBaixada: "quiz_carta_baixada",
   quizCompartilhado: "quiz_compartilhado",
+  quizCartaErro: "quiz_carta_erro",
 } as const;

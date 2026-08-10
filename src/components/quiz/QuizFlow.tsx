@@ -82,6 +82,10 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
       const atualizado = { ...respostas, [chavePergunta]: chaveAlternativa };
       setRespostas(atualizado);
 
+      // A posição, não a alternativa: é o funil que interessa, e a resposta é
+      // da pessoa. Sem isto não dá para saber em que pergunta o quiz perde.
+      evento(EVENTOS.quizProgresso, { posicao: indice + 1, total: perguntas.length });
+
       if (indice + 1 < perguntas.length) {
         setIndice(indice + 1);
         return;
@@ -215,7 +219,10 @@ export function QuizFlow({ quiz, dominio, ctaHref, ctaTarget, ctaRel }: QuizFlow
               variant="ghost"
               size="sm"
               className="mt-7"
-              onClick={() => setIndice(indice - 1)}
+              onClick={() => {
+                evento(EVENTOS.quizVoltou, { posicao });
+                setIndice(indice - 1);
+              }}
             >
               {copy.ctaVoltar}
             </Button>

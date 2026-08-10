@@ -113,10 +113,19 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
     if (!base) return;
 
     setRecortando(true);
+    const partiu = performance.now();
     const recortada = await recortarFundo(base);
     if (pedido !== pedidoRef.current) return;
 
     setRecortando(false);
+
+    // O recorte custa 127 MB de download e alguns segundos de aparelho: sem
+    // taxa de sucesso e duração não dá para decidir se ele se paga.
+    evento(EVENTOS.quizRecorteConcluido, {
+      ok: Boolean(recortada),
+      segundos: Math.round((performance.now() - partiu) / 100) / 10,
+    });
+
     if (recortada) setFotoRecorte(URL.createObjectURL(recortada));
   }, []);
 
@@ -127,6 +136,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
       if (pedido !== pedidoRef.current) return;
 
       baseRef.current = base;
+      ajusteMedidoRef.current = false;
       setFotoBase(URL.createObjectURL(base));
       setFotoRecorte(undefined);
       setPosicao({ x: 50, y: 20 });
@@ -149,6 +159,7 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
 
   const alternarRecorte = useCallback(
     (ligado: boolean) => {
+      evento(EVENTOS.quizRecorteAlternado, { ligado });
       setRecortar(ligado);
       if (ligado && !fotoRecorte && recorteDisponivel && baseRef.current) {
         void processarRecorte(pedidoRef.current);
@@ -158,6 +169,8 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
   );
 
   const removerFoto = useCallback(() => {
+    evento(EVENTOS.quizFotoRemovida);
+
     // Invalida o recorte em voo, que voltaria com a foto que já saiu.
     pedidoRef.current += 1;
     baseRef.current = null;
@@ -176,6 +189,9 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
 
   /** Fora do React porque o `touchmove` nativo o consulta a cada evento. */
   const ajustandoRef = useRef(false);
+
+  /** Um evento por foto: o gesto dispara dezenas de vezes, a métrica é se foi usado. */
+  const ajusteMedidoRef = useRef(false);
 
   /** Valor corrente do gesto, fora do React: o estado só recebe ao soltar. */
   const vivoRef = useRef({ x: 50, y: 20, zoom: 1 });
@@ -324,6 +340,11 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         if (!ajustandoRef.current) return;
         ajustandoRef.current = false;
         setAjustando(false);
+
+        if (!ajusteMedidoRef.current) {
+          ajusteMedidoRef.current = true;
+          evento(EVENTOS.quizFotoAjustada, { entrada: e.pointerType });
+        }
 
         // O React reassume só agora: durante o gesto ele reconstruiria as
         // máscaras a cada evento, e é isso que engasgava.
@@ -483,10 +504,14 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
           return;
         }
         if (process.env.NODE_ENV !== "production") console.error("[exportar]", erro);
+
+        // A carta que não sai é o fim do funil inteiro: sem medir a falha, ela
+        // só aparece quando alguém reclama.
+        evento(EVENTOS.quizCartaErro, { modo, comFoto: Boolean(foto), webkit });
         setEstado("erro");
       }
     },
-    [arquetipo, dominio, copy.compartilharTexto, virada],
+    [arquetipo, dominio, copy.compartilharTexto, virada, foto, webkit],
   );
 
   const ocupado = estado === "gerando";
@@ -555,7 +580,14 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setVirada((v) => !v)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              evento(EVENTOS.quizCartaVirada, { face: virada ? "frente" : "verso" });
+              setVirada(!virada);
+            }}
+          >
             {virada ? copy.verFrente : copy.verVerso}
           </Button>
           {!virada ? (

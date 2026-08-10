@@ -9,7 +9,7 @@
   "blocos": [
     {
       "titulo": "O que medimos",
-      "texto": "Quais páginas foram abertas, de onde veio o acesso, que navegador e que tipo de aparelho, e a cidade aproximada. Também contamos alguns cliques: os botões de ingresso, o logo de quem patrocina, o começo e o fim do quiz e o uso do terminal do rodapé. É assim que descobrimos se a página explica bem o evento."
+      "texto": "Quais páginas foram abertas, de onde veio o acesso, que navegador e que tipo de aparelho, e a cidade aproximada. Também contamos alguns cliques: os botões de ingresso, o logo de quem patrocina, o percurso pelo quiz e o uso do terminal do rodapé. É assim que descobrimos se a página explica bem o evento."
     },
     {
       "titulo": "O cookie que gravamos",
@@ -25,7 +25,7 @@
     },
     {
       "titulo": "O quiz roda no seu navegador",
-      "texto": "O nome que você digita e a foto que você escolhe não saem do aparelho. A carta é montada e baixada localmente, sem passar por servidor, e nenhuma resposta é registrada. Do quiz medimos só o número: quantas pessoas começaram, quantas terminaram e qual arquétipo saiu. O que você escreveu, não."
+      "texto": "O nome que você digita e a foto que você escolhe não saem do aparelho. A carta é montada e baixada localmente, sem passar por servidor, e nenhuma resposta é registrada. Do quiz medimos o percurso, nunca o conteúdo: quantas pessoas começaram, em que pergunta pararam, quantas terminaram e qual arquétipo saiu. Na tela do resultado contamos também se a carta foi virada, se entrou uma foto, se o destaque da pessoa foi ligado e se ele funcionou, e se a carta foi baixada, compartilhada ou falhou ao ser gerada. Qual alternativa você marcou e o que você escreveu, não."
     },
     {
       "titulo": "Como recusar",
