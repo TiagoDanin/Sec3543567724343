@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { EVENTOS, evento } from "@/lib/analytics";
+import { EVENTOS } from "@/lib/analytics";
+import { evento } from "@/lib/analytics-client";
 import { apurar, type Arquetipo, type Quiz } from "@/lib/content-types";
 import { semAssinatura } from "@/lib/exportar-carta";
 import { normalizarNome } from "@/lib/nome";

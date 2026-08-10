@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { Container } from "@/components/primitives/Container";
-import { EVENTOS, evento } from "@/lib/analytics";
+import { EVENTOS } from "@/lib/analytics";
+import { evento } from "@/lib/analytics-client";
 import { cn } from "@/lib/utils";
 
 export type ShellNode = string[] | { [name: string]: ShellNode };

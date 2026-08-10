@@ -464,6 +464,7 @@ function getQuizCopy(): QuizCopy {
     verFrente: str(row, "verFrente"),
     fotoRemover: str(row, "fotoRemover"),
     fotoAjuda: str(row, "fotoAjuda"),
+    fotoAjustando: str(row, "fotoAjustando"),
     zoomLabel: str(row, "zoomLabel"),
     recorteLabel: str(row, "recorteLabel"),
     recorteBaixando: str(row, "recorteBaixando"),
@@ -546,6 +547,7 @@ export function getQuiz(): Quiz {
 export function getPrivacidade(): Privacidade {
   const row = singleton("privacidade");
   const destaque = (row.destaque ?? {}) as Row;
+  const oposicao = (row.oposicao ?? {}) as Row;
   const blocos = Array.isArray(row.blocos) ? (row.blocos as Row[]) : [];
 
   return {
@@ -560,6 +562,13 @@ export function getPrivacidade(): Privacidade {
       titulo: str(bloco, "titulo"),
       texto: str(bloco, "texto"),
     })),
+    oposicao: {
+      titulo: str(oposicao, "titulo"),
+      texto: str(oposicao, "texto"),
+      botaoDesligar: str(oposicao, "botaoDesligar"),
+      botaoLigar: str(oposicao, "botaoLigar"),
+      estadoDesligado: str(oposicao, "estadoDesligado"),
+    },
   };
 }
 

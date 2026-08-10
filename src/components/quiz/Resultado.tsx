@@ -1,7 +1,8 @@
 "use client";
 
 import { forwardRef, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { EVENTOS, evento } from "@/lib/analytics";
+import { EVENTOS } from "@/lib/analytics";
+import { evento } from "@/lib/analytics-client";
 import type { Arquetipo, QuizCopy } from "@/lib/content-types";
 import {
   baixar,

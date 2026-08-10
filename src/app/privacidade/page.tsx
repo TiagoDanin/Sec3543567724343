@@ -1,3 +1,4 @@
+import { BotaoOposicao } from "@/components/analytics/BotaoOposicao";
 import { SkipLink } from "@/components/primitives/SkipLink";
 import { Section } from "@/components/primitives/Section";
 import { Container } from "@/components/primitives/Container";
@@ -19,7 +20,7 @@ const ATUALIZADO = "Atualizado em";
 export const metadata = pageMetadata({
   title: "Privacidade",
   description:
-    "O site do XibéSec mede audiência sem cookie e sem identificar ninguém, e é por isso que não tem aviso de consentimento. O quiz roda no navegador: nome e foto não saem do aparelho.",
+    "O site do XibéSec mede audiência com base em legítimo interesse, sem publicidade e sem perfil de usuário — e deixa desligar a medição a qualquer momento. O quiz roda no navegador: nome e foto não saem do aparelho.",
   path: "/privacidade",
 });
 
@@ -79,6 +80,22 @@ export default function PrivacidadePage() {
                 </p>
               </section>
             ))}
+
+            {privacidade.oposicao.titulo ? (
+              <section className="border-line-2 mt-14 border-t pt-11">
+                <h2 className="font-display text-cream text-[clamp(19px,2.4vw,25px)] leading-[1.15] tracking-[-0.01em] uppercase">
+                  {privacidade.oposicao.titulo}
+                </h2>
+                <p className="text-cream-2 mt-3.5 max-w-[70ch] text-[15px] leading-[1.75]">
+                  {privacidade.oposicao.texto}
+                </p>
+                <BotaoOposicao
+                  botaoDesligar={privacidade.oposicao.botaoDesligar}
+                  botaoLigar={privacidade.oposicao.botaoLigar}
+                  estadoDesligado={privacidade.oposicao.estadoDesligado}
+                />
+              </section>
+            ) : null}
           </Container>
         </Section>
       </main>

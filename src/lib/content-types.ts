@@ -234,6 +234,7 @@ export type QuizCopy = {
   verFrente: string;
   fotoRemover: string;
   fotoAjuda: string;
+  fotoAjustando: string;
   zoomLabel: string;
   recorteLabel: string;
   recorteBaixando: string;
@@ -308,6 +309,13 @@ export type Privacidade = {
   lede: string;
   destaque: { titulo: string; texto: string };
   blocos: Array<{ titulo: string; texto: string }>;
+  oposicao: {
+    titulo: string;
+    texto: string;
+    botaoDesligar: string;
+    botaoLigar: string;
+    estadoDesligado: string;
+  };
 };
 
 /**

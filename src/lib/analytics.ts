@@ -1,39 +1,22 @@
 /**
- * GA4 sem cookie: `analytics_storage: "denied"` faz o gtag enviar cookieless
- * pings, sem client ID e sem session ID. É o que dispensa o aviso de
- * consentimento, e o que custa visitante único e taxa de retorno no relatório.
- * Trocar por `granted` obriga a criar o aviso.
+ * A base legal é o legítimo interesse (LGPD, art. 7º, IX), não consentimento —
+ * e isso só se sustenta enquanto a medição não virar publicidade. Trocar
+ * qualquer `ad_*` por `granted` muda a base legal, não só a configuração.
  */
 
 export const MEASUREMENT_ID = "G-0RPCPVFHQS";
 
-export const GTAG_SRC = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
+export const CHAVE_OPTOUT = "xibesec:sem-medicao";
 
-type GtagArgs =
-  | ["js", Date]
-  | ["config", string, Record<string, unknown>?]
-  | ["consent", "default", Record<string, string>]
-  | ["event", string, Record<string, unknown>?];
+/** Convenção do gtag.js: com esta chave em `true` no `window`, ele não coleta. */
+export const CHAVE_DESLIGA_GA = `ga-disable-${MEASUREMENT_ID}`;
 
-declare global {
-  interface Window {
-    dataLayer?: unknown[];
-    gtag?: (...args: GtagArgs) => void;
-  }
-}
-
-/**
- * Inline no `<head>`, antes do gtag.js baixar: a negativa precisa estar na fila
- * quando o script inicializa, senão ele grava o cookie antes de lê-la.
- * `page_path` normaliza a barra final do `trailingSlash`, que abriria duas
- * linhas no relatório para a mesma rota.
- */
+/** Inline no `<head>`: quando o gtag.js inicializa, a visita já foi contada. */
 export const GTAG_BOOTSTRAP = `
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments)}
-gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied'});
-gtag('js',new Date());
-gtag('config','${MEASUREMENT_ID}',{anonymize_ip:true,page_path:location.pathname.replace(/(.)\\/$/,'$1')});
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
+try{if(localStorage.getItem('${CHAVE_OPTOUT}')==='1')window['${CHAVE_DESLIGA_GA}']=true}catch(e){}
 `.trim();
 
 /** Nome digitado à mão no componente vira uma linha separada no painel. */
@@ -51,14 +34,3 @@ export const EVENTOS = {
   quizCartaBaixada: "quiz_carta_baixada",
   quizCompartilhado: "quiz_compartilhado",
 } as const;
-
-/**
- * Passa pela `window.gtag`, e não por `dataLayer.push`: o gtag.js lê `arguments`
- * de dentro da fila, e um array empurrado à mão chegaria como um parâmetro só.
- *
- * Nenhum parâmetro carrega o que a pessoa digitou: nome do quiz, senha tentada e
- * o valor da flag ficam de fora. Contagem, não conteúdo.
- */
-export function evento(nome: string, dados?: Record<string, unknown>): void {
-  window.gtag?.("event", nome, dados);
-}

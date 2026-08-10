@@ -1,35 +1,46 @@
 {
   "titulo": "Privacidade",
-  "atualizadoEm": "2026-08-08",
-  "lede": "Este site conta quantas pessoas passam por aqui e por onde chegaram. Isso é tudo. Não gravamos cookie, não pedimos permissão e não temos como saber quem você é.",
+  "atualizadoEm": "2026-08-10",
+  "lede": "Este site conta quantas pessoas passam por aqui, por onde chegaram e o que abriram. Para não contar a mesma pessoa duas vezes, grava um cookie de medição no seu navegador. Não montamos perfil de ninguém, não usamos nada disso para anúncio e você pode desligar a medição no fim desta página.",
   "destaque": {
-    "titulo": "Por que não tem aviso de cookies",
-    "texto": "Porque o site não usa cookies. O Google Analytics roda aqui no modo sem armazenamento: ele conta a visita e esquece. Como nada fica gravado no seu aparelho, não há permissão a pedir, e foi por isso que nenhuma tarja apareceu quando você abriu a página."
+    "titulo": "Por que não tem tarja de cookies",
+    "texto": "Porque a lei brasileira não pede uma neste caso. A LGPD tem dez bases legais e o consentimento é só uma delas: medir audiência se apoia no legítimo interesse, do artigo 7º, inciso IX. O guia da ANPD sobre cookies trata exatamente desse cenário e o considera compatível com a lei quando a coleta se limita a estatística, não vira perfil de usuário e não alimenta publicidade. É o caso aqui. O que essa base exige não é tarja na tela: é contar o que se coleta, que é o que esta página faz, e deixar você recusar, que é o que o botão no fim faz."
   },
   "blocos": [
     {
       "titulo": "O que medimos",
-      "texto": "Quais páginas foram abertas, de onde veio o acesso, que navegador e que tipo de aparelho, e a cidade aproximada. Também contamos os cliques nos botões de ingresso, que é como descobrimos se a página explica bem o evento."
+      "texto": "Quais páginas foram abertas, de onde veio o acesso, que navegador e que tipo de aparelho, e a cidade aproximada. Também contamos alguns cliques: os botões de ingresso, o logo de quem patrocina, o começo e o fim do quiz e o uso do terminal do rodapé. É assim que descobrimos se a página explica bem o evento."
+    },
+    {
+      "titulo": "O cookie que gravamos",
+      "texto": "São dois, do Google Analytics, gravados pelo próprio domínio do site: o `_ga` e um segundo com o código da propriedade no nome. Os dois guardam um número aleatório, sem nome e sem e-mail dentro, que serve para saber que duas páginas foram abertas pela mesma pessoa na mesma visita. Duram dois anos, que é o padrão da ferramenta. Nenhum outro cookie sai daqui."
+    },
+    {
+      "titulo": "O que não fazemos com isso",
+      "texto": "Não exibimos anúncio, não fazemos remarketing e não mandamos esses dados para nenhuma plataforma de publicidade. Isso não é promessa de texto: os três sinais de publicidade do Google chegam desligados no código do site, antes de a ferramenta carregar, e as opções que deixariam o Google usar os dados para produtos próprios estão desmarcadas no painel. Também não cruzamos a medição com nenhuma outra base."
     },
     {
       "titulo": "O que não coletamos",
-      "texto": "Nome, e-mail, telefone, documento. Nada disso é pedido em lugar nenhum do site: não existe cadastro, login nem formulário de contato aqui. O IP é anonimizado antes de qualquer processamento, e nenhum dado que chega até nós aponta para uma pessoa específica."
-    },
-    {
-      "titulo": "Nada fica no seu aparelho",
-      "texto": "Nenhum cookie, nenhum identificador, nada em armazenamento local. Sem identificador, também não sabemos se você já esteve aqui antes: cada visita começa do zero, inclusive do nosso lado. Abrir em aba anônima ou limpar o navegador não muda o que medimos, porque não existe nada gravado para limpar."
+      "texto": "Nome, e-mail, telefone, documento. Nada disso é pedido em lugar nenhum do site: não existe cadastro, login nem formulário de contato aqui. O endereço de IP é usado para deduzir a cidade e descartado em seguida — o Google Analytics 4 não armazena IP, e não há como desligar isso porque já vem assim."
     },
     {
       "titulo": "O quiz roda no seu navegador",
-      "texto": "O nome que você digita e a foto que você escolhe não saem do aparelho. A carta é montada e baixada localmente, sem passar por servidor, e nenhuma resposta é registrada."
+      "texto": "O nome que você digita e a foto que você escolhe não saem do aparelho. A carta é montada e baixada localmente, sem passar por servidor, e nenhuma resposta é registrada. Do quiz medimos só o número: quantas pessoas começaram, quantas terminaram e qual arquétipo saiu. O que você escreveu, não."
     },
     {
-      "titulo": "Como não ser medido",
-      "texto": "Não há cookie para recusar, então o controle está no navegador: qualquer bloqueador de rastreadores, a proteção reforçada do Firefox ou o sinal Do Not Track já bastam. O site é estático e não depende do Google Analytics para funcionar, então nada deixa de abrir se você bloquear."
+      "titulo": "Como recusar",
+      "texto": "O botão no fim desta página desliga a medição neste navegador, e ela continua desligada nas próximas visitas. Um bloqueador de rastreadores ou a proteção reforçada do Firefox fazem o mesmo, com a vantagem de valer para todos os sites de uma vez. O modo anônimo não: ele apaga os cookies quando a janela fecha, então cada visita volta a ser contada como se fosse a primeira. O site é estático e não depende do Google Analytics para funcionar — nada deixa de abrir se você bloquear."
     },
     {
       "titulo": "Quem processa e por quanto tempo",
-      "texto": "Quem faz a medição é o Google Analytics, da Google LLC, na condição de operadora dos dados. Os números agregados ficam guardados por 14 meses e depois são apagados. Se algum dia passarmos a gravar dado no seu aparelho, esta página muda antes e um pedido de consentimento aparece."
+      "texto": "Quem faz a medição é o Google Analytics, da Google LLC, na condição de operadora — trata os dados a nosso pedido e para a finalidade descrita aqui, não para as dela. O processamento acontece em servidores fora do Brasil, sob as cláusulas contratuais do próprio Google. Os números agregados ficam guardados por 14 meses e depois são apagados. Se algum dia essa configuração mudar, esta página muda antes."
     }
-  ]
+  ],
+  "oposicao": {
+    "titulo": "Desligar a medição",
+    "texto": "Vale só para este navegador e neste aparelho, e continua valendo nas próximas visitas. A escolha fica guardada aqui mesmo, no seu navegador, e não é enviada para lugar nenhum. Isso tem um custo que é justo avisar: limpar os dados do site apaga a recusa junto com o resto, e a medição volta a ficar ligada. Se isso acontecer, é só desligar de novo aqui.",
+    "botaoDesligar": "Não quero ser medido",
+    "botaoLigar": "Voltar a permitir a medição",
+    "estadoDesligado": "Medição desligada neste navegador."
+  }
 }

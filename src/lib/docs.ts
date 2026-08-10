@@ -451,6 +451,9 @@ function blocoPrivacidade(): string {
     `### ${privacidade.destaque.titulo}`,
     privacidade.destaque.texto,
     ...privacidade.blocos.flatMap((item) => [`### ${item.titulo}`, item.texto]),
+    ...(privacidade.oposicao.titulo
+      ? [`### ${privacidade.oposicao.titulo}`, privacidade.oposicao.texto]
+      : []),
   );
 }
 

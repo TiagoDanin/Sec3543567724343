@@ -198,6 +198,13 @@ export interface PrivacidadeEntry {
     titulo: string;
     texto: string;
   }>;
+  oposicao: {
+    titulo: string;
+    texto: string;
+    botaoDesligar: string;
+    botaoLigar: string;
+    estadoDesligado: string;
+  };
 }
 
 /** Data shape for the "quiz" collection. */

@@ -593,6 +593,7 @@ const config: StudioConfig = {
           { name: "verFrente", type: "text", label: "Botão — ver a frente" },
           { name: "fotoRemover", type: "text", label: "Botão — voltar ao mascote" },
           { name: "fotoAjuda", type: "long-text", rows: 2, label: "Ajuda do enquadramento" },
+          { name: "fotoAjustando", type: "text", label: "Enquadramento — modo ativo" },
           { name: "zoomLabel", type: "text", label: "Rótulo do zoom" },
           { name: "recorteLabel", type: "text", label: "Recorte de fundo — rótulo" },
           { name: "recorteBaixando", type: "text", label: "Recorte de fundo — baixando" },
@@ -723,6 +724,34 @@ const config: StudioConfig = {
             itemFields: [
               { name: "titulo", type: "text", required: true, label: "Título" },
               { name: "texto", type: "long-text", rows: 4, required: true, label: "Texto" },
+            ],
+          },
+          {
+            name: "oposicao",
+            type: "object",
+            label: "Oposição à medição",
+            description: "Botão que desliga a medição no aparelho de quem visita.",
+            fields: [
+              { name: "titulo", type: "text", required: true, label: "Título" },
+              { name: "texto", type: "long-text", rows: 4, required: true, label: "Texto" },
+              {
+                name: "botaoDesligar",
+                type: "text",
+                required: true,
+                label: "Botão — desligar a medição",
+              },
+              {
+                name: "botaoLigar",
+                type: "text",
+                required: true,
+                label: "Botão — ligar de volta",
+              },
+              {
+                name: "estadoDesligado",
+                type: "text",
+                required: true,
+                label: "Aviso — medição desligada",
+              },
             ],
           },
         ],

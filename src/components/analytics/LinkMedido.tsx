@@ -1,7 +1,7 @@
 "use client";
 
 import type { AnchorHTMLAttributes, ReactNode } from "react";
-import { evento } from "@/lib/analytics";
+import { evento } from "@/lib/analytics-client";
 
 export type LinkMedidoProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   medirComo: string;

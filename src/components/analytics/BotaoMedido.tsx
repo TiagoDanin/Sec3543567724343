@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, type ButtonProps } from "@/components/primitives/Button";
-import { evento } from "@/lib/analytics";
+import { evento } from "@/lib/analytics-client";
 
 export type BotaoMedidoProps = ButtonProps & {
   /** Nome do evento, no padrão objeto-ação: `ingresso_clicado`. */
