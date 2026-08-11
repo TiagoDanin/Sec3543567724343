@@ -559,12 +559,16 @@ export const Resultado = forwardRef<HTMLHeadingElement, ResultadoProps>(function
               />
             </div>
 
+            {/* O giro fica no envoltório, e não no nó fotografado: `html-to-image`
+                copia o estilo computado da raiz para o clone, e `rotateY(180deg)`
+                achatado em 2D é o verso espelhado no arquivo exportado. */}
             <div
-              ref={versoRef}
               className="absolute inset-0"
               style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
             >
-              <CartaVerso arquetipo={arquetipo} nome={nome} copy={copy} />
+              <div ref={versoRef}>
+                <CartaVerso arquetipo={arquetipo} nome={nome} copy={copy} />
+              </div>
             </div>
           </div>
 
