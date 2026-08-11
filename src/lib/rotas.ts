@@ -80,6 +80,14 @@ const ROTAS: Rota[] = [
     rodape: false,
   },
   {
+    path: "/terminal",
+    rotulo: "Terminal",
+    secao: null,
+    changeFrequency: "monthly",
+    priority: 0.4,
+    rodape: true,
+  },
+  {
     path: "/sitemap",
     rotulo: "Mapa do site",
     secao: null,

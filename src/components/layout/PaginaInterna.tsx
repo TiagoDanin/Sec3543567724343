@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 import { alvoCompraDeOutraRota, ancoraDaHome } from "@/lib/links";
 import { SchemaMarkup } from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
+import { cn } from "@/lib/utils";
 import type { SectionKey } from "@/lib/cms";
 import { getEquipe, getNavegacao, getSettings } from "@/lib/cms";
 
@@ -16,13 +17,22 @@ const NAV_CTA = "Ingressos";
 export type PaginaInternaProps = {
   children: ReactNode;
   schema?: object | object[];
+  /** Desligado na rota do próprio shell, onde um segundo terminal disputaria o foco. */
+  shellNoRodape?: boolean;
+  /** Desligada por quem mede a própria altura a partir da barra, como `/terminal`. */
+  folgaNoTopo?: boolean;
 };
 
 /**
  * Casca das rotas internas: barra, conteúdo e rodapé. A home não usa — lá o CTA
  * é medido e há o dock de ingressos.
  */
-export function PaginaInterna({ children, schema }: PaginaInternaProps) {
+export function PaginaInterna({
+  children,
+  schema,
+  shellNoRodape = true,
+  folgaNoTopo = true,
+}: PaginaInternaProps) {
   const settings = getSettings();
   const navegacao = getNavegacao();
   const equipe = getEquipe();
@@ -48,12 +58,17 @@ export function PaginaInterna({ children, schema }: PaginaInternaProps) {
         }
       />
 
-      {/* A barra é fixa: sem a folga do topo ela cobre o começo da primeira seção. */}
-      <main id="conteudo" className="flex-1 pt-(--nav-h)">
+      {/* A folga do topo abre a primeira seção sob a barra. Quem preenche a tela
+          a partir dela mede a própria altura e dispensa a folga. */}
+      <main id="conteudo" className={cn("flex-1", folgaNoTopo && "pt-(--nav-h)")}>
         {children}
       </main>
 
-      <SiteFooter settings={settings} equipe={equipe} shellFs={buildShellFs()} />
+      <SiteFooter
+        settings={settings}
+        equipe={equipe}
+        shellFs={shellNoRodape ? buildShellFs() : null}
+      />
     </>
   );
 }

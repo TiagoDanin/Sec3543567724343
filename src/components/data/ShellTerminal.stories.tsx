@@ -38,3 +38,18 @@ type Story = StoryObj<typeof meta>;
  * é o recado.
  */
 export const Padrao: Story = { name: "Padrão" };
+
+/**
+ * A variante de `/terminal`: moldura, varredura e a altura da caixa que a
+ * envolve — na rota, a tela inteira sob a barra.
+ */
+export const Palco: Story = {
+  args: { variant: "palco" },
+  decorators: [
+    (Story) => (
+      <div className="h-[520px]">
+        <Story />
+      </div>
+    ),
+  ],
+};

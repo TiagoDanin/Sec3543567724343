@@ -13,8 +13,8 @@ const COL_PAGINAS = "Páginas";
 export type SiteFooterProps = {
   settings: Settings;
   equipe: Organizacao[];
-  /** Sistema de arquivos do terminal do rodapé. */
-  shellFs: ShellNode;
+  /** Sistema de arquivos do terminal do rodapé. `null`: rodapé sem terminal. */
+  shellFs: ShellNode | null;
 };
 
 /** As duas marcas convivem: o evento e quem realiza, separados por filete. */
@@ -90,7 +90,7 @@ export function SiteFooter({ settings, equipe, shellFs }: SiteFooterProps) {
         },
       ]}
     >
-      <ShellTerminal fs={shellFs} target={settings.eventStartDate} />
+      {shellFs ? <ShellTerminal fs={shellFs} target={settings.eventStartDate} /> : null}
     </Footer>
   );
 }

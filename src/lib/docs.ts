@@ -28,6 +28,7 @@ import {
   type SectionKey,
   type Settings,
 } from "./cms";
+import { buildShellFs } from "./shell-fs";
 import { absoluteUrl, canonicalUrl, pageMetadata, site } from "./site";
 
 /**
@@ -443,6 +444,31 @@ function blocoQuiz(): string {
 }
 
 /**
+ * O terminal em prosa. A árvore sai do próprio `shell-fs.ts`, e só o primeiro
+ * nível: o que está oculto no `ls` continua oculto aqui — a flag é o segredo do
+ * desafio, e um documento que a lista entrega o brinquedo antes da brincadeira.
+ */
+function blocoTerminal(): string {
+  const secao = getSecoes()["terminal"];
+  if (!secao?.lede) return "";
+
+  const raiz = buildShellFs();
+  const arvore = (Array.isArray(raiz) ? [] : Object.entries(raiz))
+    .filter(([nome]) => nome[0] !== ".")
+    .map(([nome, no]) => (Array.isArray(no) ? nome : `${nome}/`))
+    .sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+  return bloco(
+    `## ${secao.titulo || "Terminal"}`,
+    secao.lede,
+    `Disponível em ${link("/terminal", absoluteUrl("/terminal"))}, e no rodapé de toda página do site.`,
+    arvore.length > 0 && bloco("O sistema de arquivos do evento:", lista(arvore)),
+    secao.nota,
+    "Nenhum comando é registrado: o site é estático e o shell roda no navegador de quem digita.",
+  );
+}
+
+/**
  * O mapa do site em Markdown. Cita rotas e arquivos por caminho, nunca pelo
  * documento montado: é o único bloco que fala de todos os outros.
  */
@@ -589,6 +615,16 @@ const DOCS: Doc[] = [
     secao: null,
     rota: "/quiz",
     corpo: blocoQuiz,
+  },
+  {
+    slug: "terminal",
+    titulo: "Terminal",
+    resumo:
+      "O xibesh em tela cheia: um shell que roda no navegador e responde sobre data, programação, ingressos, trilhas, local e parceiros da edição.",
+    // Sem feature flag: o shell vive no rodapé de todas as páginas.
+    secao: null,
+    rota: "/terminal",
+    corpo: blocoTerminal,
   },
   {
     slug: "sitemap",

@@ -1,7 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
 import { Container } from "@/components/primitives/Container";
+import { TerminalFrame } from "@/components/data/TerminalFrame";
 import { EVENTOS } from "@/lib/analytics";
 import { evento } from "@/lib/analytics-client";
 import { cn } from "@/lib/utils";
@@ -17,6 +27,13 @@ export type ShellTerminalProps = {
   /** Data-alvo do evento, para o `uptime`. */
   target: string;
   usuario?: string;
+  /**
+   * `rodape` sangra a largura toda sob os links; `palco` preenche a caixa que o
+   * envolve — na rota do shell, a tela inteira sob a barra.
+   */
+  variant?: "rodape" | "palco";
+  /** Abertura estática acima do log, onde o palco carrega o assunto da página. */
+  banner?: ReactNode;
   className?: string;
 };
 
@@ -148,8 +165,10 @@ const TOM_CLASS: Record<string, string> = {
  * mundo — a piada é o recado —, uma flag escondida e um prêmio para quem virar
  * root.
  *
- * O bloco sangra a largura toda e a cor é a do rodapé: não é um painel à parte,
- * e qualquer fundo próprio aqui desenha uma caixa com beirada visível.
+ * No rodapé o bloco sangra a largura toda e a cor é a de lá: não é um painel à
+ * parte, e qualquer fundo próprio ali desenha uma caixa com beirada visível. Em
+ * `/terminal` o shell é o assunto da página: ganha a moldura do `Terminal` e
+ * preenche a altura que a rota reservar para ele.
  *
  * No toque os atalhos de teclado — `Tab` completa, `↑ ↓` repetem, `Ctrl+L` limpa
  * — não existem, e os comandos precisam ser digitados por extenso.
@@ -158,13 +177,18 @@ export function ShellTerminal({
   fs,
   target,
   usuario = "xibesec@2026",
+  variant = "rodape",
+  banner,
   className,
 }: ShellTerminalProps) {
+  const palco = variant === "palco";
   const [linhas, setLinhas] = useState<Linha[]>([]);
   const [valor, setValor] = useState("");
   const [cwd, setCwd] = useState<string[]>([]);
   const [root, setRoot] = useState(false);
   const [senhaPendente, setSenhaPendente] = useState<string[] | null>(null);
+
+  const router = useRouter();
 
   const raizRef = useRef<HTMLDivElement>(null);
   const janelaRef = useRef<HTMLDivElement>(null);
@@ -226,7 +250,13 @@ export function ShellTerminal({
 
   const irPara = (seletor: string) => {
     const alvo = document.querySelector(seletor);
-    if (!alvo) return;
+    // As seções são da home, e o shell também roda fora dela: sem a âncora nesta
+    // página, `open` carrega a home no lugar de não sair do lugar.
+    if (!alvo) {
+      navegou.current = true;
+      router.push(`/${seletor}`);
+      return;
+    }
     navegou.current = true;
     const calmo = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     alvo.scrollIntoView({ behavior: calmo ? "auto" : "smooth", block: "start" });
@@ -512,7 +542,9 @@ export function ShellTerminal({
     window.requestAnimationFrame(() => {
       const janela = janelaRef.current;
       if (janela) janela.scrollTop = janela.scrollHeight;
-      if (!navegou.current) trazerParaVista();
+      // No palco o shell já ocupa a tela: puxar a página aqui só empurraria a
+      // barra do topo para fora a cada comando.
+      if (!navegou.current && !palco) trazerParaVista();
     });
   };
 
@@ -569,6 +601,68 @@ export function ShellTerminal({
 
   const eco = senhaPendente ? "*".repeat(valor.length) : valor;
 
+  const janela = (
+    <div
+      ref={janelaRef}
+      className={cn(
+        "[scrollbar-width:thin] [scrollbar-color:rgb(79_227_172/0.28)_transparent] overflow-x-hidden overflow-y-auto overscroll-contain",
+        // No palco a janela toma a altura que sobra da moldura, e é ela que rola:
+        // crescendo por comando, a página inteira pularia a cada `Enter`.
+        palco ? "min-h-0 flex-1" : "max-h-[clamp(140px,24vh,210px)]",
+      )}
+    >
+      {banner}
+
+      <div role="log" aria-live="polite" className={linhas.length ? "mb-1" : undefined}>
+        {linhas.map((linha) => (
+          <p key={linha.id} className="text-cream-2 [white-space:pre-wrap]">
+            {linha.segmentos.map((seg, i) =>
+              seg.cor ? (
+                <span
+                  key={i}
+                  style={{ background: seg.cor }}
+                  className="mr-0.5 inline-block h-[11px] w-[22px]"
+                />
+              ) : (
+                <span key={i} className={seg.tom ? TOM_CLASS[seg.tom] : undefined}>
+                  {seg.texto}
+                </span>
+              ),
+            )}
+          </p>
+        ))}
+      </div>
+
+      <label className="text-cream relative flex cursor-text items-baseline">
+        <span
+          aria-hidden="true"
+          className={cn("mr-[0.6em] select-none", senhaPendente ? "text-cream/60" : "text-mint")}
+        >
+          {senhaPendente ? PEDIDO : prompt}
+        </span>
+        <span aria-hidden="true" className="[white-space:pre]">
+          {eco}
+        </span>
+        <span
+          aria-hidden="true"
+          className="animate-blink bg-mint inline-block h-[1.05em] w-[0.6em] align-[-0.16em] opacity-45 peer-focus:opacity-100"
+        />
+        <input
+          ref={campoRef}
+          value={valor}
+          onChange={(event) => setValor(event.target.value)}
+          onKeyDown={onKeyDown}
+          type="text"
+          autoComplete="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          aria-label="Terminal: digite help para ver os comandos disponíveis"
+          className="absolute inset-0 m-0 w-full border-0 bg-transparent p-0 font-[inherit] text-transparent caret-transparent outline-0"
+        />
+      </label>
+    </div>
+  );
+
   return (
     <div
       ref={raizRef}
@@ -580,65 +674,26 @@ export function ShellTerminal({
         event.preventDefault();
         campoRef.current?.focus();
       }}
-      className={cn("cursor-text pb-5 font-mono text-[12px] leading-[1.9]", className)}
+      className={cn(
+        "cursor-text font-mono",
+        palco ? "h-full text-[13px] leading-[1.95]" : "pb-5 text-[12px] leading-[1.9]",
+        className,
+      )}
     >
-      <Container className="border-line border-t pt-[22px]">
-        <div
-          ref={janelaRef}
-          className="max-h-[clamp(140px,24vh,210px)] [scrollbar-width:thin] [scrollbar-color:rgb(79_227_172/0.28)_transparent] overflow-x-hidden overflow-y-auto overscroll-contain"
+      {palco ? (
+        // O caminho na barra de título é o mesmo dado do prompt, não decoração:
+        // é por ele que se acompanha o `cd` com a janela já rolada. A moldura
+        // sangra a largura da tela, e o filete lateral morreria na borda.
+        <TerminalFrame
+          name={`${quem}:${caminho}`}
+          className="flex h-full flex-col border-x-0"
+          bodyClassName="flex min-h-0 flex-1 flex-col px-(--gutter) py-[clamp(14px,2vw,22px)]"
         >
-          <div role="log" aria-live="polite" className={linhas.length ? "mb-1" : undefined}>
-            {linhas.map((linha) => (
-              <p key={linha.id} className="text-cream-2 [white-space:pre-wrap]">
-                {linha.segmentos.map((seg, i) =>
-                  seg.cor ? (
-                    <span
-                      key={i}
-                      style={{ background: seg.cor }}
-                      className="mr-0.5 inline-block h-[11px] w-[22px]"
-                    />
-                  ) : (
-                    <span key={i} className={seg.tom ? TOM_CLASS[seg.tom] : undefined}>
-                      {seg.texto}
-                    </span>
-                  ),
-                )}
-              </p>
-            ))}
-          </div>
-
-          <label className="text-cream relative flex cursor-text items-baseline">
-            <span
-              aria-hidden="true"
-              className={cn(
-                "mr-[0.6em] select-none",
-                senhaPendente ? "text-cream/60" : "text-mint",
-              )}
-            >
-              {senhaPendente ? PEDIDO : prompt}
-            </span>
-            <span aria-hidden="true" className="[white-space:pre]">
-              {eco}
-            </span>
-            <span
-              aria-hidden="true"
-              className="animate-blink bg-mint inline-block h-[1.05em] w-[0.6em] align-[-0.16em] opacity-45 peer-focus:opacity-100"
-            />
-            <input
-              ref={campoRef}
-              value={valor}
-              onChange={(event) => setValor(event.target.value)}
-              onKeyDown={onKeyDown}
-              type="text"
-              autoComplete="off"
-              autoCapitalize="off"
-              spellCheck={false}
-              aria-label="Terminal: digite help para ver os comandos disponíveis"
-              className="absolute inset-0 m-0 w-full border-0 bg-transparent p-0 font-[inherit] text-transparent caret-transparent outline-0"
-            />
-          </label>
-        </div>
-      </Container>
+          {janela}
+        </TerminalFrame>
+      ) : (
+        <Container className="border-line border-t pt-[22px]">{janela}</Container>
+      )}
     </div>
   );
 }

@@ -128,6 +128,21 @@ Quatro decisões que não se desfazem sem quebrar algo:
 
 O WebKit não exporta a imagem, e a interface pede para abrir no Chrome. Detectado por motor, não por nome: todo navegador no iOS é WebKit, inclusive o Chrome de iPhone.
 
+### O terminal em `/terminal`
+
+Menu no topo, o xibesh ocupando a tela inteira sob a barra, e o rodapé — sem terminal — só depois de rolar. É o mesmo `ShellTerminal`: a prop `variant` escolhe entre `rodape`, que sangra a largura toda sob os links, e `palco`, que veste a moldura do terminal do CTF e preenche a altura que a rota reservar. O conteúdo vem de `contents/secoes` na chave `terminal`, e o sistema de arquivos continua saindo de `shell-fs.ts`.
+
+Quatro decisões:
+
+- **A moldura mora em `TerminalFrame`** — barra de título e varredura de fósforo. O `Terminal` do CTF e o xibesh a compartilham: a varredura escrita duas vezes divergiria na primeira mudança de cor.
+- **O cabeçalho da página é a abertura do terminal.** Rótulo, `h1` e apoio entram pela prop `banner`, em mono, dentro da janela e acima do log — nunca dentro dele, que é `aria-live` e anunciaria o texto como se fosse saída de comando. Título em display acima da moldura empurraria para fora da vista justamente o que a rota existe para mostrar.
+- **`PaginaInterna` aceita `shellNoRodape={false}` e `folgaNoTopo={false}`**, e essa rota usa os dois. Dois shells na mesma página disputam o foco do teclado e dobram a medição de uso; a folga do topo somaria à barra e jogaria a mesma altura para fora da tela.
+- **Quem rola é a janela, não a página.** Ela toma a altura que sobra da moldura, e o empurrão que traz o rodapé para a vista depois de cada comando fica desligado no palco — ali ele só tiraria a barra da tela.
+
+A rota tem documento próprio em `/docs/terminal.md`, e é de lá que sai também a descrição na página `/sitemap` — quem escreve `resumo` no catálogo de `docs.ts` escreve para os dois. A árvore listada nele vem do próprio `shell-fs.ts`, só o primeiro nível e sem os ocultos: documento que lista a flag entrega o brinquedo antes da brincadeira.
+
+O `open <seção>` do shell agora cai na home quando a âncora não existe na página em que ele está — vale para o rodapé de toda rota interna, onde antes o comando respondia "abrindo" e não saía do lugar.
+
 ## Git
 
 **Nunca trocar de branch sem pedido explícito.** `git checkout`, `git switch` e qualquer coisa que mova o `HEAD` só acontecem quando a pessoa pede, com essas palavras. Trocar de branch por conta própria — para "organizar", para deixar o trabalho no lugar certo, para o commit sair da branch que parece a correta — muda o chão embaixo de quem está trabalhando: o editor recarrega, o servidor de dev perde o `dist/`, e mudança não commitada vai junto para uma branch que não era a esperada.
