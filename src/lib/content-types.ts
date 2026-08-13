@@ -202,8 +202,6 @@ export type Palestrante = {
   cargo: string;
   empresa: string;
   cidade: string;
-  /** Vazia enquanto a organização não entrega o retrato. */
-  foto: string;
   resumo: string;
   experiencia: string;
   palestraTitulo: string;
@@ -225,18 +223,6 @@ export type Palestrante = {
 /** Cargo e organização na mesma linha, sem separador sobrando quando falta um. */
 export function credencial(palestrante: Palestrante): string {
   return [palestrante.cargo, palestrante.empresa].filter(Boolean).join(" · ");
-}
-
-/**
- * Iniciais do nome, para a marca d'água do espaço reservado enquanto o retrato
- * não chega. Duas letras: a primeira e a última palavra.
- */
-export function iniciais(nome: string): string {
-  const partes = nome.split(/\s+/).filter(Boolean);
-  if (partes.length === 0) return "";
-  const primeira = partes[0][0];
-  const ultima = partes.length > 1 ? partes[partes.length - 1][0] : "";
-  return `${primeira}${ultima}`.toUpperCase();
 }
 
 /** Texto longo do CMS em parágrafos. Linha em branco separa, como se escreve. */

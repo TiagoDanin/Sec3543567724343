@@ -293,7 +293,6 @@ export function getPalestrantes(): Palestrante[] {
       cargo: str(row, "cargo"),
       empresa: str(row, "empresa"),
       cidade: str(row, "cidade"),
-      foto: str(row, "foto"),
       resumo: str(row, "resumo"),
       experiencia: str(row, "experiencia"),
       palestraTitulo: str(row, "palestraTitulo"),

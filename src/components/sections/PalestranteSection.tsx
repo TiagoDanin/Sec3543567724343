@@ -1,15 +1,12 @@
-import Image from "next/image";
 import { Container } from "@/components/primitives/Container";
 import { Section } from "@/components/primitives/Section";
 import { Eyebrow, SectionTitle } from "@/components/primitives/SectionHeader";
-import { PendingSlot } from "@/components/primitives/PendingSlot";
 import { Reveal } from "@/components/primitives/Reveal";
 import { Tag } from "@/components/primitives/Tag";
 import { Button } from "@/components/primitives/Button";
 import { NoteWithLink } from "@/components/primitives/Note";
 import type { LinkAlvo } from "@/lib/links";
-import { asset } from "@/lib/site";
-import { credencial, iniciais, paragrafos, type Palestrante, type Secao } from "@/lib/cms";
+import { credencial, paragrafos, type Palestrante, type Secao } from "@/lib/cms";
 
 // Rótulos de dado e de navegação: mesma natureza de "Data" e "Local" na ficha
 // técnica dos documentos, não copy editorial de `contents/`.
@@ -21,7 +18,6 @@ const CERTIFICACOES_LABEL = "Certificações";
 const PALCOS_LABEL = "Já palestrou em";
 const CIDADE_LABEL = "De";
 const REDES_LABEL = "Onde encontrar";
-const RETRATO_PENDENTE = "Retrato em curadoria";
 const VOLTAR_LABEL = "Todos os palestrantes";
 
 export type PalestranteSectionProps = {
@@ -44,7 +40,7 @@ function Ficha({ palestrante }: { palestrante: Palestrante }) {
   if (linhas.length === 0) return null;
 
   return (
-    <dl className="border-line mt-6 border-t pt-6">
+    <dl className="border-line border-t pt-6">
       {linhas.map(([rotulo, valor]) => (
         <div key={rotulo} className="mt-[14px] first:mt-0">
           <dt className="text-cream-3 font-mono text-[11px] tracking-[0.2em] uppercase">
@@ -90,7 +86,10 @@ function Redes({ palestrante }: { palestrante: Palestrante }) {
 }
 
 /**
- * A página de uma pessoa: retrato e ficha à esquerda, palestra e bio à direita.
+ * A página de uma pessoa: ficha à esquerda, palestra e bio à direita. Sem
+ * retrato e sem moldura à espera de um, porque a organização não publica foto
+ * de palestrante.
+ *
  * A palestra vem antes da biografia de propósito: é o que a pessoa vai ver no
  * dia, e é o que responde à pergunta que trouxe quem chegou pela busca.
  */
@@ -190,24 +189,10 @@ export function PalestranteSection({
           <NoteWithLink text={secao.nota} label={secao.notaLinkLabel} href={secao.notaLinkUrl} />
         </div>
 
-        <Reveal className="max-[900px]:order-2 max-[900px]:mt-[clamp(28px,4vw,40px)] max-[900px]:max-w-[320px] min-[901px]:col-start-1 min-[901px]:row-start-1">
-          {palestrante.foto ? (
-            <Image
-              src={asset(palestrante.foto)}
-              alt={palestrante.nome}
-              width={640}
-              height={640}
-              priority
-              className="border-line-2 w-full border object-cover"
-            />
-          ) : (
-            <PendingSlot
-              ratio="1/1"
-              mark={iniciais(palestrante.nome)}
-              label={`${RETRATO_PENDENTE}: ${palestrante.nome}`}
-            />
-          )}
-
+        <Reveal
+          as="aside"
+          className="max-[900px]:order-2 max-[900px]:mt-[clamp(28px,4vw,40px)] max-[900px]:max-w-[420px] min-[901px]:col-start-1 min-[901px]:row-start-1"
+        >
           <Ficha palestrante={palestrante} />
           <Redes palestrante={palestrante} />
         </Reveal>

@@ -20,17 +20,10 @@ type Story = StoryObj<typeof meta>;
 export const AConfirmar: Story = { name: "A confirmar", args: {} };
 
 export const Preenchido: Story = {
-  args: { name: "Nome do palestrante", topic: "Título da palestra", href: "#" },
-};
-
-/** Nome anunciado, retrato ainda não entregue: a moldura leva as iniciais. */
-export const SemRetrato: Story = {
-  name: "Sem retrato",
   args: {
     name: "Nome do palestrante",
     role: "Cargo · Organização",
     topic: "Título da palestra",
-    initials: "NP",
     href: "#",
   },
 };

@@ -172,7 +172,6 @@ export function generatePersonSchema(palestrante: Palestrante) {
     ...(palestrante.empresa
       ? { worksFor: { "@type": "Organization", name: palestrante.empresa } }
       : {}),
-    ...(palestrante.foto ? { image: absoluteUrl(palestrante.foto) } : {}),
     ...(palestrante.temas.length > 0 ? { knowsAbout: palestrante.temas } : {}),
     ...(palestrante.certificacoes.length > 0
       ? {

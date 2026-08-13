@@ -353,11 +353,13 @@ const config: StudioConfig = {
     // Corpo MDX = bio longa. Um arquivo por pessoa: o `slug` do frontmatter é a
     // rota `/palestrantes/<slug>`, e mudá-lo depois de indexado quebra a URL.
     //
+    // Não há campo de foto: a edição não publica retrato de palestrante, e um
+    // campo sem consumidor no render é convite a preencher o que não aparece.
+    //
     // `temas`, `certificacoes` e `palcos` não são enfeite de ficha: viram
     // `knowsAbout`, `hasCredential` e a prova de repertório do `Person` no
     // JSON-LD, que é o que um buscador lê para saber sobre o que a pessoa fala.
     palestrantes: {
-      mediaDir: "public/images/palestrantes",
       schema: {
         collection: "palestrantes",
         label: "Palestrantes",
@@ -367,7 +369,6 @@ const config: StudioConfig = {
           { name: "cargo", type: "text", label: "Cargo" },
           { name: "empresa", type: "text", label: "Empresa" },
           { name: "cidade", type: "text", label: "Cidade" },
-          { name: "foto", type: "media", accept: ["image/*"], label: "Foto" },
           { name: "resumo", type: "text", label: "Resumo (uma frase)" },
           {
             name: "experiencia",

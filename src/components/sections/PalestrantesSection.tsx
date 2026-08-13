@@ -4,8 +4,8 @@ import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { NoteWithLink } from "@/components/primitives/Note";
 import { SpeakerCard } from "@/components/cards/SpeakerCard";
-import { asset, palestrantePath } from "@/lib/site";
-import { credencial, iniciais, type Palestrante, type Secao } from "@/lib/cms";
+import { palestrantePath } from "@/lib/site";
+import { credencial, type Palestrante, type Secao } from "@/lib/cms";
 
 /** Espaços reservados enquanto nenhum nome de 2026 foi anunciado. */
 const PLACEHOLDERS = 4;
@@ -39,7 +39,7 @@ export function PalestrantesSection({ palestrantes, secao, titleAs }: Palestrant
         </Reveal>
 
         <Reveal>
-          <ul className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-5">
+          <ul className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5">
             {vazio
               ? Array.from({ length: PLACEHOLDERS }, (_, index) => (
                   <li key={index}>
@@ -52,8 +52,6 @@ export function PalestrantesSection({ palestrantes, secao, titleAs }: Palestrant
                       name={speaker.nome}
                       role={credencial(speaker)}
                       topic={speaker.palestraTitulo}
-                      photo={speaker.foto ? asset(speaker.foto) : undefined}
-                      initials={iniciais(speaker.nome)}
                       href={`${palestrantePath(speaker.slug)}/`}
                       nameAs={titleAs === "h1" ? "h2" : "span"}
                     />

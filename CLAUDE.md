@@ -123,7 +123,7 @@ Quatro decisões:
 - **A rota não é governada pela seção da home.** `settings.sections.palestrantes` liga a vitrine da página inicial; a página existe enquanto houver registro em `contents/palestrantes/`, pelo `publicaSe` da entrada em `rotas.ts`. É o que permite anunciar nomes em página própria antes de abrir a seção na home, que é o estado atual.
 - **O slug do frontmatter é a URL.** `/palestrantes/<slug>` é indexado; trocar o slug depois quebra endereço publicado e o espelho em Markdown que ele anuncia. O prefixo numérico do arquivo governa só a ordem no CMS.
 - **Uma rota por pessoa nasce do conteúdo.** `rotasDePalestrantes()` expande o catálogo, e com isso o sitemap, a página `/sitemap`, o documento que a espelha e o item do menu saem de graça. `itensDoMenu()` esconde qualquer item que aponte para rota não publicada.
-- **Sem retrato, entra o monograma.** `PendingSlot` com as iniciais, hachurado, nunca ilustração ou banco de imagem. Quando a organização entregar as fotos, basta preencher `foto` no frontmatter: `SpeakerCard` e a página trocam sozinhos.
+- **Sem foto, e sem espaço reservado para uma.** A coleção não tem campo de retrato, o cartão é só tipografia e a página abre pela ficha. Nada de `PendingSlot`, monograma, ilustração ou banco de imagem: moldura vazia na grade ocupa a fileira inteira sem dizer nada, e campo de mídia sem consumidor no render é convite a preencher o que não aparece.
 
 O JSON-LD é `ProfilePage` com `mainEntity: Person` (`knowsAbout`, `hasCredential`, `sameAs`, `performerIn` apontando para o `@id` do evento) e a palestra como `subjectOf`. O `Person` não declara `performerIn` quando é aninhado no `performer` do próprio evento, o que seria uma referência do evento para ele mesmo. A palestra **não** é `subEvent`: sem horário confirmado ela não tem `startDate`, e `subEvent` sem data é promessa que a grade ainda não sustenta.
 
@@ -239,7 +239,7 @@ A home está composta e o build publica; ainda **não existem**:
 - script `predev` gerando `.studio/studio.d.ts` (o `prebuild` já existe);
 - `scripts/validate-content.ts` com Zod;
 - `app/programacao/[slug]`, a página de detalhe de cada atividade. Enquanto não existir, `AgendaRow` é renderizado **sem `href`**: card que leva a 404 é pior que card sem link. Criando a página, devolver o `href` na seção e conferir sitemap e espelho em Markdown. A rota de palestrante já existe, e é o modelo a seguir;
-- fotos das edições anteriores, logos das organizações parceiras e da imprensa: os diretórios em `public/images/` existem vazios, e por isso `EditionCard` e `PartnerChip` caem no estado de pendência. O mesmo vale para os retratos em `public/images/palestrantes/`, que hoje dão lugar ao monograma;
+- fotos das edições anteriores, logos das organizações parceiras e da imprensa: os diretórios em `public/images/` existem vazios, e por isso `EditionCard` e `PartnerChip` caem no estado de pendência;
 - perfis de rede dos palestrantes: `linkedin`, `github`, `twitter` e `site` estão vazios no frontmatter, e sem eles o `Person` do JSON-LD sai sem `sameAs`, que é o campo que amarra a pessoa à identidade dela fora do site.
 
 As demais coleções em `contents/` existem com o schema declarado e **conteúdo vazio, de propósito**. Não preencher sem pedido explícito.
