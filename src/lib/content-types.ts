@@ -375,3 +375,12 @@ export function lowestPrice(ingressos: Ingresso[]): number | null {
   if (ingressos.length === 0) return null;
   return Math.min(...ingressos.map((ticket) => ticket.preco));
 }
+
+/**
+ * A matéria que abre a seção de imprensa: a análise de especialista pesa mais
+ * que release. A home e a rota `/press` publicam a mesma citação, e escolhida
+ * em cada lugar ela divergiria assim que a lista mudasse.
+ */
+export function destaqueDaImprensa(materias: Materia[]): Materia | undefined {
+  return materias.find((materia) => materia.tipo === "analise" && materia.trecho) ?? materias[0];
+}

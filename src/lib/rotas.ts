@@ -72,6 +72,14 @@ const ROTAS: Rota[] = [
     rodape: false,
   },
   {
+    path: "/press",
+    rotulo: "Na imprensa",
+    secao: "imprensa",
+    changeFrequency: "monthly",
+    priority: 0.5,
+    rodape: false,
+  },
+  {
     path: "/quiz",
     rotulo: "Quiz",
     secao: null,

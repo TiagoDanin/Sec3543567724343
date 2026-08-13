@@ -5,6 +5,7 @@ import type {
   AgendaItem,
   Arquetipo,
   Ingresso,
+  Materia,
   Palestrante,
   Patrocinador,
   Settings,
@@ -223,6 +224,49 @@ export function quizSchema({
                     }
                   : {}),
                 ...(item.resumo ? { description: item.resumo } : {}),
+              },
+            })),
+          }
+        : undefined,
+  });
+}
+
+/**
+ * A página de cobertura. A entidade é a lista de publicações, e o `publisher`
+ * de cada uma é o veículo que a assina — nunca a organização do evento: o que
+ * dá peso à prova de terceiro é justamente ela não ser do próprio evento.
+ */
+export function imprensaSchema({
+  titulo,
+  descricao,
+  materias,
+}: {
+  titulo: string;
+  descricao: string;
+  materias: Materia[];
+}) {
+  return webPageSchema({
+    path: "/press",
+    titulo,
+    descricao,
+    mainEntity:
+      materias.length > 0
+        ? {
+            "@type": "ItemList",
+            name: titulo,
+            numberOfItems: materias.length,
+            itemListElement: materias.map((materia, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: materia.url,
+              item: {
+                "@type": "NewsArticle",
+                headline: materia.titulo,
+                url: materia.url,
+                ...(materia.data ? { datePublished: materia.data } : {}),
+                ...(materia.trecho ? { description: materia.trecho } : {}),
+                publisher: { "@type": "Organization", name: materia.veiculo },
+                about: { "@id": EVENT_ID },
               },
             })),
           }

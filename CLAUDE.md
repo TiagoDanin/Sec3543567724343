@@ -85,7 +85,7 @@ O catálogo **não importa `docs.ts`** — a dependência aponta para o outro la
 
 Rota nova nasce aqui, não no `app/`: sem entrada no catálogo ela não entra no sitemap nem ganha link interno, e página órfã o buscador visita tarde e classifica mal.
 
-`/evento`, `/ctf`, `/patrocinio` e `/local` reusam a seção da home com `titleAs="h1"` — a mesma seção, promovida a assunto da página. Ficam fora do menu **e do rodapé** de propósito: a home continua sendo o caminho de leitura, e essas rotas existem para a busca e para quem chega por link direto. Quem navega chega a elas pelo `/sitemap`, que está no rodapé. Cada uma anuncia `/docs/<slug>.md` como espelho, pela `metadataDeRota()`.
+`/evento`, `/ctf`, `/patrocinio`, `/local` e `/press` reusam a seção da home com `titleAs="h1"` — a mesma seção, promovida a assunto da página. Na home a `ImprensaSection` abre só com o rótulo e a citação de terceiro, para não gastar altura na porta do patrocínio; em `/press`, onde a cobertura é o assunto, o mesmo componente publica o título e o apoio que `contents/secoes` já traz. Ficam fora do menu **e do rodapé** de propósito: a home continua sendo o caminho de leitura, e essas rotas existem para a busca e para quem chega por link direto. Quem navega chega a elas pelo `/sitemap`, que está no rodapé. Cada uma anuncia `/docs/<slug>.md` como espelho, pela `metadataDeRota()`.
 
 **Feature flag desligada não apaga o arquivo.** Com `output: "export"`, `notFound()` ainda escreve o HTML da rota — vazio, mas com título e canonical. Por isso `metadataDeRota()` devolve `noindex, nofollow` quando a seção está desligada, e a rota sai do sitemap: sem isso o endereço vira um soft 404 que responde 200 anunciando conteúdo que a organização retirou do ar.
 

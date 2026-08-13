@@ -598,6 +598,7 @@ const DOCS: Doc[] = [
     titulo: "Na imprensa",
     resumo: "Cobertura de veículos de imprensa e do setor de segurança.",
     secao: "imprensa",
+    rota: "/press",
     corpo: blocoImprensa,
   },
   {

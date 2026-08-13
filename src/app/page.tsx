@@ -38,6 +38,7 @@ import { pageMetadata, site } from "@/lib/site";
 import type { SectionKey } from "@/lib/cms";
 import {
   SECAO_VAZIA,
+  destaqueDaImprensa,
   formatDate,
   formatPrice,
   getAgenda,
@@ -109,8 +110,6 @@ export default function Page() {
   const beneficios = getBeneficios();
   const chamadas = getChamadas();
   const imprensa = getImprensa();
-  // A citação que abre a seção: a análise de especialista pesa mais que release.
-  const destaqueImprensa = imprensa.find((m) => m.tipo === "analise" && m.trecho) ?? imprensa[0];
   const gruposPatrocinio = getPatrocinadoresPorCota();
   const parceiros = getParceiros();
   const equipe = getEquipe();
@@ -227,7 +226,7 @@ export default function Page() {
         {sections.imprensa ? (
           <ImprensaSection
             materias={imprensa}
-            destaque={destaqueImprensa}
+            destaque={destaqueDaImprensa(imprensa)}
             secao={secao("imprensa")}
           />
         ) : null}
