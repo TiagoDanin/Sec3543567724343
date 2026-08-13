@@ -104,7 +104,11 @@ export interface EquipeEntry {
 }
 
 /** Data shape for the "faq" collection. */
-export interface FaqEntry Record<string, unknown>
+export interface FaqEntry {
+  pergunta: string;
+  resposta: string;
+  order: number;
+}
 
 /** Data shape for the "fatos" collection. */
 export interface FatosEntry {
@@ -165,7 +169,26 @@ export interface NavegacaoEntry {
 }
 
 /** Data shape for the "palestrantes" collection. */
-export interface PalestrantesEntry Record<string, unknown>
+export interface PalestrantesEntry {
+  nome: string;
+  slug: string;
+  cargo: string;
+  resumo: string;
+  experiencia: string;
+  palestraTitulo: string;
+  palestraResumo: string;
+  temas: Array<{
+    tema: string;
+  }>;
+  order: number;
+  certificacoes: Array<{
+    sigla: string;
+  }>;
+  palcos: Array<{
+    nome: string;
+  }>;
+  cidade: string;
+}
 
 /** Data shape for the "parceiros" collection. */
 export interface ParceirosEntry {

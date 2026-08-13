@@ -24,11 +24,20 @@
     "chave": "palestrantes",
     "eyebrow": "Palestrantes",
     "eyebrowTom": "orange",
-    "titulo": "Grade em construção.",
-    "lede": "Divulgamos os nomes da edição 2026 em breve. Todo ano o XibéSec reúne pesquisadores e profissionais de SOC, CTI, forense e desenvolvimento de todo o Brasil.",
-    "nota": "Quer estar nessa grade? A {link} está aberta.",
-    "notaLinkLabel": "chamada para palestrantes",
-    "notaLinkUrl": "#participe"
+    "titulo": "Quem apresenta no XibéSec 2026.",
+    "lede": "Os nomes da 4ª edição são anunciados aos poucos. Estes já estão confirmados, cada um com a palestra que traz para Belém: pesquisa, engenharia de segurança e defesa aplicada.",
+    "nota": "A programação continua crescendo. Os próximos nomes saem primeiro no {link}.",
+    "notaLinkLabel": "@xibesec no Instagram",
+    "notaLinkUrl": "https://www.instagram.com/xibesec/"
+  },
+  {
+    "chave": "palestrante",
+    "eyebrow": "Palestrante confirmado",
+    "eyebrowTom": "orange",
+    "cta": "Garantir ingresso",
+    "nota": "A grade completa da edição segue em definição. Os próximos anúncios saem no {link}.",
+    "notaLinkLabel": "@xibesec no Instagram",
+    "notaLinkUrl": "https://www.instagram.com/xibesec/"
   },
   {
     "chave": "ingressos",
@@ -71,6 +80,16 @@
     "eyebrow": "Local",
     "eyebrowTom": "orange",
     "lede": "O evento acontece presencialmente em 19 de setembro de 2026, das 09h às 19h, no centro de eventos do hotel. Atualizações da programação saem primeiro no Instagram e na página oficial do Sympla."
+  },
+  {
+    "chave": "faq",
+    "eyebrow": "Antes de comprar",
+    "eyebrowTom": "mint",
+    "titulo": "Dúvidas frequentes sobre o XibéSec 2026.",
+    "lede": "Data, local, preço, o que o ingresso inclui, como funciona o CTF e o que ainda está em definição.",
+    "nota": "Ficou faltando alguma coisa? A organização responde no {link}.",
+    "notaLinkLabel": "@xibesec no Instagram",
+    "notaLinkUrl": "https://www.instagram.com/xibesec/"
   },
   {
     "chave": "fechamento",

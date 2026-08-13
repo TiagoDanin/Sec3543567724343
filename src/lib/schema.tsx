@@ -1,6 +1,13 @@
 // JSON-LD (schema.org). Gerado a partir de `site.ts` + `contents/` — nunca
 // escrito como string fixa, senão volta a divergir do conteúdo publicado.
-import { site, absoluteUrl, canonicalUrl, socialLinks } from "./site";
+import {
+  PALESTRANTES_PATH,
+  absoluteUrl,
+  canonicalUrl,
+  palestrantePath,
+  site,
+  socialLinks,
+} from "./site";
 import type {
   AgendaItem,
   Arquetipo,
@@ -140,17 +147,119 @@ export function eventSchema({
   };
 }
 
-/** `Person` de palestrante. Cargo e organização só entram quando existem. */
+/**
+ * `Person` de palestrante. Campo vazio não entra: o retrato e os perfis de rede
+ * chegam depois do anúncio, e propriedade em branco no JSON-LD só suja o grafo.
+ * O `@id` é a URL da própria página, e é o que faz o `performer` do evento e a
+ * `ProfilePage` falarem da mesma pessoa, em vez de duas homônimas.
+ */
 export function generatePersonSchema(palestrante: Palestrante) {
+  const url = canonicalUrl(palestrantePath(palestrante.slug));
+  const sameAs = [
+    palestrante.linkedin,
+    palestrante.github,
+    palestrante.twitter,
+    palestrante.site,
+  ].filter(Boolean);
+
   return {
     "@type": "Person",
+    "@id": `${url}#person`,
     name: palestrante.nome,
+    url,
+    ...(palestrante.resumo ? { description: palestrante.resumo } : {}),
     ...(palestrante.cargo ? { jobTitle: palestrante.cargo } : {}),
     ...(palestrante.empresa
       ? { worksFor: { "@type": "Organization", name: palestrante.empresa } }
       : {}),
     ...(palestrante.foto ? { image: absoluteUrl(palestrante.foto) } : {}),
+    ...(palestrante.temas.length > 0 ? { knowsAbout: palestrante.temas } : {}),
+    ...(palestrante.certificacoes.length > 0
+      ? {
+          hasCredential: palestrante.certificacoes.map((sigla) => ({
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: "certification",
+            name: sigla,
+          })),
+        }
+      : {}),
+    ...(sameAs.length > 0 ? { sameAs } : {}),
   };
+}
+
+/**
+ * A página de uma pessoa. `ProfilePage` é o tipo que o Google lê como perfil, e
+ * o que interessa nela é o `mainEntity`: a palestra vira `subjectOf` do próprio
+ * `Person`, porque sem horário confirmado ela não é um `subEvent` da grade.
+ */
+export function palestranteSchema({
+  palestrante,
+  descricao,
+}: {
+  palestrante: Palestrante;
+  descricao: string;
+}) {
+  const url = canonicalUrl(palestrantePath(palestrante.slug));
+  // A participação é declarada aqui, e não no `Person` que o evento aninha: lá
+  // ela seria uma referência do evento para ele mesmo.
+  const pessoa = { ...generatePersonSchema(palestrante), performerIn: { "@id": EVENT_ID } };
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "@id": `${url}#webpage`,
+    url,
+    name: palestrante.nome,
+    description: descricao,
+    inLanguage: site.locale,
+    isPartOf: { "@id": WEBSITE_ID },
+    about: { "@id": EVENT_ID },
+    publisher: { "@id": ORG_ID },
+    mainEntity: palestrante.palestraTitulo
+      ? {
+          ...pessoa,
+          subjectOf: {
+            "@type": "CreativeWork",
+            name: palestrante.palestraTitulo,
+            ...(palestrante.palestraResumo ? { abstract: palestrante.palestraResumo } : {}),
+            inLanguage: site.locale,
+            isPartOf: { "@id": EVENT_ID },
+          },
+        }
+      : pessoa,
+  };
+}
+
+/** O índice de quem apresenta. A entidade é a lista, na ordem publicada. */
+export function palestrantesSchema({
+  titulo,
+  descricao,
+  palestrantes,
+}: {
+  titulo: string;
+  descricao: string;
+  palestrantes: Palestrante[];
+}) {
+  return webPageSchema({
+    path: PALESTRANTES_PATH,
+    titulo,
+    descricao,
+    mainEntity:
+      palestrantes.length > 0
+        ? {
+            "@type": "ItemList",
+            name: titulo,
+            numberOfItems: palestrantes.length,
+            itemListOrder: "https://schema.org/ItemListOrderAscending",
+            itemListElement: palestrantes.map((palestrante, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: canonicalUrl(palestrantePath(palestrante.slug)),
+              item: generatePersonSchema(palestrante),
+            })),
+          }
+        : undefined,
+  });
 }
 
 /**

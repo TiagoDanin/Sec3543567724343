@@ -4,8 +4,8 @@ import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { NoteWithLink } from "@/components/primitives/Note";
 import { SpeakerCard } from "@/components/cards/SpeakerCard";
-import { asset } from "@/lib/site";
-import type { Palestrante, Secao } from "@/lib/cms";
+import { asset, palestrantePath } from "@/lib/site";
+import { credencial, iniciais, type Palestrante, type Secao } from "@/lib/cms";
 
 /** Espaços reservados enquanto nenhum nome de 2026 foi anunciado. */
 const PLACEHOLDERS = 4;
@@ -13,13 +13,15 @@ const PLACEHOLDERS = 4;
 export type PalestrantesSectionProps = {
   palestrantes: Palestrante[];
   secao: Secao;
+  /** `h1` na rota dedicada, onde a seção é o assunto da página. */
+  titleAs?: "h1" | "h2";
 };
 
 /**
  * Sem registros, a seção mostra espaços reservados e declara a pendência, em vez
  * de inventar nome ou sumir da página.
  */
-export function PalestrantesSection({ palestrantes, secao }: PalestrantesSectionProps) {
+export function PalestrantesSection({ palestrantes, secao, titleAs }: PalestrantesSectionProps) {
   const vazio = palestrantes.length === 0;
 
   return (
@@ -30,6 +32,7 @@ export function PalestrantesSection({ palestrantes, secao }: PalestrantesSection
             eyebrow={secao.eyebrow}
             eyebrowTone={secao.eyebrowTom}
             title={secao.titulo}
+            titleAs={titleAs}
             lede={secao.lede}
             alignEnd
           />
@@ -45,13 +48,14 @@ export function PalestrantesSection({ palestrantes, secao }: PalestrantesSection
                 ))
               : palestrantes.map((speaker) => (
                   <li key={speaker.slug}>
-                    {/* O card não linka: a rota de detalhe `/palestrantes/<slug>`
-                        ainda não existe em `app/`, e âncora para 404 é pior que
-                        card sem link. */}
                     <SpeakerCard
                       name={speaker.nome}
-                      topic={speaker.resumo}
+                      role={credencial(speaker)}
+                      topic={speaker.palestraTitulo}
                       photo={speaker.foto ? asset(speaker.foto) : undefined}
+                      initials={iniciais(speaker.nome)}
+                      href={`${palestrantePath(speaker.slug)}/`}
+                      nameAs={titleAs === "h1" ? "h2" : "span"}
                     />
                   </li>
                 ))}

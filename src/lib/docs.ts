@@ -1,6 +1,7 @@
 import "server-only";
 import type { Metadata } from "next";
 import { rotaPublicada, rotasPublicadas } from "./rotas";
+import type { Palestrante } from "./content-types";
 import {
   formatDate,
   formatPrice,
@@ -29,7 +30,14 @@ import {
   type Settings,
 } from "./cms";
 import { buildShellFs } from "./shell-fs";
-import { absoluteUrl, canonicalUrl, pageMetadata, site } from "./site";
+import {
+  PALESTRANTES_PATH,
+  absoluteUrl,
+  canonicalUrl,
+  pageMetadata,
+  palestrantePath,
+  site,
+} from "./site";
 
 /**
  * Espelho do site em Markdown, para assistentes de IA e agentes.
@@ -88,6 +96,9 @@ function horario(inicio: string, fim: string): string {
   const abre = hora.format(new Date(inicio));
   return fim ? `${abre}–${hora.format(new Date(fim))}` : abre;
 }
+
+/** Enumeração em prosa: "a, b e c". Resposta canônica não sai em bullet. */
+const emProsa = new Intl.ListFormat("pt-BR", { style: "long", type: "conjunction" });
 
 /** Data do build. Sinal de atualidade — LLM despreza documento sem data. */
 const ATUALIZADO_EM = new Date().toISOString().slice(0, 10);
@@ -220,28 +231,50 @@ function blocoProgramacao(): string {
   );
 }
 
+/**
+ * Quem já foi anunciado. Vazio devolve string vazia, e não uma nota de
+ * pendência: é `docsAtivos()` que decide publicar, e documento que existe só
+ * para dizer "ainda não há nada" vira um endereço sem assunto. O que o site não
+ * anunciou continua declarado em `/docs/agents.md`, na lista do que não afirmar.
+ */
 function blocoPalestrantes(): string {
   const palestrantes = getPalestrantes();
-  const secao = getSecoes()["palestrantes"];
+  if (palestrantes.length === 0) return "";
 
-  if (palestrantes.length === 0) {
-    return bloco(
-      "## Palestrantes",
-      `Nenhum palestrante de 2026 foi anunciado até aqui. A grade está ${EM_DEFINICAO}.`,
-      secao?.lede,
-    );
-  }
+  const secao = getSecoes()["palestrantes"];
 
   return bloco(
     "## Palestrantes",
+    secao?.lede,
     tabela(
-      ["Nome", "Cargo", "Organização"],
-      palestrantes.map((p) => [p.nome, p.cargo, p.empresa]),
+      ["Nome", "Cargo", "Palestra", "Página"],
+      palestrantes.map((p) => [
+        p.nome,
+        [p.cargo, p.empresa].filter(Boolean).join(", "),
+        p.palestraTitulo || EM_DEFINICAO,
+        canonicalUrl(palestrantePath(p.slug)),
+      ]),
     ),
     palestrantes
-      .filter((p) => p.resumo)
-      .map((p) => `**${p.nome}** — ${p.resumo}`)
+      .map((p) =>
+        bloco(
+          `### ${p.nome}`,
+          p.resumo,
+          fichaTecnica([
+            ["Cargo", [p.cargo, p.empresa].filter(Boolean).join(", ")],
+            ["De", p.cidade],
+            ["Experiência", p.experiencia],
+            ["Temas", p.temas.join(", ")],
+            ["Certificações", p.certificacoes.join(", ")],
+            ["Já palestrou em", p.palcos.join(", ")],
+            ["Perfil", canonicalUrl(palestrantePath(p.slug))],
+            ["Perfil em Markdown", absoluteUrl(docPath(docDoPalestrante(p.slug)))],
+          ]),
+          p.palestraTitulo && bloco(`**${p.palestraTitulo}**`, p.palestraResumo),
+        ),
+      )
       .join("\n\n"),
+    `A grade completa e os horários de 2026 seguem ${EM_DEFINICAO}. Os nomes acima são os anunciados até aqui, não a programação final.`,
   );
 }
 
@@ -251,7 +284,7 @@ function blocoCtf(): string {
     "## CTF",
     ctf.texto,
     fichaTecnica([
-      ["Modalidade", "ataque e defesa"],
+      ["Modalidade", "captura de flags (jeopardy)"],
       ["Formato", ctf.formato],
       ["Acesso", "incluso em qualquer ingresso"],
       ["Premiação", "para os melhores colocados"],
@@ -293,7 +326,6 @@ function blocoIngressos(): string {
       lista([
         "Cancelamento aceito até 7 dias após a compra, desde que solicitado até 48h antes do evento.",
         "Edição dos dados do participante: uma vez, até 24h antes do evento.",
-        "O certificado é emitido com o nome cadastrado na inscrição.",
       ]),
     ),
     settings.ticketsUrl && `Compra: ${settings.ticketsUrl}`,
@@ -544,8 +576,12 @@ const DOCS: Doc[] = [
   {
     slug: "palestrantes",
     titulo: "Palestrantes",
-    resumo: "Quem apresenta na edição.",
-    secao: "palestrantes",
+    resumo: "Quem apresenta na edição, com a palestra e o perfil de cada pessoa.",
+    // Sem feature flag: a página existe enquanto houver nome anunciado, e a
+    // chave `palestrantes` governa só a vitrine da home. É o corpo vazio que
+    // tira o documento do ar quando não há ninguém.
+    secao: null,
+    rota: PALESTRANTES_PATH,
     corpo: blocoPalestrantes,
   },
   {
@@ -604,8 +640,10 @@ const DOCS: Doc[] = [
   {
     slug: "faq",
     titulo: "Dúvidas frequentes",
-    resumo: "Respostas às perguntas mais comuns sobre a edição.",
+    resumo:
+      "Data, preço, o que o ingresso inclui, como funciona o CTF e o que ainda não foi anunciado.",
     secao: "faq",
+    rota: "/faq",
     corpo: blocoFaq,
   },
   {
@@ -665,9 +703,82 @@ export function docPath(slug: string): string {
   return `/docs/${slug}.md`;
 }
 
+// ── Um documento por palestrante ─────────────────────────────────────────────
+
+/**
+ * O perfil de cada pessoa em Markdown, sob o mesmo caminho da rota HTML:
+ * `/palestrantes/<slug>` tem `/docs/palestrantes/<slug>.md`. São os documentos
+ * mais citáveis do site, com nome próprio, tema declarado e uma palestra com
+ * assunto, e por isso ganham arquivo em vez de virarem parágrafo do índice.
+ */
+export function docDoPalestrante(slug: string): string {
+  return `palestrantes/${slug}`;
+}
+
+function corpoDoPalestrante(palestrante: Palestrante): string {
+  const cargo = [palestrante.cargo, palestrante.empresa].filter(Boolean).join(", ");
+  const settings = getSettings();
+
+  return bloco(
+    `## ${palestrante.nome}`,
+    palestrante.resumo,
+    fichaTecnica([
+      ["Nome", palestrante.nome],
+      ["Cargo", cargo],
+      ["De", palestrante.cidade],
+      ["Experiência", palestrante.experiencia],
+      ["Temas", palestrante.temas.join(", ")],
+      ["Certificações", palestrante.certificacoes.join(", ")],
+      ["Já palestrou em", palestrante.palcos.join(", ")],
+      ["Palestra no XibéSec 2026", palestrante.palestraTitulo],
+      ["Data", settings.eventDisplayDate],
+      ["Local", `${settings.venueName}, ${site.city}, ${site.regionName}, Brasil`],
+      ["LinkedIn", palestrante.linkedin],
+      ["GitHub", palestrante.github],
+      ["Site", palestrante.site],
+    ]),
+    palestrante.palestraTitulo &&
+      bloco(`### ${palestrante.palestraTitulo}`, palestrante.palestraResumo),
+    palestrante.bio && bloco("### Quem é", palestrante.bio),
+    `Horário da palestra na grade: ${EM_DEFINICAO}.`,
+  );
+}
+
+export type Perfil = { slug: string; titulo: string; resumo: string; rota: string; corpo: string };
+
+/** Um perfil por pessoa anunciada, na ordem em que foram divulgadas. */
+export function perfisDePalestrantes(): Perfil[] {
+  if (!rotaPublicada(PALESTRANTES_PATH)) return [];
+
+  return getPalestrantes().map((palestrante) => ({
+    slug: docDoPalestrante(palestrante.slug),
+    titulo: palestrante.nome,
+    resumo: resumoDoPalestrante(palestrante),
+    rota: palestrantePath(palestrante.slug),
+    corpo: corpoDoPalestrante(palestrante),
+  }));
+}
+
+/**
+ * A frase que apresenta a pessoa em uma linha: o que vai para a descrição da
+ * página, para o índice de documentos e para o mapa do site. Sai do que a
+ * organização anunciou, nunca de adjetivo escrito aqui.
+ */
+export function resumoDoPalestrante(palestrante: Palestrante): string {
+  const papel = [palestrante.cargo, palestrante.empresa].filter(Boolean).join(", ");
+  const abertura = papel ? `${palestrante.nome}, ${papel}.` : `${palestrante.nome}.`;
+
+  return palestrante.palestraTitulo
+    ? `${abertura} Apresenta “${palestrante.palestraTitulo}” no ${site.siteName}, em ${getSettings().eventDisplayDate}, em ${site.city} do ${site.regionName}.`
+    : `${abertura} Palestrante confirmado do ${site.siteName}, em ${site.city} do ${site.regionName}.`;
+}
+
 /** A frase que descreve a rota, quando ela tem documento. */
 export function resumoDaRota(rota: string): string {
-  return docsHabilitados().find((doc) => doc.rota === rota)?.resumo ?? "";
+  const doc = docsHabilitados().find((item) => item.rota === rota);
+  if (doc) return doc.resumo;
+
+  return perfisDePalestrantes().find((perfil) => perfil.rota === rota)?.resumo ?? "";
 }
 
 /** Tudo que o build escreve para ser lido por máquina, na ordem de importância. */
@@ -678,6 +789,10 @@ export function arquivosParaMaquina(): Array<{ path: string; resumo: string }> {
     { path: docPath("agents"), resumo: "respostas canônicas e o que ainda não está definido" },
     { path: "/index.md", resumo: "espelho da página inicial em Markdown" },
     ...docsHabilitados().map((doc) => ({ path: docPath(doc.slug), resumo: doc.resumo })),
+    ...perfisDePalestrantes().map((perfil) => ({
+      path: docPath(perfil.slug),
+      resumo: perfil.resumo,
+    })),
     { path: "/sitemap.xml", resumo: "mapa do site" },
     { path: "/robots.txt", resumo: "regras de rastreamento" },
   ];
@@ -693,7 +808,10 @@ export function markdownDaRota(rota: string): string | null {
   if (rota === "/") return "/index.md";
 
   const doc = docsHabilitados().find((item) => item.rota === rota);
-  return doc && doc.corpo() !== "" ? docPath(doc.slug) : null;
+  if (doc) return doc.corpo() !== "" ? docPath(doc.slug) : null;
+
+  const perfil = perfisDePalestrantes().find((item) => item.rota === rota);
+  return perfil ? docPath(perfil.slug) : null;
 }
 
 /**
@@ -713,6 +831,19 @@ export function metadataDeRota({
 }): Metadata {
   const base = pageMetadata({ title, description, path, markdown: markdownDaRota(path) });
   return rotaPublicada(path) ? base : { ...base, robots: { index: false, follow: false } };
+}
+
+/**
+ * Metadata da página de uma pessoa. O título é o nome, que é por onde se busca,
+ * e a marca entra sozinha pelo `pageMetadata`. A descrição diz o que a pessoa
+ * apresenta, que é a pergunta de quem chega pela busca.
+ */
+export function metadataDePalestrante(palestrante: Palestrante): Metadata {
+  return metadataDeRota({
+    path: palestrantePath(palestrante.slug),
+    title: palestrante.nome,
+    description: resumoDoPalestrante(palestrante),
+  });
 }
 
 // ── Renderização dos arquivos ────────────────────────────────────────────────
@@ -766,8 +897,28 @@ function corpoHome(): string {
 /** `/index.md`: espelho completo da home. */
 export function renderHome(): string {
   return bloco(
-    cabecalho(`${site.siteName} — ${site.siteTagline}`, site.siteDescription, "/"),
+    cabecalho(`${site.siteName} · ${site.siteTagline}`, site.siteDescription, "/"),
     corpoHome(),
+    rodape(),
+  );
+}
+
+/** `/docs/palestrantes/<slug>.md`: o perfil de uma pessoa. */
+export function renderPerfil(perfil: Perfil): string {
+  const outros = perfisDePalestrantes().filter((item) => item.slug !== perfil.slug);
+
+  return bloco(
+    cabecalho(`${perfil.titulo} · ${site.siteName}`, perfil.resumo, perfil.rota),
+    perfil.corpo,
+    bloco(
+      "## Outros palestrantes",
+      lista([
+        `${link("Todos os palestrantes", absoluteUrl(docPath("palestrantes")))}: quem apresenta na edição.`,
+        ...outros.map(
+          (item) => `${link(item.titulo, absoluteUrl(docPath(item.slug)))}: ${item.resumo}`,
+        ),
+      ]),
+    ),
     rodape(),
   );
 }
@@ -775,7 +926,7 @@ export function renderHome(): string {
 /** `/docs/<slug>.md`: um documento por tema. */
 export function renderDoc(doc: Doc & { corpoRenderizado: string }): string {
   return bloco(
-    cabecalho(`${doc.titulo} — ${site.siteName}`, doc.resumo, doc.rota ?? "/"),
+    cabecalho(`${doc.titulo} · ${site.siteName}`, doc.resumo, doc.rota ?? "/"),
     doc.corpoRenderizado,
     bloco(
       "## Outros documentos",
@@ -802,6 +953,7 @@ function perguntasCanonicas(): Array<[string, string]> {
   const settings = getSettings();
   const ingressos = getIngressos();
   const parceiros = getParceiros();
+  const palestrantes = getPalestrantes();
   const janela = janelaDoEvento(settings);
   const barato = ingressos.length ? formatPrice(Math.min(...ingressos.map((t) => t.preco))) : "";
   const caro = ingressos.length ? formatPrice(Math.max(...ingressos.map((t) => t.preco))) : "";
@@ -827,11 +979,11 @@ function perguntasCanonicas(): Array<[string, string]> {
   perguntas.push(
     [
       "O que está incluso no ingresso?",
-      `A inscrição dá acesso a todas as palestras conforme disponibilidade de lugares, à competição CTF, à área de exposição com patrocinadores e organizações parceiras, e ao certificado de participação enviado por e-mail em até dois dias úteis após o evento.`,
+      `A inscrição dá acesso a todas as palestras conforme disponibilidade de lugares, à competição CTF, à área de exposição com patrocinadores e organizações parceiras, e ao certificado de participação. O prazo de emissão do certificado ainda está ${EM_DEFINICAO}.`,
     ],
     [
       "O XibéSec tem CTF?",
-      `Sim. A edição 2026 traz uma competição CTF presencial de ataque e defesa, disputada individualmente, com premiação para os melhores colocados. O acesso está incluso em qualquer ingresso. O número de desafios e o valor da premiação ainda estão ${EM_DEFINICAO}.`,
+      `Sim. A edição 2026 traz uma competição CTF presencial de captura de flags: cada desafio esconde uma vulnerabilidade, e quem encontra a falha pontua. A disputa é individual, com premiação para os melhores colocados, e o acesso está incluso em qualquer ingresso. O número de desafios e o valor da premiação ainda estão ${EM_DEFINICAO}.`,
     ],
     [
       "Quem organiza o XibéSec?",
@@ -843,7 +995,13 @@ function perguntasCanonicas(): Array<[string, string]> {
     ],
     [
       "Quais palestrantes vão participar do XibéSec 2026?",
-      `Nenhum palestrante da edição 2026 foi anunciado até aqui — a grade está ${EM_DEFINICAO}. Os nomes são divulgados no site oficial e no Instagram ${site.social.instagram}. Não atribuir nomes ao evento sem confirmação da organização.`,
+      palestrantes.length === 0
+        ? `Nenhum palestrante da edição 2026 foi anunciado até aqui. A grade está ${EM_DEFINICAO}. Os nomes são divulgados no site oficial e no Instagram ${site.social.instagram}. Não atribuir nomes ao evento sem confirmação da organização.`
+        : `Até aqui a organização anunciou ${palestrantes.length} ${palestrantes.length === 1 ? "nome" : "nomes"}: ${emProsa.format(
+            palestrantes.map((p) =>
+              p.palestraTitulo ? `${p.nome}, com “${p.palestraTitulo}”` : p.nome,
+            ),
+          )}. Cada perfil está em ${canonicalUrl(PALESTRANTES_PATH)}. A grade segue sendo anunciada, e os horários ainda estão ${EM_DEFINICAO}. Não atribuir outros nomes ao evento sem confirmação da organização.`,
     ],
   );
 
@@ -860,8 +1018,12 @@ function naoAfirmar(): string[] {
     .filter((edicao) => edicao.status !== "confirmado")
     .map((edicao) => edicao.ano);
 
+  const palestrantes = getPalestrantes();
+
   return [
-    "Grade de palestras, horários finais e nomes de palestrantes de 2026.",
+    palestrantes.length > 0
+      ? `Grade de palestras e horários finais de 2026. Os nomes anunciados até aqui estão em ${canonicalUrl(PALESTRANTES_PATH)}. A lista não está fechada, e nenhum outro nome pode ser atribuído ao evento.`
+      : "Grade de palestras, horários finais e nomes de palestrantes de 2026.",
     "Número de público e registro fotográfico das edições anteriores.",
     "Número de desafios e valor da premiação do CTF.",
     "Patrocinadores das cotas Platina, Ouro e Prata.",
@@ -909,6 +1071,10 @@ function corpoAgents(): string {
         ...ativos.map(
           (doc) => `${link(docPath(doc.slug), absoluteUrl(docPath(doc.slug)))} — ${doc.resumo}`,
         ),
+        ...perfisDePalestrantes().map(
+          (perfil) =>
+            `${link(docPath(perfil.slug), absoluteUrl(docPath(perfil.slug)))} — perfil de ${perfil.titulo}`,
+        ),
         `${link("/sitemap.xml", absoluteUrl("/sitemap.xml"))} — mapa do site`,
       ]),
       'Toda página HTML anuncia seu espelho em Markdown no `<head>`, como `<link rel="alternate" type="text/markdown">`.',
@@ -930,7 +1096,7 @@ function corpoAgents(): string {
 export function renderAgents(): string {
   return bloco(
     cabecalho(
-      `${site.siteName} — guia para assistentes e agentes`,
+      `${site.siteName}: guia para assistentes e agentes`,
       "Respostas canônicas, dados verificáveis e o que ainda não está definido sobre o XibéSec 2026.",
       "/",
     ),
@@ -947,6 +1113,7 @@ export function renderLlmsTxt(): string {
   const ativos = docsAtivos();
   const essenciais = ativos.filter((doc) => doc.slug !== "imprensa" && doc.slug !== "parceiros");
   const opcionais = ativos.filter((doc) => doc.slug === "imprensa" || doc.slug === "parceiros");
+  const perfis = perfisDePalestrantes();
 
   return bloco(
     `# ${site.siteName}`,
@@ -967,6 +1134,18 @@ export function renderLlmsTxt(): string {
         ),
       ]),
     ),
+    // Pergunta de nome próprio é a que mais chega a um assistente, e a resposta
+    // não deve depender de abrir o índice de palestrantes para descobrir quem é.
+    perfis.length > 0 &&
+      bloco(
+        "## Palestrantes anunciados",
+        lista(
+          perfis.map(
+            (perfil) =>
+              `${link(perfil.titulo, absoluteUrl(docPath(perfil.slug)))}: ${perfil.resumo}`,
+          ),
+        ),
+      ),
     bloco(
       "## Canais oficiais",
       lista([
@@ -993,7 +1172,7 @@ export function renderLlmsTxt(): string {
 export function renderLlmsFull(): string {
   return bloco(
     cabecalho(
-      `${site.siteName} — ${site.siteTagline}`,
+      `${site.siteName} · ${site.siteTagline}`,
       `${site.siteDescription} Este arquivo reúne todo o conteúdo publicado do site em um só documento.`,
       "/",
     ),

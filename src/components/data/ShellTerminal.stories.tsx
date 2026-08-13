@@ -6,7 +6,7 @@ import { ShellTerminal, type ShellNode } from "./ShellTerminal";
 const FS: ShellNode = {
   "evento.txt": ["Evento de exemplo.", "Data e local vêm do conteúdo."],
   ctf: {
-    "regras.txt": ["Modalidade  ataque e defesa", "Acesso      incluso no ingresso"],
+    "regras.txt": ["Modalidade  captura de flags", "Acesso      incluso no ingresso"],
     ".flag": ["XIBESEC{exemplo_de_bancada}", "", "Achou sem ninguém mandar."],
   },
   trilhas: {

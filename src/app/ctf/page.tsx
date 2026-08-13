@@ -13,7 +13,7 @@ const ROTA = "/ctf";
 const HOME_LABEL = "Início";
 const TITULO = "CTF";
 const DESCRICAO =
-  "A competição CTF presencial do XibéSec 2026: ataque e defesa, disputa individual, acesso incluso em qualquer ingresso e premiação para os melhores colocados.";
+  "A competição CTF presencial do XibéSec 2026: desafios de captura de flags, disputa individual, acesso incluso em qualquer ingresso e premiação para os melhores colocados.";
 
 export const metadata = metadataDeRota({
   path: ROTA,

@@ -73,19 +73,19 @@ Isso **não** significa virar corporativo, frio ou publicitário. A identidade a
   - Inteira — R$ 80,00, em até 12x
   - Meia-entrada — R$ 40,00, em até 6x
   - Ingresso Social — R$ 60,00, em até 12x
-- A inscrição dá direito a: área de exposição/patrocinadores/comunidades/ativações; acesso ao CTF; todas as palestras conforme disponibilidade de lugares; certificado de participação por e-mail em até 2 dias úteis após o evento (emitido com o nome cadastrado).
+- A inscrição dá direito a: área de exposição/patrocinadores/comunidades/ativações; acesso ao CTF; todas as palestras conforme disponibilidade de lugares; certificado de participação. **O prazo de emissão do certificado voltou a ser indefinido** — não publicar "2 dias úteis" nem prometer data.
 - Novidade 2026: trilha gerencial (liderança, riscos, governança, estratégia, tomada de decisão).
-- Competição CTF presencial, individual ou em equipe, com premiação.
+- Competição CTF presencial no formato de captura de flags (jeopardy): cada desafio esconde uma vulnerabilidade, e quem encontra a falha pontua. Disputa individual, com premiação.
 - Cancelamento: aceito até 7 dias após a compra, desde que solicitado até 48h antes do evento. Edição de participante: uma vez, até 24h antes.
 - Realização: Hekate, Inc. — contact@hekateinc.com — www.hekateinc.com
 
 **Explicitamente indefinido (não inventar)**
 
-- Grade de palestras e horários finais: "em definição".
-- Nomes de palestrantes de 2026: nenhum anunciado.
+- Grade de palestras e horários finais: "em definição". Nenhuma palestra tem horário confirmado, e por isso nenhuma entra em `contents/agenda`.
+- Palestrantes de 2026: quatro nomes anunciados pela organização, em `contents/palestrantes/`, cada um com a própria página em `/palestrantes/<slug>`. A lista **não** está fechada, e nome que a organização não anunciou não entra.
 - Cotas Platina, Ouro e Prata: disponíveis, nenhum patrocinador confirmado nessas faixas.
 - Apoiadores/comunidades da página oficial: "a anunciar" na landing, embora o Sympla já liste 21 nomes (ver Evidence).
-- Formato, número de desafios e valor da premiação do CTF.
+- Número de desafios e valor da premiação do CTF. O formato já está definido: captura de flags, disputa individual.
 - Estrutura de horários é descrita como o formato típico de um dia de XibéSec, não como grade confirmada.
 
 ## Brand Commitments

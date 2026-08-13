@@ -24,18 +24,12 @@ import { LocalSection } from "@/components/sections/LocalSection";
 import { Fechamento } from "@/components/sections/Fechamento";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 
-import {
-  SchemaMarkup,
-  eventSchema,
-  generateFaqSchema,
-  organizationWithSocial,
-  websiteSchema,
-} from "@/lib/schema";
+import { SchemaMarkup, eventSchema, organizationWithSocial, websiteSchema } from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
+import { itensDoMenu } from "@/lib/rotas";
 import { alvoCompra, ancoraViva, externo } from "@/lib/links";
 import { EVENTOS } from "@/lib/analytics";
 import { pageMetadata, site } from "@/lib/site";
-import type { SectionKey } from "@/lib/cms";
 import {
   SECAO_VAZIA,
   destaqueDaImprensa,
@@ -48,7 +42,6 @@ import {
   getDestaque,
   getEdicoes,
   getEquipe,
-  getFaq,
   getFatos,
   getHero,
   getImprensa,
@@ -118,8 +111,8 @@ export default function Page() {
   const lote = ingressos[0];
 
   // JSON-LD: só entra no schema o que a página realmente publica — seção
-  // desligada não vira promessa para o buscador.
-  const duvidas = sections.faq ? getFaq() : [];
+  // desligada não vira promessa para o buscador. O `FAQPage` mora em `/faq`,
+  // que é onde as respostas estão.
   const schema = [
     websiteSchema,
     organizationWithSocial,
@@ -128,9 +121,10 @@ export default function Page() {
       ingressos,
       agenda: sections.agenda ? agenda : [],
       patrocinadores: sections.patrocinio ? getPatrocinadores() : [],
-      palestrantes: sections.palestrantes ? palestrantes : [],
+      // Quem apresenta é publicado em `/palestrantes`, e não pela vitrine da
+      // home: o `performer` segue o conteúdo anunciado, não a feature flag.
+      palestrantes,
     }),
-    ...(duvidas.length > 0 ? [generateFaqSchema(duvidas)] : []),
   ];
 
   return (
@@ -140,11 +134,7 @@ export default function Page() {
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
-        items={navegacao.filter(
-          // Item cuja seção está desligada some do menu: link para âncora que
-          // não existe na página não leva a lugar nenhum.
-          (item) => !item.noMenu && (!item.secao || sections[item.secao as SectionKey] === true),
-        )}
+        items={itensDoMenu(navegacao)}
         action={
           <BotaoMedido medirComo={EVENTOS.ingressoClicado} local="navbar" size="sm" {...checkout}>
             {NAV_CTA}

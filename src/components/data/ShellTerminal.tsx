@@ -458,7 +458,7 @@ export function ShellTerminal({
             ["Data", "19 de setembro de 2026, 09h às 19h"],
             ["Local", "Bristol Marambaia Hotel, Belém/PA"],
             ["Trilhas", "técnica e gerencial, em paralelo"],
-            ["CTF", "ataque e defesa, incluso no ingresso"],
+            ["CTF", "captura de flags, incluso no ingresso"],
             ["Shell", "xibesh 1.0"],
             ["Sessão", m ? `${m} min` : `${seg} s`],
           ];

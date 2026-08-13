@@ -71,6 +71,18 @@ export function canonicalUrl(path = "/"): string {
   return url.endsWith("/") ? url : `${url}/`;
 }
 
+/** Índice de quem apresenta na edição. */
+export const PALESTRANTES_PATH = "/palestrantes";
+
+/**
+ * Endereço da página de um palestrante. Mora aqui, com o resto das URLs: o
+ * catálogo de rotas, o JSON-LD e o espelho em Markdown precisam do mesmo
+ * caminho, e escrito três vezes ele diverge na primeira mudança.
+ */
+export function palestrantePath(slug: string): string {
+  return `${PALESTRANTES_PATH}/${slug}`;
+}
+
 /** Caminho de asset servido de `public/`, com `basePath` aplicado. */
 export function asset(path: string): string {
   return `${basePath}${path.startsWith("/") ? path : `/${path}`}`;

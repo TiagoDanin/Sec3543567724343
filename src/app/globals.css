@@ -261,7 +261,16 @@
     );
   }
 
+  /* A resposta entra com o mesmo gesto da página, curto: a sanfona é um passo
+     de leitura, não uma seção chegando. */
+  details[open] > .duvida-corpo {
+    animation: duvida-abre 0.42s var(--ease-brand);
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    details[open] > .duvida-corpo {
+      animation: none;
+    }
     .reveal {
       opacity: 1;
       transform: none;
@@ -344,6 +353,19 @@
   }
   to {
     top: 100%;
+  }
+}
+
+@keyframes duvida-abre {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
 

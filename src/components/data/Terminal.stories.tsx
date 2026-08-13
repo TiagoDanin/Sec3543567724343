@@ -8,7 +8,7 @@ const meta = {
     name: "xibesec@2026: ~/ctf",
     lines: [
       { kind: "cmd", text: "$ xibesec ctf --edicao 2026" },
-      { kind: "ok", text: "modalidade ....... ataque e defesa" },
+      { kind: "ok", text: "modalidade ....... jeopardy (captura de flags)" },
       { kind: "ok", text: "formato .......... individual ou em equipe" },
       { kind: "ok", text: "acesso ........... incluso no ingresso" },
       { kind: "warn", text: "desafios ......... em preparacao" },

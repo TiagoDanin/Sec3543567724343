@@ -201,10 +201,51 @@ export type Palestrante = {
   slug: string;
   cargo: string;
   empresa: string;
+  cidade: string;
+  /** Vazia enquanto a organização não entrega o retrato. */
   foto: string;
   resumo: string;
+  experiencia: string;
+  palestraTitulo: string;
+  palestraResumo: string;
+  temas: string[];
+  certificacoes: string[];
+  /** Eventos em que já palestrou, como a própria pessoa declarou. */
+  palcos: string[];
+  linkedin: string;
+  github: string;
+  twitter: string;
+  site: string;
+  /** Bio longa: o corpo do `.mdx`, em parágrafos separados por linha em branco. */
+  bio: string;
+  destaque: boolean;
   order: number;
 };
+
+/** Cargo e organização na mesma linha, sem separador sobrando quando falta um. */
+export function credencial(palestrante: Palestrante): string {
+  return [palestrante.cargo, palestrante.empresa].filter(Boolean).join(" · ");
+}
+
+/**
+ * Iniciais do nome, para a marca d'água do espaço reservado enquanto o retrato
+ * não chega. Duas letras: a primeira e a última palavra.
+ */
+export function iniciais(nome: string): string {
+  const partes = nome.split(/\s+/).filter(Boolean);
+  if (partes.length === 0) return "";
+  const primeira = partes[0][0];
+  const ultima = partes.length > 1 ? partes[partes.length - 1][0] : "";
+  return `${primeira}${ultima}`.toUpperCase();
+}
+
+/** Texto longo do CMS em parágrafos. Linha em branco separa, como se escreve. */
+export function paragrafos(texto: string): string[] {
+  return texto
+    .split(/\n{2,}/)
+    .map((paragrafo) => paragrafo.trim())
+    .filter(Boolean);
+}
 
 // ── Quiz ─────────────────────────────────────────────────────────────────────
 
@@ -368,6 +409,20 @@ export function formatDate(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
   return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Belem" }).format(date);
+}
+
+const horaBelem = new Intl.DateTimeFormat("pt-BR", {
+  timeZone: "America/Belem",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+/** "2026-09-19T09:00:00-03:00" → "09h"; com minuto quebrado, "09h30". */
+export function formatHour(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const [hora, minuto] = horaBelem.format(date).split(":");
+  return minuto === "00" ? `${hora}h` : `${hora}h${minuto}`;
 }
 
 /** Menor preço da lista, em centavos. Alimenta a barra de lote e o dock. */

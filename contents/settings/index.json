@@ -20,7 +20,7 @@
     "patrocinio": true,
     "parceiros": false,
     "local": true,
-    "faq": false,
+    "faq": true,
     "imprensa": true
   }
 }

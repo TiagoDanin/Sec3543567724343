@@ -22,8 +22,8 @@
   },
   {
     "label": "Palestrantes",
-    "href": "#palestrantes",
-    "secao": "palestrantes",
+    "href": "/palestrantes/",
+    "secao": "",
     "grupo": "evento",
     "noMenu": false
   },
@@ -45,6 +45,13 @@
     "label": "Local",
     "href": "#local",
     "secao": "local",
+    "grupo": "evento",
+    "noMenu": false
+  },
+  {
+    "label": "Dúvidas",
+    "href": "/faq/",
+    "secao": "faq",
     "grupo": "evento",
     "noMenu": false
   },

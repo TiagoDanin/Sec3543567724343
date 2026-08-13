@@ -1,8 +1,10 @@
 import "server-only";
 import {
+  credencial,
   formatPrice,
   getAgenda,
   getIngressos,
+  getPalestrantes,
   getParceiros,
   getSettings,
   type Settings,
@@ -48,6 +50,7 @@ export function buildShellFs(): ShellNode {
   const ingressos = getIngressos();
   const agenda = getAgenda();
   const parceiros = getParceiros();
+  const palestrantes = getPalestrantes();
 
   const inicio = settings.eventStartDate ? hora.format(new Date(settings.eventStartDate)) : "";
   const fim = settings.eventEndDate ? hora.format(new Date(settings.eventEndDate)) : "";
@@ -90,10 +93,31 @@ export function buildShellFs(): ShellNode {
       "Venda pelo Sympla.",
     ],
 
+    // Diretório sem arquivo dentro é um `ls` que não responde nada: enquanto
+    // ninguém foi anunciado, a pasta não existe.
+    ...(palestrantes.length > 0
+      ? {
+          palestrantes: Object.fromEntries(
+            palestrantes.map((p) => [
+              `${p.slug}.txt`,
+              [
+                p.nome,
+                credencial(p),
+                ...(p.experiencia ? [p.experiencia] : []),
+                "",
+                p.palestraTitulo || "Palestra em definição.",
+                "",
+                `Perfil: /palestrantes/${p.slug}/`,
+              ],
+            ]),
+          ),
+        }
+      : {}),
+
     ctf: {
       "regras.txt": [
-        "Modalidade  ataque e defesa",
-        "Formato     individual ou em equipe",
+        "Modalidade  captura de flags (jeopardy)",
+        "Formato     individual",
         "Acesso      incluso em qualquer ingresso",
         "Premiação   para os melhores colocados",
         "Desafios    em preparação",

@@ -36,6 +36,8 @@ import type {
   Tom,
   Trilha,
 } from "./content-types";
+import { formatDate, formatHour, formatPrice, lowestPrice } from "./content-types";
+import { PALESTRANTES_PATH, absoluteUrl, site } from "./site";
 
 export * from "./content-types";
 
@@ -272,6 +274,17 @@ export function getAgenda(): AgendaItem[] {
     .sort(byOrder);
 }
 
+/** Array de objetos do CMS achatado em lista de texto, sem item vazio. */
+function textos(value: unknown, key: string): string[] {
+  if (!Array.isArray(value)) return [];
+  return (value as Row[]).map((item) => str(item, key)).filter(Boolean);
+}
+
+/**
+ * Palestrantes anunciados, na ordem em que a organização os divulgou. Registro
+ * sem nome ou sem slug fica de fora: o slug é a rota `/palestrantes/<slug>`, e
+ * sem ele a página não teria endereço.
+ */
 export function getPalestrantes(): Palestrante[] {
   return rows("palestrantes")
     .map((row) => ({
@@ -279,11 +292,29 @@ export function getPalestrantes(): Palestrante[] {
       slug: str(row, "slug"),
       cargo: str(row, "cargo"),
       empresa: str(row, "empresa"),
+      cidade: str(row, "cidade"),
       foto: str(row, "foto"),
       resumo: str(row, "resumo"),
+      experiencia: str(row, "experiencia"),
+      palestraTitulo: str(row, "palestraTitulo"),
+      palestraResumo: str(row, "palestraResumo"),
+      temas: textos(row.temas, "tema"),
+      certificacoes: textos(row.certificacoes, "sigla"),
+      palcos: textos(row.palcos, "nome"),
+      linkedin: str(row, "linkedin"),
+      github: str(row, "github"),
+      twitter: str(row, "twitter"),
+      site: str(row, "site"),
+      bio: str(row, "body").trim(),
+      destaque: bool(row, "destaque"),
       order: num(row, "order"),
     }))
+    .filter((palestrante) => palestrante.nome && palestrante.slug)
     .sort(byOrder);
+}
+
+export function getPalestrante(slug: string): Palestrante | undefined {
+  return getPalestrantes().find((palestrante) => palestrante.slug === slug);
 }
 
 export function getCtf(): Ctf {
@@ -402,12 +433,72 @@ export function getParceiros(): Parceiro[] {
     .sort(byOrder);
 }
 
+const listaPtBr = new Intl.ListFormat("pt-BR", { style: "long", type: "conjunction" });
+
+/**
+ * Valores que uma resposta cita por token. Preço, prazo e lote viram outros na
+ * primeira virada de lote, e resposta que os escreve por extenso passa a mentir
+ * sem ninguém perceber — o dado continua morando na coleção que o governa.
+ */
+function valoresDaFaq(): Record<string, string> {
+  const settings = getSettings();
+  const ingressos = getIngressos();
+  const lote = ingressos[0];
+  const menor = lowestPrice(ingressos);
+
+  // Estado do anúncio, não frase fixa: a grade sai aos poucos, e uma resposta
+  // que escreve "nada foi anunciado" passa a mentir no primeiro nome publicado.
+  // Mesma condição que governa a rota, para os dois nunca discordarem.
+  const palestrantes = getPalestrantes();
+  const nomesAnunciados =
+    palestrantes.length > 0
+      ? // A URL nunca fecha a frase: um ponto colado nela quebra o link ao copiar.
+        `Os nomes saem aos poucos, e quem já está confirmado aparece em ${absoluteUrl(PALESTRANTES_PATH)}/ conforme a organização anuncia`
+      : "Nenhum palestrante de 2026 foi anunciado até aqui";
+
+  return {
+    palestrantes: nomesAnunciados,
+    grade: settings.sections.agenda
+      ? "A grade com horários já está publicada"
+      : "A grade com horários segue em definição",
+    data: settings.eventDisplayDate,
+    horaInicio: formatHour(settings.eventStartDate),
+    horaFim: formatHour(settings.eventEndDate),
+    local: settings.venueName,
+    endereco: settings.venueAddress,
+    cidade: site.city,
+    estado: site.regionName,
+    sympla: settings.ticketsUrl,
+    lote: lote ? String(lote.lote) : "",
+    parcelas: lote ? String(lote.parcelas) : "",
+    prazoLote: lote ? formatDate(lote.validThrough) : "",
+    precoMinimo: menor === null ? "" : formatPrice(menor),
+    precos: listaPtBr.format(
+      ingressos.map(
+        (ticket) =>
+          `${ticket.nome.replace(/^Lote \d+ · /, "").toLowerCase()} a ${formatPrice(ticket.preco)}`,
+      ),
+    ),
+    // Marcador de lista, não frase corrida: o mesmo texto vira `<ul>` na página
+    // e lista nativa no espelho em Markdown.
+    incluso: getBeneficios()
+      .map((beneficio) => `- ${beneficio.texto}`)
+      .join("\n"),
+  };
+}
+
 /** Dúvidas frequentes. Alimenta o accordion da página e o `FAQPage` do JSON-LD. */
 export function getFaq(): Duvida[] {
+  const valores = valoresDaFaq();
+  // Token sem valor sai da frase: campo em branco no CMS não vira `{lote}` cru
+  // no HTML, no JSON-LD e no espelho em Markdown, que leem todos daqui.
+  const resolver = (texto: string) =>
+    texto.replace(/\{(\w+)\}/g, (_, chave: string) => valores[chave] ?? "");
+
   return rows("faq")
     .map((row) => ({
-      pergunta: str(row, "pergunta"),
-      resposta: str(row, "resposta"),
+      pergunta: resolver(str(row, "pergunta")),
+      resposta: resolver(str(row, "resposta")),
       order: num(row, "order"),
     }))
     .filter((item) => item.pergunta && item.resposta)

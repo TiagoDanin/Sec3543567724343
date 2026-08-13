@@ -350,7 +350,12 @@ const config: StudioConfig = {
     },
 
     // ── Palestrantes ─────────────────────────────────────────────────────
-    // Corpo MDX = bio longa. Nasce vazia: nenhum nome anunciado para 2026.
+    // Corpo MDX = bio longa. Um arquivo por pessoa: o `slug` do frontmatter é a
+    // rota `/palestrantes/<slug>`, e mudá-lo depois de indexado quebra a URL.
+    //
+    // `temas`, `certificacoes` e `palcos` não são enfeite de ficha: viram
+    // `knowsAbout`, `hasCredential` e a prova de repertório do `Person` no
+    // JSON-LD, que é o que um buscador lê para saber sobre o que a pessoa fala.
     palestrantes: {
       mediaDir: "public/images/palestrantes",
       schema: {
@@ -361,8 +366,42 @@ const config: StudioConfig = {
           { name: "slug", type: "slug", from: "nome", required: true },
           { name: "cargo", type: "text", label: "Cargo" },
           { name: "empresa", type: "text", label: "Empresa" },
+          { name: "cidade", type: "text", label: "Cidade" },
           { name: "foto", type: "media", accept: ["image/*"], label: "Foto" },
-          { name: "resumo", type: "text", label: "Resumo (card)" },
+          { name: "resumo", type: "text", label: "Resumo (uma frase)" },
+          {
+            name: "experiencia",
+            type: "text",
+            label: "Experiência",
+            description: "Como a organização anunciou. Não arredondar nem estimar.",
+          },
+          { name: "palestraTitulo", type: "text", label: "Título da palestra" },
+          {
+            name: "palestraResumo",
+            type: "long-text",
+            rows: 5,
+            label: "Sobre a palestra",
+            description: "Um parágrafo por linha em branco.",
+          },
+          {
+            name: "temas",
+            type: "array",
+            label: "Temas",
+            itemFields: [{ name: "tema", type: "text", required: true, label: "Tema" }],
+          },
+          {
+            name: "certificacoes",
+            type: "array",
+            label: "Certificações",
+            itemFields: [{ name: "sigla", type: "text", required: true, label: "Sigla" }],
+          },
+          {
+            name: "palcos",
+            type: "array",
+            label: "Já palestrou em",
+            description: "Só evento que a pessoa declarou. É prova de repertório, não vitrine.",
+            itemFields: [{ name: "nome", type: "text", required: true, label: "Evento" }],
+          },
           { name: "linkedin", type: "url", label: "LinkedIn" },
           { name: "github", type: "url", label: "GitHub" },
           { name: "twitter", type: "url", label: "Twitter / X" },

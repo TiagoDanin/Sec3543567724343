@@ -4,10 +4,10 @@ import { Button } from "@/components/primitives/Button";
 import { NavBar } from "@/components/layout/NavBar";
 import { SiteFooter } from "@/components/sections/SiteFooter";
 import { alvoCompraDeOutraRota, ancoraDaHome } from "@/lib/links";
+import { itensDoMenu } from "@/lib/rotas";
 import { SchemaMarkup } from "@/lib/schema";
 import { buildShellFs } from "@/lib/shell-fs";
 import { cn } from "@/lib/utils";
-import type { SectionKey } from "@/lib/cms";
 import { getEquipe, getNavegacao, getSettings } from "@/lib/cms";
 
 // Rótulos de navegação: interface, não conteúdo editorial.
@@ -45,12 +45,10 @@ export function PaginaInterna({
       <SkipLink href="#conteudo">{SKIP}</SkipLink>
 
       <NavBar
-        items={navegacao
-          .filter(
-            (item) =>
-              !item.noMenu && (!item.secao || settings.sections[item.secao as SectionKey] === true),
-          )
-          .map((item) => ({ ...item, href: ancoraDaHome(item.href) }))}
+        items={itensDoMenu(navegacao).map((item) => ({
+          ...item,
+          href: ancoraDaHome(item.href),
+        }))}
         action={
           <Button size="sm" {...compra} href={compra.href}>
             {NAV_CTA}

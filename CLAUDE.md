@@ -85,7 +85,7 @@ O catálogo **não importa `docs.ts`** — a dependência aponta para o outro la
 
 Rota nova nasce aqui, não no `app/`: sem entrada no catálogo ela não entra no sitemap nem ganha link interno, e página órfã o buscador visita tarde e classifica mal.
 
-`/evento`, `/ctf`, `/patrocinio`, `/local` e `/press` reusam a seção da home com `titleAs="h1"` — a mesma seção, promovida a assunto da página. Na home a `ImprensaSection` abre só com o rótulo e a citação de terceiro, para não gastar altura na porta do patrocínio; em `/press`, onde a cobertura é o assunto, o mesmo componente publica o título e o apoio que `contents/secoes` já traz. Ficam fora do menu **e do rodapé** de propósito: a home continua sendo o caminho de leitura, e essas rotas existem para a busca e para quem chega por link direto. Quem navega chega a elas pelo `/sitemap`, que está no rodapé. Cada uma anuncia `/docs/<slug>.md` como espelho, pela `metadataDeRota()`.
+`/evento`, `/ctf`, `/patrocinio`, `/local`, `/faq` e `/press` reusam a seção da home com `titleAs="h1"` — a mesma seção, promovida a assunto da página. Na home a `ImprensaSection` abre só com o rótulo e a citação de terceiro, para não gastar altura na porta do patrocínio; em `/press`, onde a cobertura é o assunto, o mesmo componente publica o título e o apoio que `contents/secoes` já traz. Ficam fora do menu **e do rodapé** de propósito: a home continua sendo o caminho de leitura, e essas rotas existem para a busca e para quem chega por link direto. Quem navega chega a elas pelo `/sitemap`, que está no rodapé. Cada uma anuncia `/docs/<slug>.md` como espelho, pela `metadataDeRota()`.
 
 **Feature flag desligada não apaga o arquivo.** Com `output: "export"`, `notFound()` ainda escreve o HTML da rota — vazio, mas com título e canonical. Por isso `metadataDeRota()` devolve `noindex, nofollow` quando a seção está desligada, e a rota sai do sitemap: sem isso o endereço vira um soft 404 que responde 200 anunciando conteúdo que a organização retirou do ar.
 
@@ -93,15 +93,16 @@ Rota nova nasce aqui, não no `app/`: sem entrada no catálogo ela não entra no
 
 ### Espelho em Markdown e `llms.txt`
 
-O HTML é para gente; `src/lib/docs.ts` gera a **mesma informação em Markdown**, para assistentes de IA e agentes. Route Handlers com `export const dynamic = "force-static"` escrevem os arquivos no build — `app/llms.txt/route.ts` vira `dist/llms.txt`, `app/docs/[doc]/route.ts` vira `dist/docs/<slug>.md`. O `trailingSlash` não interfere no nome.
+O HTML é para gente; `src/lib/docs.ts` gera a **mesma informação em Markdown**, para assistentes de IA e agentes. Route Handlers com `export const dynamic = "force-static"` escrevem os arquivos no build: `app/llms.txt/route.ts` vira `dist/llms.txt`, e `app/docs/[...doc]/route.ts` vira `dist/docs/<slug>.md`. A rota é catch-all porque o perfil de cada palestrante mora um nível abaixo. O `trailingSlash` não interfere no nome.
 
-| Arquivo            | O que é                                              |
-| ------------------ | ---------------------------------------------------- |
-| `/llms.txt`        | Índice curto no formato de llmstxt.org               |
-| `/llms-full.txt`   | Todo o conteúdo publicado em um arquivo              |
-| `/index.md`        | Espelho da home                                      |
-| `/docs/agents.md`  | Respostas canônicas e a lista do que **não** afirmar |
-| `/docs/<seção>.md` | Um documento por seção publicada                     |
+| Arquivo                        | O que é                                              |
+| ------------------------------ | ---------------------------------------------------- |
+| `/llms.txt`                    | Índice curto no formato de llmstxt.org               |
+| `/llms-full.txt`               | Todo o conteúdo publicado em um arquivo              |
+| `/index.md`                    | Espelho da home                                      |
+| `/docs/agents.md`              | Respostas canônicas e a lista do que **não** afirmar |
+| `/docs/<seção>.md`             | Um documento por seção publicada                     |
+| `/docs/palestrantes/<slug>.md` | Um perfil por pessoa anunciada                       |
 
 Três regras governam isso:
 
@@ -110,6 +111,19 @@ Três regras governam isso:
 3. **O indefinido é declarado**, não omitido: `/docs/agents.md` traz a lista do que a organização ainda não publicou. É o que faz um assistente responder "ainda não foi anunciado" em vez de estimar.
 
 `pageMetadata()` deriva o alternate sozinho — `/` → `/index.md` — e emite `<link rel="alternate" type="text/markdown">`. Rota nova nasce com espelho anunciado; passar `markdown: null` desliga quando a rota não tiver um. A convenção de nome só vale para a home: rota com documento próprio passa `markdown: markdownDaRota("/rota")`, que devolve `/docs/<slug>.md` enquanto o build gerar o arquivo — sem isso a página anuncia um Markdown que não existe.
+
+### Os palestrantes em `/palestrantes`
+
+Um arquivo `.mdx` por pessoa em `contents/palestrantes/`: o frontmatter traz nome, cargo, palestra, temas, certificações e onde já palestrou; o corpo é a bio longa, lida como texto puro e quebrada em parágrafos por `paragrafos()`. Não há runtime de MDX no projeto, e o corpo não aceita marcação.
+
+Quatro decisões:
+
+- **A rota não é governada pela seção da home.** `settings.sections.palestrantes` liga a vitrine da página inicial; a página existe enquanto houver registro em `contents/palestrantes/`, pelo `publicaSe` da entrada em `rotas.ts`. É o que permite anunciar nomes em página própria antes de abrir a seção na home, que é o estado atual.
+- **O slug do frontmatter é a URL.** `/palestrantes/<slug>` é indexado; trocar o slug depois quebra endereço publicado e o espelho em Markdown que ele anuncia. O prefixo numérico do arquivo governa só a ordem no CMS.
+- **Uma rota por pessoa nasce do conteúdo.** `rotasDePalestrantes()` expande o catálogo, e com isso o sitemap, a página `/sitemap`, o documento que a espelha e o item do menu saem de graça. `itensDoMenu()` esconde qualquer item que aponte para rota não publicada.
+- **Sem retrato, entra o monograma.** `PendingSlot` com as iniciais, hachurado, nunca ilustração ou banco de imagem. Quando a organização entregar as fotos, basta preencher `foto` no frontmatter: `SpeakerCard` e a página trocam sozinhos.
+
+O JSON-LD é `ProfilePage` com `mainEntity: Person` (`knowsAbout`, `hasCredential`, `sameAs`, `performerIn` apontando para o `@id` do evento) e a palestra como `subjectOf`. O `Person` não declara `performerIn` quando é aninhado no `performer` do próprio evento, o que seria uma referência do evento para ele mesmo. A palestra **não** é `subEvent`: sem horário confirmado ela não tem `startDate`, e `subEvent` sem data é promessa que a grade ainda não sustenta.
 
 ### O quiz em `/quiz`
 
@@ -184,6 +198,8 @@ Não comentar: o óbvio (`// estado do carrossel`), a narração do diff (`// ag
 
 ## Léxico
 
+**Nada de travessão.** O travessão (`—`) é a marca registrada de texto gerado por IA, e a skill `humanizer` o trata como sinal de origem. Não usar em copy de `contents/`, em texto que o site publica (incluindo o espelho em Markdown), em comentário de código nem em mensagem de commit. No lugar dele: vírgula, dois-pontos, ponto final ou parênteses, conforme a frase pedir. Períodos mais curtos costumam ser a resposta certa.
+
 `PRODUCT.md` → _Percepção a Corrigir_ é normativo. Resumo operacional: a palavra _comunidade_ não pode aparecer como a categoria do evento; usar "encontro de cibersegurança", "edição", "programação", "trilhas", "participantes" e "organizações parceiras". Porte se demonstra com número verificável, nunca com adjetivo.
 
 ## Biblioteca de componentes
@@ -220,10 +236,11 @@ A home está composta e o build publica; ainda **não existem**:
 - `error.tsx`, `loading.tsx` e `not-found.tsx` seguem como placeholders vazios do scaffold — o `not-found` não tem nem navegação nem link de volta;
 - script `predev` gerando `.studio/studio.d.ts` (o `prebuild` já existe);
 - `scripts/validate-content.ts` com Zod;
-- `app/palestrantes/[slug]` e `app/programacao/[slug]` — as páginas de detalhe. Enquanto não existirem, `SpeakerCard` e `AgendaRow` são renderizados **sem `href`** na home: card que leva a 404 é pior que card sem link. `BioHeader` já está pronto na bancada esperando a rota. Criando as páginas, devolver o `href` nas duas seções e conferir sitemap e espelho em Markdown;
-- fotos das edições anteriores, logos das organizações parceiras e da imprensa: os diretórios em `public/images/` existem vazios, e por isso `EditionCard` e `PartnerChip` caem no estado de pendência.
+- `app/programacao/[slug]`, a página de detalhe de cada atividade. Enquanto não existir, `AgendaRow` é renderizado **sem `href`**: card que leva a 404 é pior que card sem link. Criando a página, devolver o `href` na seção e conferir sitemap e espelho em Markdown. A rota de palestrante já existe, e é o modelo a seguir;
+- fotos das edições anteriores, logos das organizações parceiras e da imprensa: os diretórios em `public/images/` existem vazios, e por isso `EditionCard` e `PartnerChip` caem no estado de pendência. O mesmo vale para os retratos em `public/images/palestrantes/`, que hoje dão lugar ao monograma;
+- perfis de rede dos palestrantes: `linkedin`, `github`, `twitter` e `site` estão vazios no frontmatter, e sem eles o `Person` do JSON-LD sai sem `sameAs`, que é o campo que amarra a pessoa à identidade dela fora do site.
 
-As coleções em `contents/` existem com o schema declarado e **conteúdo vazio, de propósito**. Não preencher sem pedido explícito.
+As demais coleções em `contents/` existem com o schema declarado e **conteúdo vazio, de propósito**. Não preencher sem pedido explícito.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
