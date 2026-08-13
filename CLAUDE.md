@@ -8,7 +8,7 @@ Idioma do projeto: **português do Brasil**, com acentuação correta. Vale para
 
 ```bash
 yarn dev              # desenvolvimento em http://localhost:3000
-yarn build            # build de produção → dist/
+yarn build            # build de produção → dist/ (não rodar, ver abaixo)
 yarn storybook        # Storybook em http://localhost:6006
 yarn build-storybook  # Storybook estático → storybook-static/
 yarn lint             # ESLint 9 (flat config)
@@ -18,7 +18,9 @@ yarn format           # Prettier
 yarn format:check     # Prettier em modo verificação
 ```
 
-Não há suíte de testes e não se pretende adicionar uma: o site é 100% estático. O par que substitui é `yarn typecheck` + `yarn build`, e um validador de conteúdo com Zod (ainda não escrito, ver _Pendências_).
+Não há suíte de testes e não se pretende adicionar uma: o site é 100% estático. O que substitui é `yarn typecheck` e `yarn lint`, mais um validador de conteúdo com Zod (ainda não escrito, ver _Pendências_).
+
+**Não rodar `yarn build`.** É a verificação de quem trabalha aqui, feita quando essa pessoa quiser, e o CI já roda a cada push e pull request. Disparado por conta própria, ele compete pelo `.next/` com o `yarn dev` que está de pé, deixa o servidor de desenvolvimento num estado estranho e custa minutos para dizer o que o `typecheck` diz em segundos. Precisando conferir o que o export escreve em `dist/` — um espelho em Markdown, uma rota nova no `sitemap.xml` —, peça o build a quem está conduzindo em vez de executá-lo.
 
 O runner de teste que vem no scaffold do Storybook (`@storybook/addon-vitest`, `vitest`, `playwright`) foi removido de propósito — o Storybook aqui é bancada de desenvolvimento visual, não harness de teste.
 
