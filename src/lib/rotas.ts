@@ -48,7 +48,9 @@ const ROTAS: Rota[] = [
     secao: null,
     changeFrequency: "weekly",
     priority: 1,
-    rodape: true,
+    // A marca do rodapé já leva à home: o link repetido só ocupa a primeira
+    // linha da coluna com o destino que a pessoa acabou de deixar.
+    rodape: false,
   },
   {
     path: "/evento",
