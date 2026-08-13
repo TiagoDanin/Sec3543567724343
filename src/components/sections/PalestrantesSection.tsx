@@ -3,11 +3,11 @@ import { Section } from "@/components/primitives/Section";
 import { SectionHeader } from "@/components/primitives/SectionHeader";
 import { Reveal } from "@/components/primitives/Reveal";
 import { NoteWithLink } from "@/components/primitives/Note";
-import { SpeakerCard } from "@/components/cards/SpeakerCard";
+import { SpeakerList, SpeakerRow } from "@/components/cards/SpeakerRow";
 import { palestrantePath } from "@/lib/site";
 import { credencial, type Palestrante, type Secao } from "@/lib/cms";
 
-/** Espaços reservados enquanto nenhum nome de 2026 foi anunciado. */
+/** Linhas reservadas enquanto nenhum nome de 2026 foi anunciado. */
 const PLACEHOLDERS = 4;
 
 export type PalestrantesSectionProps = {
@@ -18,7 +18,7 @@ export type PalestrantesSectionProps = {
 };
 
 /**
- * Sem registros, a seção mostra espaços reservados e declara a pendência, em vez
+ * Sem registros, a seção mostra linhas reservadas e declara a pendência, em vez
  * de inventar nome ou sumir da página.
  */
 export function PalestrantesSection({ palestrantes, secao, titleAs }: PalestrantesSectionProps) {
@@ -39,25 +39,21 @@ export function PalestrantesSection({ palestrantes, secao, titleAs }: Palestrant
         </Reveal>
 
         <Reveal>
-          <ul className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-5">
+          <SpeakerList>
             {vazio
-              ? Array.from({ length: PLACEHOLDERS }, (_, index) => (
-                  <li key={index}>
-                    <SpeakerCard />
-                  </li>
-                ))
+              ? Array.from({ length: PLACEHOLDERS }, (_, index) => <SpeakerRow key={index} />)
               : palestrantes.map((speaker) => (
-                  <li key={speaker.slug}>
-                    <SpeakerCard
-                      name={speaker.nome}
-                      role={credencial(speaker)}
-                      topic={speaker.palestraTitulo}
-                      href={`${palestrantePath(speaker.slug)}/`}
-                      nameAs={titleAs === "h1" ? "h2" : "span"}
-                    />
-                  </li>
+                  <SpeakerRow
+                    key={speaker.slug}
+                    name={speaker.nome}
+                    role={credencial(speaker)}
+                    topic={speaker.palestraTitulo}
+                    subjects={speaker.temas}
+                    href={`${palestrantePath(speaker.slug)}/`}
+                    nameAs={titleAs === "h1" ? "h2" : "h3"}
+                  />
                 ))}
-          </ul>
+          </SpeakerList>
         </Reveal>
 
         <NoteWithLink text={secao.nota} label={secao.notaLinkLabel} href={secao.notaLinkUrl} />

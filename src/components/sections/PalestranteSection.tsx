@@ -86,9 +86,12 @@ function Redes({ palestrante }: { palestrante: Palestrante }) {
 }
 
 /**
- * A página de uma pessoa: ficha à esquerda, palestra e bio à direita. Sem
- * retrato e sem moldura à espera de um, porque a organização não publica foto
- * de palestrante.
+ * A página de uma pessoa. O nome ocupa a largura inteira, e só abaixo dele a
+ * página se divide: a palestra e a bio na coluna de leitura, a ficha numa faixa
+ * estreita de dado ao lado.
+ *
+ * Não há retrato nem moldura à espera de um. Uma coluna larga guardando ficha
+ * de quatro linhas é o desenho de quem tirou a foto e não refez a página.
  *
  * A palestra vem antes da biografia de propósito: é o que a pessoa vai ver no
  * dia, e é o que responde à pergunta que trouxe quem chegou pela busca.
@@ -103,35 +106,34 @@ export function PalestranteSection({
 
   return (
     <Section id="palestrante">
-      {/* O nome vem antes da ficha no HTML e depois dela na tela: quem lê por
-          leitor ou por rastreador encontra o assunto da página na primeira
-          linha, e não o rótulo "Experiência". */}
-      <Container className="grid grid-cols-[minmax(0,.62fr)_minmax(0,1fr)] items-start gap-[clamp(32px,5vw,72px)] max-[900px]:grid-cols-1">
-        <div className="max-[900px]:order-1 min-[901px]:col-start-2 min-[901px]:row-start-1">
-          <Reveal>
-            {secao.eyebrow ? (
-              <Eyebrow tone={secao.eyebrowTom} className="mb-[18px]">
-                {secao.eyebrow}
-              </Eyebrow>
-            ) : null}
+      <Container>
+        <Reveal as="header" className="border-line border-b pb-[clamp(28px,3.5vw,44px)]">
+          {secao.eyebrow ? (
+            <Eyebrow tone={secao.eyebrowTom} className="mb-[18px]">
+              {secao.eyebrow}
+            </Eyebrow>
+          ) : null}
 
-            <SectionTitle as="h1">{palestrante.nome}</SectionTitle>
+          <SectionTitle as="h1">{palestrante.nome}</SectionTitle>
 
-            {cargo ? (
-              <p className="text-mint mt-[14px] font-mono text-[12px] tracking-[0.14em] uppercase">
-                {cargo}
-              </p>
-            ) : null}
+          {cargo ? (
+            <p className="text-mint mt-[14px] font-mono text-[12px] tracking-[0.14em] uppercase">
+              {cargo}
+            </p>
+          ) : null}
 
-            {palestrante.resumo ? (
-              <p className="text-cream-2 mt-5 max-w-[62ch] text-[17px] leading-[1.65]">
-                {palestrante.resumo}
-              </p>
-            ) : null}
-          </Reveal>
+          {palestrante.resumo ? (
+            <p className="text-cream-2 mt-5 max-w-[62ch] text-[17px] leading-[1.65]">
+              {palestrante.resumo}
+            </p>
+          ) : null}
+        </Reveal>
+      </Container>
 
+      <Container className="mt-[clamp(30px,4vw,52px)] grid grid-cols-[minmax(0,1fr)_minmax(0,300px)] items-start gap-[clamp(32px,5vw,72px)] max-[900px]:grid-cols-1">
+        <div>
           {palestrante.palestraTitulo ? (
-            <Reveal className="border-line mt-[clamp(32px,4vw,52px)] border-t pt-[clamp(28px,3.5vw,44px)]">
+            <Reveal>
               <Eyebrow className="mb-[14px]">{PALESTRA_LABEL}</Eyebrow>
 
               <SectionTitle as="h2" size="md">
@@ -191,7 +193,7 @@ export function PalestranteSection({
 
         <Reveal
           as="aside"
-          className="max-[900px]:order-2 max-[900px]:mt-[clamp(28px,4vw,40px)] max-[900px]:max-w-[420px] min-[901px]:col-start-1 min-[901px]:row-start-1"
+          className="max-[900px]:mt-[clamp(28px,4vw,40px)] max-[900px]:max-w-[520px]"
         >
           <Ficha palestrante={palestrante} />
           <Redes palestrante={palestrante} />

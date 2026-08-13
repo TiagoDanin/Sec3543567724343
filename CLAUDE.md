@@ -123,7 +123,7 @@ Quatro decisões:
 - **A rota não é governada pela seção da home.** `settings.sections.palestrantes` liga a vitrine da página inicial; a página existe enquanto houver registro em `contents/palestrantes/`, pelo `publicaSe` da entrada em `rotas.ts`. É o que permite anunciar nomes em página própria antes de abrir a seção na home, que é o estado atual.
 - **O slug do frontmatter é a URL.** `/palestrantes/<slug>` é indexado; trocar o slug depois quebra endereço publicado e o espelho em Markdown que ele anuncia. O prefixo numérico do arquivo governa só a ordem no CMS.
 - **Uma rota por pessoa nasce do conteúdo.** `rotasDePalestrantes()` expande o catálogo, e com isso o sitemap, a página `/sitemap`, o documento que a espelha e o item do menu saem de graça. `itensDoMenu()` esconde qualquer item que aponte para rota não publicada.
-- **Sem foto, e sem espaço reservado para uma.** A coleção não tem campo de retrato, o cartão é só tipografia e a página abre pela ficha. Nada de `PendingSlot`, monograma, ilustração ou banco de imagem: moldura vazia na grade ocupa a fileira inteira sem dizer nada, e campo de mídia sem consumidor no render é convite a preencher o que não aparece.
+- **Sem foto, e sem espaço reservado para uma.** A coleção não tem campo de retrato. Nada de `PendingSlot`, monograma, ilustração ou banco de imagem: moldura vazia ocupa a fileira sem dizer nada, e campo de mídia sem consumidor no render é convite a preencher o que não aparece. O layout é consequência disso, não adaptação: a lista é de **linhas largas** (`SpeakerRow`, na grade de 1px do `AgendaList`), porque cartão em grade `auto-fit` existe para emoldurar retrato quadrado e, sem ele, espreme o título da palestra em três linhas. No perfil, o nome ocupa a largura inteira e só abaixo dele a página se divide, com a ficha numa faixa de 300px. Coluna larga guardando ficha de quatro linhas é o desenho de quem tirou a foto e não refez a página.
 
 O JSON-LD é `ProfilePage` com `mainEntity: Person` (`knowsAbout`, `hasCredential`, `sameAs`, `performerIn` apontando para o `@id` do evento) e a palestra como `subjectOf`. O `Person` não declara `performerIn` quando é aninhado no `performer` do próprio evento, o que seria uma referência do evento para ele mesmo. A palestra **não** é `subEvent`: sem horário confirmado ela não tem `startDate`, e `subEvent` sem data é promessa que a grade ainda não sustenta.
 
@@ -212,7 +212,7 @@ O Storybook é a bancada: componente novo nasce lá, com story, antes de entrar 
 src/components/
 ├── primitives/   Button, Container, Section, SectionHeader (+ Eyebrow, SectionTitle),
 │                 Tag, Note, Greca, Reveal, SkipLink, PendingSlot, HighlightPanel, KitBanner
-├── cards/        TicketCard, SpeakerCard, CallCard, EditionCard, SponsorSlot,
+├── cards/        TicketCard, SpeakerRow (+ SpeakerList), CallCard, EditionCard, SponsorSlot,
 │                 PartnerChip, LinkButton
 ├── data/         Countdown, FactStrip, AgendaRow (+ AgendaList), TimelineList,
 │                 Terminal, IncludedList
@@ -222,7 +222,7 @@ src/components/
 Regras que valem para todos:
 
 - **Sem copy embutida.** Todo texto visível entra por prop. Os valores nas stories são exemplos de bancada, não conteúdo do site.
-- **Estado de pendência é parte do componente**, não um caso à parte: `SpeakerCard` sem `name` declara "A confirmar"; `EditionCard` sem `photo` cai no `PendingSlot`; `PartnerChip` sem `href` renderiza sem link.
+- **Estado de pendência é parte do componente**, não um caso à parte: `SpeakerRow` sem `name` declara "A confirmar"; `EditionCard` sem `photo` cai no `PendingSlot`; `PartnerChip` sem `href` renderiza sem link.
 - Componente com estado de navegador (`NavBar`, `Dock`, `Countdown`, `Greca`, `Reveal`) leva `"use client"`; o resto é server component.
 - `Countdown` usa `useSyncExternalStore` com relógio compartilhado, não `setState` dentro de efeito — a regra `react-hooks/set-state-in-effect` do ESLint 9 barra o segundo, e o snapshot precisa ser estável entre ticks para não re-renderizar em laço.
 - `Reveal` escreve a classe direto no nó via ref. Sem JavaScript o conteúdo aparece inteiro, como manda o `DESIGN.md`.
