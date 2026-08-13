@@ -14,6 +14,9 @@ export type TerminalSectionProps = {
  * A rota do xibesh: o shell toma a tela inteira sob a barra, e o cabeçalho da
  * página é a abertura do próprio terminal — título em display acima da janela
  * empurraria para fora da vista justamente o que a rota existe para mostrar.
+ *
+ * O `lede` da seção fica de fora: quem apresenta o shell é o `neofetch` que abre
+ * a sessão. Ele segue no conteúdo, alimentando `/docs/terminal.md`.
  */
 export function TerminalSection({ secao, fs, target }: TerminalSectionProps) {
   return (
@@ -22,13 +25,12 @@ export function TerminalSection({ secao, fs, target }: TerminalSectionProps) {
         variant="palco"
         fs={fs}
         target={target}
+        neofetchNaAbertura
         banner={
           <div className="mb-[clamp(14px,2vw,22px)] max-w-[92ch]">
             {secao.eyebrow ? <p className="text-cream/45">{secao.eyebrow}</p> : null}
 
             <h1 className="text-mint mt-1 text-[13px] font-bold">{secao.titulo}</h1>
-
-            <p className="text-cream-2 mt-2.5 leading-[1.8]">{secao.lede}</p>
 
             <NoteWithLink
               text={secao.nota}

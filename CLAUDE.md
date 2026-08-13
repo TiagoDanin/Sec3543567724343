@@ -132,10 +132,11 @@ O WebKit não exporta a imagem, e a interface pede para abrir no Chrome. Detecta
 
 Menu no topo, o xibesh ocupando a tela inteira sob a barra, e o rodapé — sem terminal — só depois de rolar. É o mesmo `ShellTerminal`: a prop `variant` escolhe entre `rodape`, que sangra a largura toda sob os links, e `palco`, que veste a moldura do terminal do CTF e preenche a altura que a rota reservar. O conteúdo vem de `contents/secoes` na chave `terminal`, e o sistema de arquivos continua saindo de `shell-fs.ts`.
 
-Quatro decisões:
+Cinco decisões:
 
 - **A moldura mora em `TerminalFrame`** — barra de título e varredura de fósforo. O `Terminal` do CTF e o xibesh a compartilham: a varredura escrita duas vezes divergiria na primeira mudança de cor.
 - **O cabeçalho da página é a abertura do terminal.** Rótulo, `h1` e apoio entram pela prop `banner`, em mono, dentro da janela e acima do log — nunca dentro dele, que é `aria-live` e anunciaria o texto como se fosse saída de comando. Título em display acima da moldura empurraria para fora da vista justamente o que a rota existe para mostrar.
+- **A sessão abre com o `neofetch`** (`neofetchNaAbertura`), e o `lede` da seção não vai para a tela: quem chega ao terminal quer o terminal, não a explicação de como ele funciona. A ficha responde data, local, trilhas e CTF na primeira tela, e o texto segue em `contents/secoes` alimentando `/docs/terminal.md`. Ela lê o relógio e a largura da janela, então roda em efeito de montagem, com guarda contra a montagem dupla do StrictMode — no estado inicial, a saída do build não bateria com a de agora.
 - **`PaginaInterna` aceita `shellNoRodape={false}` e `folgaNoTopo={false}`**, e essa rota usa os dois. Dois shells na mesma página disputam o foco do teclado e dobram a medição de uso; a folga do topo somaria à barra e jogaria a mesma altura para fora da tela.
 - **Quem rola é a janela, não a página.** Ela toma a altura que sobra da moldura, e o empurrão que traz o rodapé para a vista depois de cada comando fica desligado no palco — ali ele só tiraria a barra da tela.
 

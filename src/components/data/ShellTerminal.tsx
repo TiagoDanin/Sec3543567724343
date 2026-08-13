@@ -34,17 +34,23 @@ export type ShellTerminalProps = {
   variant?: "rodape" | "palco";
   /** Abertura estática acima do log, onde o palco carrega o assunto da página. */
   banner?: ReactNode;
+  /** Roda `neofetch` ao abrir: a ficha do evento no lugar de uma tela vazia. */
+  neofetchNaAbertura?: boolean;
   className?: string;
 };
 
-/** A cuia do logotipo, com os circuitos brotando. */
+/**
+ * A cuia do logotipo, com os circuitos brotando. Cada parede recua uma coluna
+ * por linha: fora dessa conta a boca e o fundo deixam de se encontrar.
+ */
 const CUIA = [
-  "      o   o   o  ",
-  "      |   |   |  ",
-  "    __|___|___|__",
-  "    \\             /",
-  "     \\  /\\/\\/\\  /",
-  "      \\_________/ ",
+  "      o   o   o",
+  "      |   |   |",
+  "   ___|___|___|___",
+  "   \\             /",
+  "    \\  /\\/\\/\\/  /",
+  "     \\         /",
+  "      \\_______/",
 ];
 
 const PALETA = ["#152310", "#1E3218", "#00B368", "#4FE3AC", "#EE7B2E", "#FA8F45", "#F2E4C4"];
@@ -179,6 +185,7 @@ export function ShellTerminal({
   usuario = "xibesec@2026",
   variant = "rodape",
   banner,
+  neofetchNaAbertura = false,
   className,
 }: ShellTerminalProps) {
   const palco = variant === "palco";
@@ -201,9 +208,16 @@ export function ShellTerminal({
   const navegou = useRef(false);
   /** O terminal está sempre na página: quem conta como uso é o primeiro comando. */
   const usou = useRef(false);
+  const montou = useRef(false);
 
   useEffect(() => {
+    // A ficha lê o relógio e a largura da janela, por isso nasce aqui e não no
+    // estado inicial; o guarda é a montagem dupla do StrictMode.
+    if (montou.current) return;
+    montou.current = true;
     abertura.current = Date.now();
+    if (neofetchNaAbertura) executar(["neofetch"]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const arvore = useMemo(() => (root && ehDir(fs) ? { ...fs, ...SEGREDO } : fs), [fs, root]);
